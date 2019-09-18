@@ -3,6 +3,8 @@ import { Switch, Route, RouteComponentProps } from 'react-router-dom';
 import { Core } from '../../core';
 import { CollectionBook } from './collection/book';
 import { User } from './user';
+import { Message } from './message';
+import { PersonalMessage } from './message/personal-msg';
 import { Status } from './status';
 import { LoginRoute } from './user/login';
 import { HomeMain } from './home/main';
@@ -26,16 +28,15 @@ interface State {
 
 }
 
-
 export interface MobileRouteProps extends RouteComponentProps<any> {
   core:Core;
   path:string;
 }
 export type RouteComponentType = {
   path:string;
-  component:React.ComponentClass<MobileRouteProps,any>;
+  component:React.ComponentClass<MobileRouteProps, any>;
   exact?:boolean;
-}
+};
 export const MobileRoute:RouteComponentType[] = [
   // home
   { path: '/', component: HomeMain, exact: true },
@@ -61,6 +62,9 @@ export const MobileRoute:RouteComponentType[] = [
   { path: '/status/collection', component: StatusCollection },
   { path: '/status/all', component: Status },
 
+  // message
+  { path: '/messages/pm', component: PersonalMessage },
+  { path: '/messages', component: Message },
   // others
   { path: '/createquote', component: CreateQuote },
 ];
@@ -83,7 +87,7 @@ export class MobileRouter extends React.Component<Props, State> {
                 ...props,
               },
             )}
-          />
+          />,
         )}
       </Switch>
     </div>);
