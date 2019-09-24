@@ -8,18 +8,12 @@ import { PersonalMessage } from './message/personal-msg';
 import { Status } from './status';
 import { LoginRoute } from './user/login';
 import { HomeMain } from './home/main';
-import { HomeThread } from './home/homethread';
-import { HomeBook } from './home/homebook';
-import { Book } from './home/book';
 import { Chapter } from './home/chapter';
-import { Thread } from './home/thread';
-import { Threads } from './home/threads';
-import { Books } from './home/books';
 import { StatusCollection } from './status/collection';
-import { CollectionThread } from './collection/thread';
 import { CollectionList } from './collection/list';
 import { CreateQuote } from './home/createquote';
 
+import { Tidings } from './tidings';
 interface Props {
   core:Core;
 }
@@ -40,13 +34,13 @@ export type RouteComponentType = {
 export const MobileRoute:RouteComponentType[] = [
   // home
   { path: '/', component: HomeMain, exact: true },
-  { path: '/homebook', component: HomeBook },
-  { path: '/homethread', component: HomeThread },
-  { path: '/threads', component: Threads },
-  { path: '/books', component: Books },
+  // { path: '/homebook', component: HomeBook },
+  // { path: '/homethread', component: HomeThread },
+  // { path: '/threads', component: Threads },
+  // { path: '/books', component: Books },
   { path: '/book/:bid/chapter/:cid', component: Chapter },
-  { path: '/book/:id', component: Book },
-  { path: '/thread/:id', component: Thread },
+  // { path: '/book/:id', component: Book },
+  // { path: '/thread/:id', component: Thread },
 
   // user
   { path: '/user', component: User },
@@ -55,7 +49,7 @@ export const MobileRoute:RouteComponentType[] = [
 
   // collection
   { path: '/collection/book', component: CollectionBook },
-  { path: '/collection/thread', component: CollectionThread },
+  // { path: '/collection/thread', component: CollectionThread },
   { path: '/collection/list', component: CollectionList },
 
   // status
@@ -65,6 +59,8 @@ export const MobileRoute:RouteComponentType[] = [
   // message
   { path: '/messages/pm', component: PersonalMessage },
   { path: '/messages', component: Message },
+
+  { path: '/tidings', component: Tidings },
   // others
   { path: '/createquote', component: CreateQuote },
 ];
