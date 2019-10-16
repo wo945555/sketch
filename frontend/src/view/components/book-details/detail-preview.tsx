@@ -8,12 +8,12 @@ import { SSL_OP_TLS_ROLLBACK_BUG } from 'constants';
 interface Props {
   thread: ResData.Thread;
   direction: 'left' | 'right';
-  onTagClick:(channelId:number, tagId:number) => void;
+  //onTagClick:(channelId:number, tagId:number) => void;
 }
 interface State {
 }
 
-export class BookIfo extends React.Component<Props, State>{
+export class DetailPreview extends React.Component<Props, State>{
   public render() {    
     const { attributes, author, channel, tags } = this.props.thread;
     const levelDirection = 'level' + this.props.direction;
