@@ -3,7 +3,8 @@ import { MobileRouteProps } from '../router';
 import { ResData, API } from '../../../config/api';
 import { NavBar } from '../../components/common/navbar';
 import { Page } from '../../components/common/page';
-import { DetailPreview } from '../../components/book-details/detail-preview'
+import { DetailPreview } from '../../components/book-details/detail-preview';
+import { Collapse } from '../../components/book-details/collapse';
 
 type Direction = 'left' | 'right';
 interface State {
@@ -59,6 +60,12 @@ export class BookDetails extends React.Component<MobileRouteProps, State> {
   public render() {
     const { thread, chapters } = this.state.data;
     let direction: Direction = /* this.state.data.thread.attributes.picture? 'left': 'right' */'left';
+
+    const collection = thread.attributes.collection_count;
+    const collectionInBtn = (collection && (collection > 999))? '999+':  collection;
+
+    const rewards = []; //暂不知道打赏者数据接口
+    const rewardsStr = '';
     return (<Page top={<NavBar goBack={this.props.core.history.goBack}>文章详情</NavBar>}>
       <header className="columns">
         {/* { thread.attributes.picture && (<div className="columns">
@@ -79,8 +86,15 @@ export class BookDetails extends React.Component<MobileRouteProps, State> {
         <h2 className="title" style={{
             borderBottom: '2px solid rgb(200,86,93)',
             boxSizing: 'border-box'}}>最新章节</h2>
-            {  chapters.length>0 && <p>{chapters[0].attributes.title}</p> }
+            { chapters.length>0 && <p>{chapters[0].attributes.title}</p> }
         </div>
+        <ul className="columns">
+          <li className="column"><a className="button is-light">收藏{collectionInBtn}</a></li>
+          <li className="column"><a className="button is-light">回复</a></li>
+          <li className="column"><a className="button is-light">写评</a></li>
+          <li className="column"><a className="button is-light">打赏</a></li>
+        </ul>
+        <Collapse>打赏榜单：{ rewardsStr }</Collapse>
       </section>
     </Page>)
   }

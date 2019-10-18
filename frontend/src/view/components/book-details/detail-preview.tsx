@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { ResData, API } from '../../../config/api';
-import { Tag } from '../common/tag';
+import { ResData } from '../../../config/api';
 import { parseDate } from '../../../utils/date';
-import { SSL_OP_TLS_ROLLBACK_BUG } from 'constants';
 
 interface Props {
   thread: ResData.Thread;
@@ -21,7 +19,7 @@ export class DetailPreview extends React.Component<Props, State>{
       <div className="level">
         <div className={levelDirection}>
           <h1 className="level-item title">{attributes.title}</h1>
-          { attributes.is_bianyuan && <Tag className="tag" style={{color: 'rgb(156,156,160)'}}>限</Tag> }
+          { attributes.is_bianyuan && <span className="tag" style={{color: 'rgb(156,156,160)'}}>限</span> }
         </div>
         <div className={levelDirection}>
           <Link to={`/user/${author.id}`}>{author.attributes.name}</Link>
