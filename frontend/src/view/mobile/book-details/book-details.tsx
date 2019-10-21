@@ -3,12 +3,15 @@ import { MobileRouteProps } from '../router';
 import { ResData, API } from '../../../config/api';
 import { NavBar } from '../../components/common/navbar';
 import { Page } from '../../components/common/page';
+import { Card } from '../../components/common/card';
+import { Anchor } from '../../components/common/pagination';
 import { DetailPreview } from '../../components/book-details/detail-preview';
 import { Collapse } from '../../components/book-details/collapse';
 
 type Direction = 'left' | 'right';
 interface State {
   data:API.Get['/book/$0'];
+  rewarders: []; // API.Post['/reward/$0'];
 }
 interface Thread extends ResData.Thread {}
 
@@ -55,7 +58,8 @@ export class BookDetails extends React.Component<MobileRouteProps, State> {
       paginate: ResData.allocThreadPaginate(),
       most_upvoted: ResData.allocPost(),
       top_review: null,
-    }
+    },
+    rewarders: [],
   }
   public render() {
     const { thread, chapters } = this.state.data;
@@ -64,38 +68,45 @@ export class BookDetails extends React.Component<MobileRouteProps, State> {
     const collection = thread.attributes.collection_count;
     const collectionInBtn = (collection && (collection > 999))? '999+':  collection;
 
-    const rewards = []; //暂不知道打赏者数据接口
-    const rewardsStr = '';
+    const rewardsStr = ''; //打赏者假数据
     return (<Page top={<NavBar goBack={this.props.core.history.goBack}>文章详情</NavBar>}>
-      <header className="columns">
-        {/* { thread.attributes.picture && (<div className="columns">
-          <img className="image" src={thread.attributes.picture} alt="cover"></img>
-        </div>) } */}
-        <div className="columns">
-          <DetailPreview thread={thread} direction={direction}></DetailPreview>
-        </div>)           
-      </header>
-      <section>
-        <article>
+      <Card>
+        <header className="columns">
+          {/* { thread.attributes.picture && (<div className="columns">
+            <img className="image" src={thread.attributes.picture} alt="cover"></img>
+          </div>) } */}
+          <div className="columns">
+            <DetailPreview thread={thread} direction={direction}></DetailPreview>
+          </div>)           
+        </header>
+        <section>
+          <article>
+            <h2 className="title" style={{
+              borderBottom: '2px solid rgb(200,86,93)',
+              boxSizing: 'border-box'}}>文案</h2>
+              <p>{thread.attributes.brief}</p>
+          </article>
+          <div>
           <h2 className="title" style={{
-            borderBottom: '2px solid rgb(200,86,93)',
-            boxSizing: 'border-box'}}>文案</h2>
-            <p>{thread.attributes.brief}</p>
-        </article>
-        <div>
-        <h2 className="title" style={{
-            borderBottom: '2px solid rgb(200,86,93)',
-            boxSizing: 'border-box'}}>最新章节</h2>
-            { chapters.length>0 && <p>{chapters[0].attributes.title}</p> }
+              borderBottom: '2px solid rgb(200,86,93)',
+              boxSizing: 'border-box'}}>最新章节</h2>
+              { chapters.length>0 && <p>{chapters[0].attributes.title}</p> }
+          </div>
+          <ul className="columns">
+            <li className="column"><a className="button is-light">收藏{collectionInBtn}</a></li>
+            <li className="column"><a className="button is-light">回复</a></li>
+            <li className="column"><a className="button is-light">写评</a></li>
+            <li className="column"><a className="button is-light">打赏</a></li>
+          </ul>
+          <Collapse>打赏榜单：{ rewardsStr }</Collapse>
+        </section>
+      </Card>
+      <Card>
+        <div className="buttons">
+          <Anchor className="button is-danger" to={''}>阅读模式</Anchor>
+          <Anchor className="button is-danger" isDisabled={this.props.match.params === ''} to={''}>讨论模式</Anchor>
         </div>
-        <ul className="columns">
-          <li className="column"><a className="button is-light">收藏{collectionInBtn}</a></li>
-          <li className="column"><a className="button is-light">回复</a></li>
-          <li className="column"><a className="button is-light">写评</a></li>
-          <li className="column"><a className="button is-light">打赏</a></li>
-        </ul>
-        <Collapse>打赏榜单：{ rewardsStr }</Collapse>
-      </section>
+      </Card>
     </Page>)
   }
 }
