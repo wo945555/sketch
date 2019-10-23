@@ -63,6 +63,7 @@ export class BookDetails extends React.Component<MobileRouteProps, State> {
   }
   public render() {
     const { thread, chapters } = this.state.data;
+    //书籍图片是否存在时右侧简介的排版
     let direction: Direction = /* this.state.data.thread.attributes.picture? 'left': 'right' */'left';
 
     const collection = thread.attributes.collection_count;
@@ -72,7 +73,8 @@ export class BookDetails extends React.Component<MobileRouteProps, State> {
     return (<Page top={<NavBar goBack={this.props.core.history.goBack}>文章详情</NavBar>}>
       <Card>
         <header className="columns">
-          {/* { thread.attributes.picture && (<div className="columns">
+          {/* //图片
+          { thread.attributes.picture && (<div className="columns">
             <img className="image" src={thread.attributes.picture} alt="cover"></img>
           </div>) } */}
           <div className="columns">
@@ -104,8 +106,11 @@ export class BookDetails extends React.Component<MobileRouteProps, State> {
       <Card>
         <div className="buttons">
           <Anchor className="button is-danger" to={''}>阅读模式</Anchor>
-          <Anchor className="button is-danger" isDisabled={this.props.match.params === ''} to={''}>讨论模式</Anchor>
+          <Anchor className="button is-danger" isDisabled={this.props.match.path === ''} to={''}>讨论模式</Anchor>
         </div>
+      </Card>
+      <Card>
+        
       </Card>
     </Page>)
   }
