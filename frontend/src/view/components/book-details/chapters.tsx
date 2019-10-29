@@ -1,20 +1,26 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { ResData } from '../../../config/api';
+import { classnames } from '../../../utils/classname';
 
 interface Props {
   bookId:number;
   chapters: ResData.Post[];
 }
 interface State {
-
+  isReverse: boolean;
 }
 
-export class Chapter extends React.Component<Props, State> {
+export class Chapters extends React.Component<Props, State> {
+  public state:State = {
+    isReverse: false,
+  }
+
   public render () {
+    let sortChapters = this.state.isReverse ? this.props.chapters.reverse() : this.props.chapters;
     return (
       <div className="chapters">
-        <div className="level">
+        <div className="level is-mobile">
           <div className="level-left">
             <div className="level-item">
               <h2 className="title" style={{
@@ -23,17 +29,26 @@ export class Chapter extends React.Component<Props, State> {
             </div>
           </div>
           <div className="level-right">
-            <div className="level-item">
-              <a>最早</a>
+            <div className="chapters-control level-item">
+              <a className={classnames(
+                'chapters-control-txt',
+                (this.state.isReverse ? '' : 'black')
+              )}
+               onClick={() => this.setState({isReverse: false})}>最早</a>
               &nbsp; | &nbsp;
-              <a>最新</a>
+              <a className={classnames(
+                'chapters-control-txt',
+                (this.state.isReverse ? 'black' : '')
+              )}
+              onClick={() => this.setState({isReverse: true})}>最新</a>
             </div>
           </div>
         </div>
         <div>
-          { this.props.chapters.length > 0 &&  this.props.chapters.map((chapter, i) => {
+          { sortChapters.length > 0 &&  sortChapters.map((chapter, i) => {
              <Link to={`/book/${this.props.bookId}/chapter/${chapter.id}`} key={i}>
-                <span className="chapters-title-head"></span>{chapter.attributes.title}
+                <span className="chapters-title-head">{/*章节前缀(第几章|番外几..)*/}</span>
+                {chapter.attributes.title}
              </Link>
           }) } 
         </div>

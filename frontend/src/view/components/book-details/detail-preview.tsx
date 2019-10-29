@@ -16,7 +16,7 @@ export class DetailPreview extends React.Component<Props, State>{
     const { attributes, author, channel, tags } = this.props.thread;
     const levelDirection = 'level' + this.props.direction;
     return (
-      <div className="level">
+      <div className="level is-mobile">
         <div className={levelDirection}>
           <h1 className="level-item title">{attributes.title}</h1>
           { attributes.is_bianyuan && <span className="tag" style={{color: 'rgb(156,156,160)'}}>限</span> }

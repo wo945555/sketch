@@ -7,13 +7,12 @@ import { Card } from '../../components/common/card';
 import { Anchor } from '../../components/common/pagination';
 import { DetailPreview } from '../../components/book-details/detail-preview';
 import { Collapse } from '../../components/book-details/collapse';
-
+import { Chapters } from '../../components/book-details/chapters';
 type Direction = 'left' | 'right';
 interface State {
   data:API.Get['/book/$0'];
   rewarders: []; // API.Post['/reward/$0'];
 }
-interface Thread extends ResData.Thread {}
 
 export class BookDetails extends React.Component<MobileRouteProps, State> {
   public state:State = {
@@ -64,7 +63,7 @@ export class BookDetails extends React.Component<MobileRouteProps, State> {
   public render() {
     const { thread, chapters } = this.state.data;
     //书籍图片是否存在时右侧简介的排版
-    let direction: Direction = /* this.state.data.thread.attributes.picture? 'left': 'right' */'left';
+    let direction: Direction = /* this.state.data.thread.attributes.picture ? 'left'  : 'right' */'left';
 
     const collection = thread.attributes.collection_count;
     const collectionInBtn = (collection && (collection > 999))? '999+':  collection;
@@ -110,7 +109,7 @@ export class BookDetails extends React.Component<MobileRouteProps, State> {
         </div>
       </Card>
       <Card>
-        
+        <Chapters bookId={thread.id} chapters={chapters}></Chapters>
       </Card>
     </Page>)
   }
