@@ -1,0 +1,44 @@
+$width: 28px;
+$heigh: 18px;
+$diameter: 16px;
+
+.switch {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+
+  #switch-input {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+
+  .switch-label {    
+    position: relative;
+    width: $width;
+    height: $heigh;
+    margin: 0;
+    border: 1px solid #000;
+    border-radius: $heigh/2;
+    cursor: pointer;
+  }
+  .switch-label::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: $diameter;
+    height: $diameter;
+    border-radius: $diameter;
+    background-color: #fff;
+    box-shadow: 0 0 2px ;
+    transition: all 0.3;
+  }
+}
+.switch.is-actived {
+  .switch-label::after {
+    left: 100%;
+    margin-left: -$diameter;
+  }
+}

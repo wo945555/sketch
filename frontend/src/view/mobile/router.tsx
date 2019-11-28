@@ -12,6 +12,8 @@ import { Chapter } from './home/chapter';
 import { StatusCollection } from './status/collection';
 import { CollectionList } from './collection/list';
 import { CreateQuote } from './home/createquote';
+import { BookDetails } from './book-details/book-details'
+import { Reply } from './book-details/reply'
 
 import { Tidings } from './tidings';
 interface Props {

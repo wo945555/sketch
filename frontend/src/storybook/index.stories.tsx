@@ -44,6 +44,10 @@ import { TagBasicList } from '../view/components/home/tagbasic-list';
 import { TagBasicListSelect } from '../view/components/home/tagbasiclist-select';
 import { TagBasicListFilter } from '../view/components/home/tagbasiclist-filter';
 import { RecommendList } from '../view/components/home/recommend-list';
+import { Switch } from '../view/components/common/switch';
+import { Chapters } from '../view/components/book-details/chapters';
+import { Collapse } from '../view/components/book-details/collapse';
+import { DetailPreview } from '../view/components/book-details/detail-preview';
 
 const core = new Core();
 
@@ -344,7 +348,26 @@ storiesOf('Common Components', module)
         <p> 加载中请稍后</p>
       </div>
     </Loading>,
-  );
+  ).add('Switch', () => {
+    const colorOptions:{[name:string]:TagColor} = {
+      black: 'black',
+      dark: 'dark',
+      light: 'light',
+      white: 'white',
+      primary: 'primary',
+      link: 'link',
+      info: 'info',
+      success: 'success',
+      warning: 'warning',
+      danger: 'danger',
+    };
+    return (
+    <Switch
+      activeColor={select('activeColor', colorOptions, undefined)}
+      inactiveColor={select('inactiveColor', colorOptions, undefined)}
+    >
+    </Switch>)
+  })
 
 storiesOf('Common Components/Notice Bar', module)
   .add('short message', () => <NoticeBar
