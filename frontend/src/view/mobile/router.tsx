@@ -65,6 +65,8 @@ export const MobileRoute:RouteComponentType[] = [
   { path: '/tidings', component: Tidings },
   // others
   { path: '/createquote', component: CreateQuote },
+  // book-detail
+  { path: '/book/:id', component: BookDetails },
 ];
 
 export class MobileRouter extends React.Component<Props, State> {

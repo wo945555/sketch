@@ -18,7 +18,6 @@ $diameter: 16px;
     width: $width;
     height: $heigh;
     margin: 0;
-    border: 1px solid #000;
     border-radius: $heigh/2;
     cursor: pointer;
   }
@@ -33,7 +32,7 @@ $diameter: 16px;
     border-radius: $diameter;
     background-color: #fff;
     box-shadow: 0 0 2px ;
-    transition: all 0.3;
+    transition: all 0.3s;
   }
 }
 .switch.is-actived {

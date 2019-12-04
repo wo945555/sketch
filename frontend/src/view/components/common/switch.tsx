@@ -2,15 +2,15 @@ import * as React from 'react';
 import './switch.scss';
 import { classnames } from '../../../utils/classname';
 
-type Color = 'black'|'dark'|'light'|'white'|'primary'|'link'|'info'|'success'|'warning'|'danger';
+export type Color = 'black'|'dark'|'light'|'white'|'primary'|'link'|'info'|'success'|'warning'|'danger'
+|'grey-light'|'grey-lighter';
 
 export class Switch extends React.Component <{
   // props
-  onChange?: () => void;
+  onChange?: (actived: boolean) => void;
   className?: string;
-  value?: boolean | string | number;
+  actived?: boolean;
   disabled?: boolean;
-  rounded?:boolean;
   activeColor?: Color; //打开时背景色
   inactiveColor?: Color; //关闭时背景色
 }, {
@@ -18,26 +18,41 @@ export class Switch extends React.Component <{
   actived: boolean;
 }> {
   public state = {
-    actived: true
+    actived: this.props.actived || false
   };
 
+  public handleChange = (e) => {
+    this.setState((prevState)=> ({
+      actived: !prevState.actived
+    }), () => {
+      if(this.props.onChange) {
+        this.props.onChange(this.state.actived)
+      }
+    }
+    );
+  }
   public render() {
-    const activeColor = this.props.activeColor ? 'is-' + this.props.activeColor : 'is-danger';
-    const inactiveColor = this.props.inactiveColor ? 'is-' + this.props.inactiveColor : 'is-light';
+    const { className, disabled, activeColor, inactiveColor } = this.props;
+    const activeC = activeColor ? 'has-background-' + activeColor : 'has-background-danger';
+    const inactiveC = inactiveColor ? 'has-background-' + inactiveColor : 'has-background-grey-lighter';
+    const disableC = 'has-background-grey-light'
     return (
       <div className={classnames('switch', 
         {'is-actived': this.state.actived},
-        this.props.className
-      )}>
+        className
+        )}
+      >
         <input
           id="switch-input"
           type="checkbox"
-          onChange={this.props.onChange}
+          disabled={disabled}
+          onChange={this.handleChange.bind(this)}
         ></input>
         <label htmlFor="switch-input" className={classnames('switch-label',
-            {[activeColor]: !this.props.disabled && this.state.actived},
-            {[inactiveColor]: !this.props.disabled && !this.state.actived}
-          )}>
+          {[disableC]: disabled},
+          {[activeC]: !disabled && this.state.actived},
+          {[inactiveC]: !disabled && !this.state.actived}
+        )}>
         </label>
       </div>
     )

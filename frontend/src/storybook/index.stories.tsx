@@ -44,7 +44,7 @@ import { TagBasicList } from '../view/components/home/tagbasic-list';
 import { TagBasicListSelect } from '../view/components/home/tagbasiclist-select';
 import { TagBasicListFilter } from '../view/components/home/tagbasiclist-filter';
 import { RecommendList } from '../view/components/home/recommend-list';
-import { Switch } from '../view/components/common/switch';
+import { Switch, Color } from '../view/components/common/switch';
 import { Chapters } from '../view/components/book-details/chapters';
 import { Collapse } from '../view/components/book-details/collapse';
 import { DetailPreview } from '../view/components/book-details/detail-preview';
@@ -349,7 +349,7 @@ storiesOf('Common Components', module)
       </div>
     </Loading>,
   ).add('Switch', () => {
-    const colorOptions:{[name:string]:TagColor} = {
+    const colorOptions:{[name:string]:Color} = {
       black: 'black',
       dark: 'dark',
       light: 'light',
@@ -360,11 +360,15 @@ storiesOf('Common Components', module)
       success: 'success',
       warning: 'warning',
       danger: 'danger',
+      greyLight: 'grey-light',
+      greyLighter: 'grey-lighter'
     };
     return (
     <Switch
+      actived={boolean('actived', true)}
       activeColor={select('activeColor', colorOptions, undefined)}
       inactiveColor={select('inactiveColor', colorOptions, undefined)}
+      disabled={boolean('disabled', false)}
     >
     </Switch>)
   })
