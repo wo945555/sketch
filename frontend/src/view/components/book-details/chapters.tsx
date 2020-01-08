@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { ResData } from '../../../config/api';
 import { classnames } from '../../../utils/classname';
-
+import './chapters.scss';
 interface Props {
   bookId:number;
   chapters: ResData.Post[];

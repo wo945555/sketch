@@ -1,0 +1,33 @@
+$fontSize: 0.8em;
+
+#reply {
+  font-size: $fontSize;
+
+  .right {
+    float: right;
+  }
+  .clearfix::after {
+    clear: both;
+    content: "";
+    display: block;
+    height: 0;
+    visibility: hidden;
+  }
+
+  .reply-header {
+    .reply-title {
+      font-size: $fontSize*1.7;
+      color: #1b1b1b;
+    }
+    a {
+      color: #363636;
+    }
+  }
+
+  .reply-content {
+    .textarea {
+      border: 0px;
+      font-size: $fontSize*1.3;
+    }
+  }
+}
