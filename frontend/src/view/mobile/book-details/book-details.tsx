@@ -24,9 +24,9 @@ export class BookDetails extends React.Component<MobileRouteProps, State> {
         attributes:{id:1,
           user_id:1,
           channel_id:1,
-          title:'文字',
-          brief:'文字',
-          body:'文字',
+          title:'title',
+          brief:'brief',
+          body:'body',
           is_anonymous:true,
           majia:null,
           creation_ip:'0,0,0,0',
@@ -63,7 +63,7 @@ export class BookDetails extends React.Component<MobileRouteProps, State> {
   public render() {
     const { thread, chapters } = this.state.data;
     //书籍图片是否存在时右侧简介的排版
-    let direction: Direction = /* this.state.data.thread.attributes.picture ? 'left'  : 'right' */'left';
+    let direction: Direction = /* thread.attributes.picture ? 'left'  : 'right' */'left';
 
     const collection = thread.attributes.collection_count;
     const collectionInBtn = (collection && (collection > 999))? '999+':  collection;
@@ -76,7 +76,10 @@ export class BookDetails extends React.Component<MobileRouteProps, State> {
           { thread.attributes.picture && (<div className="columns">
             <img className="image" src={thread.attributes.picture} alt="cover"></img>
           </div>) } */}
-          <div className="columns">
+          <div className="columns" style={{
+            marginTop: "10px",
+            marginLeft: "10px"
+            }}>
             <DetailPreview thread={thread} direction={direction}></DetailPreview>
           </div>)           
         </header>
