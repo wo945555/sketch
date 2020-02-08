@@ -68,9 +68,10 @@ class Handler extends ExceptionHandler
             switch ($dbCode)
             {
                 case 23000://db duplicate rows
-                return response()->error(config('error.409'), 409);
+                return response()->error(config('error.408'), 408);
                 break;
                 default:
+                //echo 'Connection failed: ' . $exception->getMessage();
                 $errorMessage = 'database invalid';
             }
             return response()->error($errorMessage, 595);

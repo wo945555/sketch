@@ -197,12 +197,22 @@ export namespace ResData {
     attributes:{
       poster_id:number;
       receiver_id:number;
-      message_body:string;
+      body_id:number;
       created_at:Timestamp;
       seen:boolean;
     };
-    poster:User;
-    receiver:User;
+    poster?:User;
+    message_body?:MessageBody;
+    receiver?:User;
+  }
+
+  export interface MessageBody {
+    type:'message_body';
+    id:number;
+    attributes:{
+      body:string;
+      bulk:boolean;
+    };
   }
 
   export function allocMessage () : Message {
@@ -212,12 +222,24 @@ export namespace ResData {
       attributes: {
         poster_id: 0,
         receiver_id: 0,
-        message_body: '',
+        body_id: 0,
         created_at: '',
         seen: false,
       },
       poster: allocUser(),
       receiver: allocUser(),
+      message_body: allocMessageBody(),
+    };
+  }
+
+  export function allocMessageBody () : MessageBody {
+    return {
+      type: 'message_body',
+      id: 0,
+      attributes: {
+          body: '',
+          bulk: false,
+      },
     };
   }
 
@@ -226,10 +248,12 @@ export namespace ResData {
     id:number;
     attributes:{
       user_id:number;
-      notice_body:string;
+      title:string;
+      body:string;
       created_at:Timestamp;
+      edited_at:Timestamp;
     };
-    user:User;
+    author?:User;
   }
   export function allocPublicNotice () : PublicNotice {
     return {
@@ -237,10 +261,12 @@ export namespace ResData {
       id: 0,
       attributes: {
         user_id: 0,
-        notice_body: '',
+        title: '',
+        body: '',
         created_at: '',
+        edited_at: '',
       },
-      user: allocUser(),
+      author: allocUser(),
     };
   }
 
@@ -251,6 +277,10 @@ export namespace ResData {
       name:string;
       description:string;
       user_count:number;
+      style_id:number;
+      type:string;
+      level:number;
+      style_type:string;
     };
   }
   export function allocTitle () : Title {
@@ -261,6 +291,10 @@ export namespace ResData {
         name: '',
         description: '',
         user_count: 0,
+        style_id:0,
+        type:'',
+        level:0,
+        style_type:'',
       },
     };
   }
@@ -282,7 +316,19 @@ export namespace ResData {
       user_id:number;
       thread_id:number;
       keep_updated:boolean;
-      is_updated:boolean;
+      updated:boolean;
+      group_id:number;
+      last_read_post_id:number;
+    };
+  }
+  export interface CollectionGroup {
+    type:'collection_group';
+    id:number;
+    attributes:{
+      user_id:number;
+      name:string;
+      update_count:number;
+      order_by:number;
     };
   }
 }
@@ -316,9 +362,9 @@ export namespace ReqData {
 
   export namespace Message {
     export enum style {
-      sendbox,
-      receiveBox,
-      dialogue,
+      sendbox = 'sendbox',
+      receiveBox = 'receivebox',
+      dialogue = 'dialogue',
     }
 
     export enum ordered {
@@ -432,6 +478,9 @@ export namespace API {
       paginate:ResData.ThreadPaginate,
       style:ReqData.Message.style,
     };
+    '/publicnotice':{
+      public_notices:ResData.PublicNotice[],
+    };
     '/config/titles':{
       titles:ResData.Title[],
     };
@@ -461,7 +510,6 @@ export namespace API {
     '/book/$0':{
       thread:ResData.Thread,
       chapters:ResData.Post[],
-      volumns:ResData.Volumn[],
       paginate:ResData.ThreadPaginate,
       most_upvoted:ResData.Post,
       top_review:null|ResData.Post,
@@ -483,7 +531,7 @@ export namespace API {
     '/groupmessage':{
       messages:ResData.Message[],
     };
-    '/publicnotce':{
+    '/publicnotice':{
       public_notice:ResData.PublicNotice,
     };
     '/vote':ResData.Vote;
