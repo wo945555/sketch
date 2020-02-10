@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { validEmail } from '../../../utils/validates';
 import { Card } from '../common/card';
 import { NoticeBar } from '../common/notice-bar';
-
+// FIXME: internal server error will be treated as incorrect password 
 interface Props {
   login:(email:string, pwd:string) => Promise<boolean>;
 }
@@ -63,8 +63,9 @@ export class Login extends React.Component<Props, State> {
           } else if (!validEmail(this.state.email)) {
             this.setState({errMsg: '邮箱格式不符'});
           } else {
-            const success = await this.props.login(this.state.email, this.state.password);
-            if (!success) {
+            try{
+              await this.props.login(this.state.email, this.state.password);
+            } catch (e){
               this.setState({errMsg: '用户名或密码错误。'});
             }
           }

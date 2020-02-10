@@ -5,8 +5,6 @@
 node_modules
 yarn-error.log
 package-lock.json
-vendor
-
 
 # backend
 backend/public/hot
@@ -21,7 +19,7 @@ backend/npm-debug.log
 backend/.env
 backend/.phpunit.result.cache
 
-
 # frontend
 frontend/dist
 frontend/yarn.lock
+frontend/dist-storybook

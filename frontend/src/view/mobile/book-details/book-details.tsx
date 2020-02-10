@@ -53,7 +53,6 @@ export class BookDetails extends React.Component<MobileRouteProps, State> {
         },
       },
       chapters: [],
-      volumns: [],
       paginate: ResData.allocThreadPaginate(),
       most_upvoted: ResData.allocPost(),
       top_review: null,
