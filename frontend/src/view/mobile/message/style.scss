@@ -5,6 +5,13 @@
 
 .message-list {
   margin-top: var(--top-margin-1);
+  .item-first-line .right{
+    color: var(--color-font-light);
+    font-size: var(--font-size-small);
+  }
+  .item-brief {
+    color: var(--color-font-light);
+  }
 }
 
 .blank-block {

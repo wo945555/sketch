@@ -12,6 +12,7 @@ import { mockReplyNotifications } from './mock-data';
 import { MarkAllAsRead } from './mark-all-as-read';
 import { Mark } from '../../components/common/mark';
 import { Menu, MenuItem } from '../../components/common/menu';
+import { RoutePath } from '../../../config/route-path';
 
 interface State {
 
@@ -19,6 +20,7 @@ interface State {
 
 export class Message extends React.Component<MobileRouteProps, State> {
   public render () {
+    const history = this.props.core.history;
     return (<Page
         top={<NavBar goBack={this.props.core.route.back} onMenuClick={() => console.log('open setting')}>
           <MessageMenu/>
@@ -27,7 +29,9 @@ export class Message extends React.Component<MobileRouteProps, State> {
         <MarkAllAsRead />
 
         <Menu>
-          <MenuItem icon="far fa-thumbs-up icon" title="点赞提醒" badgeNum={1000}/>
+          <MenuItem icon="far fa-thumbs-up icon" title="点赞提醒"
+            onClick={() => history.push(RoutePath.votes)}
+            badgeNum={1000}/>
           <MenuItem icon="fas fa-gift icon" title="打赏提醒" badgeNum={1}/>
         </Menu>
 
