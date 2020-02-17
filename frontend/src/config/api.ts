@@ -510,6 +510,7 @@ export namespace API {
       titles:ResData.Title[],
       paginate:ResData.ThreadPaginate,
     };
+    '/user/$0/vote_received':ResData.Vote[];
     '/vote':{
       votes:ResData.Vote[],
       paginate:ResData.ThreadPaginate,

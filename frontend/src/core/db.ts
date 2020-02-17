@@ -294,6 +294,7 @@ export class DB {
       },
     });
   }
+  // get votes for a votable item
   public getVotes (type:ReqData.Vote.type, id:number, attitude?:ReqData.Vote.attitude) {
     return this._get('/vote', {
       query: {
@@ -301,6 +302,12 @@ export class DB {
         votable_id: id,
         attitude,
       },
+    });
+  }
+  // get votes received by a user
+  public getUserVotes (userId:number) {
+    return this._get('/user/$0/vote_received', {
+      pathInsert: [userId],
     });
   }
   public deleteVote (voteId:number) {
