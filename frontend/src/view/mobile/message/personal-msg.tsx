@@ -29,15 +29,22 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
     },
     publicNoticeData:{
       public_notices: [],
-    }
+    },
   };
 
   public async componentDidMount() {
+    const { getMessages, getPublicNotice } = this.props.core.db;
     const query = {withStyle: ReqData.Message.style.receiveBox};
-    const fetchMsgData = this.props.core.db.getMessages(query).catch((e) => { console.log(e);
-                                                                              return this.state.messageData; });
-    const fetchPublicNotice = this.props.core.db.getPublicNotice().catch((e) => { console.log(e);
-                                                                                  return this.state.publicNoticeData; });
+    const fetchMsgData = getMessages(query)
+      .catch((e) => {
+        console.log(e);
+        return this.state.messageData;
+      });
+    const fetchPublicNotice = getPublicNotice()
+      .catch((e) => {
+        console.log(e);
+        return this.state.publicNoticeData;
+      });
     const [messageData, publicNoticeData] = await Promise.all([fetchMsgData, fetchPublicNotice]);
     this.setState({messageData, publicNoticeData});
     console.log(messageData, publicNoticeData);
