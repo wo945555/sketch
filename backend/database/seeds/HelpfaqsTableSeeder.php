@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\Helpfaq;
 
-class QuizzesTableSeeder extends Seeder
+class HelpfaqsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,6 +12,7 @@ class QuizzesTableSeeder extends Seeder
      */
     public function run()
     {
-        $users = factory(\App\Models\Quiz::class)->times(30)->create();
+        $faqs = factory(Helpfaq::class)->times(10)->create();
+        
     }
 }
