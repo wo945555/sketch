@@ -23,6 +23,9 @@ class UserPreferenceResource extends JsonResource
                 'no_message_reminders' => (boolean)$this->no_message_reminders,
                 'no_reply_reminders' => (boolean)$this->no_reply_reminders,
                 'no_stranger_msg' => (boolean)$this->no_stranger_msg,
+                'default_list_id' => (int)$this->default_list_id,
+                'default_box_id' => (int)$this->default_box_id,
+                'default_collection_group_id' => (int)$this->default_collection_group_id,
             ],
         ];
     }

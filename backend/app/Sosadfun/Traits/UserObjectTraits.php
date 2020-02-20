@@ -9,9 +9,9 @@ use App\Models\Post;
 
 trait UserObjectTraits{
 
-    public function select_user_comments($include_anonymous, $include_bianyuan, $id, $request)
+    public function select_user_comments($find_all, $id, $request)
     {
-        if ($include_anonymous && $include_bianyuan) {
+        if ($find_all) {
             $posts = Post::join('threads', 'threads.id', '=', 'posts.thread_id')
             ->withUser($id)
             ->where('threads.deleted_at', '=', null)
@@ -21,10 +21,7 @@ trait UserObjectTraits{
             ->paginate(config('preference.posts_per_page'));
         } else {
             $queryid = 'UserComment.'
-            .url('/')
             .$id
-            .'include_bianyuan'.$include_anonymous
-            .'include_anonymous'.$include_bianyuan
             .(is_numeric($request->page)? 'P'.$request->page:'P1');
 
             $posts = Cache::remember($queryid, 10, function () use($request, $id) {
@@ -46,33 +43,24 @@ trait UserObjectTraits{
         return $posts;
     }
 
-    public function select_user_threads($include_anonymous, $include_unpublic, $include_bianyuan, $is_book, $id, $request) {
+    public function select_user_threads($find_all, $is_book, $id, $request) {
 
-        if ($include_anonymous && $include_unpublic) {
+        if ($find_all) {
             $query = Thread::with('tags','author','last_post')
             ->withUser($id);
 
             $data = $this->query_filter($query, $is_book);
         } else {
             $queryid = 'User'.($is_book ? 'Book.' : 'Thread.')
-            .url('/')
             .$id
-            .'include_anonymous'.$include_anonymous
-            .'$include_unpublic'.$include_unpublic
-            .'include_bianyuan'.$include_bianyuan
             .(is_numeric($request->page)? 'P'.$request->page:'P1');
-            // TODO 可以适当简化query id
 
-            $data = Cache::remember($queryid, 10, function () use($include_bianyuan, $is_book, $request, $id) {
+            $data = Cache::remember($queryid, 10, function () use($is_book, $request, $id) {
                 $query = Thread::with('tags','author','last_post')
                 ->withUser($id)
                 ->isPublic()
                 ->inPublicChannel()
                 ->withAnonymous('none_anonymous_only');
-
-                if (!$include_bianyuan) {
-                    $query->withBianyuan();
-                }
 
                 $query = $this->query_filter($query, $is_book)
                 ->appends($request->only('page'));
