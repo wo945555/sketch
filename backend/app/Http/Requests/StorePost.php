@@ -33,6 +33,7 @@ class StorePost extends FormRequest
             'body' => 'required|string|min:10|max:20000',
             'reply_to_id' => 'numeric',
             'reply_to_brief' => 'string|nullable|max:30',
+            'reply_to_position' => 'numeric',
             'majia' => 'string|nullable|max:10',
             'title' => 'string|nullable|max:30',
             'brief' => 'string|nullable|max:50',

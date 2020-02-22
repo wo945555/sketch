@@ -42,7 +42,6 @@ class ReviewTest extends TestCase
             'rating' => 3,
             'type' => 'review',
         ];
-        $data['body'] = StringProcess::trimSpaces($data['body']);
         $response = $this->post('api/thread/'.$list->id.'/post', $data)
         ->assertStatus(200)
         ->assertJson([
@@ -87,7 +86,6 @@ class ReviewTest extends TestCase
             'rating' => 3,
             'type' => 'review',
         ];
-        $data['body'] = StringProcess::trimSpaces($data['body']);
         $content = $response->decodeResponseJson();
         $response = $this->patch('api/post/'.$content['data']['id'], $data)
         ->assertStatus(200)

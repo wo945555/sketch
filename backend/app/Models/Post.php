@@ -42,6 +42,11 @@ class Post extends Model
         return $this->belongsTo(Thread::class);
     }
 
+    public function reply_positions()
+    {
+        return $this->belongsTo(PostReplyPosition::class);
+    }
+
     public function simpleThread()
     {
         return $this->belongsTo(Thread::class, 'thread_id')->select('id','channel_id','title','brief','is_anonymous');
@@ -414,6 +419,24 @@ class Post extends Model
         ->orderBy('created_at','desc')
         ->take(10)
         ->get();
+    }
+
+    public function increment_reply_position($position=0)
+    {
+        if($position>0&&is_numeric($position)){
+            $reply_position_record = PostReplyPosition::where('post_id',$this->id)->where('position',$position)->first();
+            if(!$reply_position_record){
+                PostReplyPosition::create([
+                    'post_id' => $this->id,
+                    'position' => $position,
+                    'reply_count' => 1,
+                ]);
+            }else{
+                $reply_position_record->increment('reply_count');
+            }
+        }
+        return;
+
     }
 
 }

@@ -17,9 +17,9 @@ class CreateDownloadsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id')->default(0)->index();
             $table->unsignedInteger('thread_id')->default(0)->index();
-            $table->string('format',10)->nullable()->index();
-            $table->dateTime('created_at')->nullable()->index();
-            $table->dateTime('updated_at')->nullable()->index();
+            $table->string('format',10)->nullable();
+            $table->dateTime('created_at')->nullable();
+            $table->dateTime('updated_at')->nullable();
 
         });
     }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateHomeworkPurchasesTable extends Migration
+class CreatePostReplyPositionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateHomeworkPurchasesTable extends Migration
      */
     public function up()
     {
-        Schema::create('homework_purchases', function (Blueprint $table) {
+        Schema::create('post_reply_counts', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('homework_id')->default(0)->index();
-            $table->unsignedInteger('user_id')->default(0)->index();
-            $table->dateTime('created_at')->nullable()();
+            $table->unsignedInteger('post_id');
+            $table->integer('position')->default(0);
+            $table->unsignedInteger('reply_count')->default(0);
+            $table->unique(['post_id','position']);
         });
     }
 
@@ -28,6 +29,6 @@ class CreateHomeworkPurchasesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('homework_purchases');
+        Schema::dropIfExists('post_reply_counts');
     }
 }

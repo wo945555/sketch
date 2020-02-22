@@ -10,7 +10,7 @@ trait GenerateStatusDataTraits{
     use StatusObjectTraits;
     public function generateStatusData()
     {
-        $data['body'] = StringProcess::trimSpaces($this->body);
+        $data['body'] = StringProcess::check_html_tag($this->body);
         if ($this->isDuplicateStatus($data)){
             abort(409,'请求已登记，请耐心等待缓存更新，无需重复提交相同数据');
         }

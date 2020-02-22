@@ -16,14 +16,14 @@ class CreateRewardTokensTable extends Migration
         Schema::create('reward_tokens', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id')->default(0)->index();
-            $table->string('token', 50)->nullable();
-            $table->unsignedInteger('redeem_count')->default(0)->index();
-            $table->unsignedInteger('redeem_limit')->default(0)->index();
-            $table->dateTime('created_at')->nullable()->index();
-            $table->dateTime('deleted_at')->nullable()->index();
-            $table->string('type', 20)->nullable()->index();
-            $table->boolean('is_public')->default(false)->index();
-            $table->dateTime('redeem_until')->nullable()->index();
+            $table->string('token', 50)->nullable()->index();
+            $table->unsignedInteger('redeem_count')->default(0);
+            $table->unsignedInteger('redeem_limit')->default(0);
+            $table->dateTime('created_at')->nullable();
+            $table->dateTime('deleted_at')->nullable();
+            $table->string('type', 20)->nullable();
+            $table->boolean('is_public')->default(false);
+            $table->dateTime('redeem_until')->nullable();
         });
     }
 

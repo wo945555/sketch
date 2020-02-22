@@ -14,7 +14,7 @@ trait GeneratePostDataTraits{
         $data = $this->only('body','brief','title','type');
         if(in_array($this->type, config('constants.owner_component_types'))&&$thread->user_id!=auth('api')->id()){abort(403);}
         if(!in_array($this->type,config('constants.all_post_types'))){abort(422,'post_type not allowed');}
-        $data['body'] = StringProcess::trimSpaces($data['body']);
+        $data['body'] = StringProcess::check_html_tag($data['body']);
         if($this->isDuplicatePost($data)){
             abort(409,'请求已登记，请耐心等待缓存更新，无需重复提交相同数据');
         }
@@ -56,8 +56,8 @@ trait GeneratePostDataTraits{
             return;
         }
         $info_data = $this->only('warning','annotation','rating','reviewee_id','reviewee_type');
-        if(array_key_exists('annotation',$info_data)){$info_data['annotation']=StringProcess::trimSpaces($info_data['annotation']);}
-        if(array_key_exists('warning',$info_data)){$info_data['warning']=StringProcess::trimSpaces($info_data['warning']);}
+        if(array_key_exists('annotation',$info_data)){$info_data['annotation']=StringProcess::check_html_tag($info_data['annotation']);}
+        if(array_key_exists('warning',$info_data)){$info_data['warning']=StringProcess::check_html_tag($info_data['warning']);}
 
         $info_data['abstract']=StringProcess::trimtext($post_data['body'],150);
 
@@ -89,7 +89,8 @@ trait GeneratePostDataTraits{
             if($reply){
                 $data['reply_to_id'] = $reply->id;
                 $data['reply_to_brief'] = $this->reply_to_brief??$reply->brief;
-                $data['is_bianyuan']=$data['is_bianyuan']||$reply->is_bianyuan;
+                $data['reply_to_position'] = $this->reply_to_position??0;
+                $data['is_bianyuan']=$this->is_bianyuan||$reply->is_bianyuan;
                 $data['in_component_id'] = $reply->in_component_id>0?$reply->in_component_id:$reply->id;
                 if(($reply->type==='post'&&$data['char_count']<50)||$reply->type==='comment'){
                     $data['type'] = 'comment';
@@ -108,7 +109,7 @@ trait GeneratePostDataTraits{
     public function generateUpdatePostData($post, $thread)
     {
         $data = $this->only('body','brief','title');
-        $data['body'] = StringProcess::trimSpaces($data['body']);
+        $data['body'] = StringProcess::check_html_tag($data['body']);
         if(!$this->brief){$data['brief']=StringProcess::trimtext($data['body'], 45);}
         $data['char_count'] = mb_strlen($data['body']);
         $data['use_markdown']=$this->use_markdown ? true:false;
@@ -142,9 +143,9 @@ trait GeneratePostDataTraits{
             return;
         }
         $info_data = $this->only('warning','annotation','rating','reviewee_id','reviewee_type');
-        
-        if(array_key_exists('annotation',$info_data)){$info_data['annotation']=StringProcess::trimSpaces($info_data['annotation']);}
-        if(array_key_exists('warning',$info_data)){$info_data['warning']=StringProcess::trimSpaces($info_data['warning']);}
+
+        if(array_key_exists('annotation',$info_data)){$info_data['annotation']=StringProcess::check_html_tag($info_data['annotation']);}
+        if(array_key_exists('warning',$info_data)){$info_data['warning']=StringProcess::check_html_tag($info_data['warning']);}
 
         $info_data['abstract']=StringProcess::trimtext($post_data['body'],150);
 

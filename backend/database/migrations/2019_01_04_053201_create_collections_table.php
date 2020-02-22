@@ -20,7 +20,7 @@ class CreateCollectionsTable extends Migration
             $table->boolean('keep_updated')->default(true);//是否发送更新提示
             $table->boolean('updated')->default(false);//是否存在新消息/更新的提示
             $table->unsignedInteger('group_id')->default(0)->index();//从属的收藏页
-            $table->unsignedInteger('last_read_post_id')->default(0)->index();//最后阅读的postid
+            $table->unsignedInteger('last_read_post_id')->default(0);//最后阅读的postid
             $table->unique(['user_id','thread_id']);
         });
     }
