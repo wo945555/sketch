@@ -45,7 +45,7 @@ class CreateThreadsTable extends Migration
             $table->integer('download_count')->default(0);//被下载次数
             $table->integer('jifen')->default(0)->index();//总积分
             $table->integer('weighted_jifen')->default(0);//被字数模块平衡后的积分
-            $table->integer('total_char')->default(0);//components总字数
+            $table->integer('total_char')->default(0)->index();//components总字数
 
             $table->dateTime('responded_at')->nullable();//最后被回应时间
             $table->unsignedInteger('last_post_id')->default(0);//最后回帖是谁

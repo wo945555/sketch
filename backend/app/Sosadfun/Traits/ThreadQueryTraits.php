@@ -75,13 +75,13 @@ trait ThreadQueryTraits{
         return Cache::remember('ThreadQ.'.$query_id, 30, function () use($request_data) {
             return Thread::brief()
             ->with('author', 'tags', 'last_post')
-            ->inChannel(array_key_exists('inChannel',$request_data)? $request_data['inChannel']:'')
-            ->isPublic(array_key_exists('isPublic',$request_data)? $request_data['isPublic']:'')
-            ->inPublicChannel(array_key_exists('inPublicChannel',$request_data)? $request_data['inPublicChannel']:'')
-            ->withType(array_key_exists('withType',$request_data)? $request_data['withType']:'')
-            ->withBianyuan(array_key_exists('withBianyuan',$request_data)? $request_data['withBianyuan']:'') //
             ->withTag(array_key_exists('withTag',$request_data)? $request_data['withTag']:'')
             ->excludeTag(array_key_exists('excludeTag',$request_data)? $request_data['excludeTag']:'')
+            ->inChannel(array_key_exists('inChannel',$request_data)? $request_data['inChannel']:'')
+            ->inPublicChannel(array_key_exists('inPublicChannel',$request_data)? $request_data['inPublicChannel']:'')
+            ->withType(array_key_exists('withType',$request_data)? $request_data['withType']:'')
+            ->isPublic(array_key_exists('isPublic',$request_data)? $request_data['isPublic']:'')
+            ->withBianyuan(array_key_exists('withBianyuan',$request_data)? $request_data['withBianyuan']:'') //
             ->ordered(array_key_exists('ordered',$request_data)? $request_data['ordered']:'latest_add_component')
             ->paginate(config('preference.threads_per_page'))
             ->appends($request_data);
@@ -95,12 +95,12 @@ trait ThreadQueryTraits{
         return Cache::remember('BookQ.'.$query_id, $time, function () use($request_data) {
             return $threads = Thread::brief()
             ->with('author', 'tags', 'last_component')
-            ->isPublic()
+            ->withTag(array_key_exists('withTag',$request_data)? $request_data['withTag']:'')
+            ->excludeTag(array_key_exists('excludeTag',$request_data)? $request_data['excludeTag']:'')
             ->withType('book')
             ->inChannel(array_key_exists('inChannel',$request_data)? $request_data['inChannel']:'')
             ->withBianyuan(array_key_exists('withBianyuan',$request_data)? $request_data['withBianyuan']:'') //
-            ->withTag(array_key_exists('withTag',$request_data)? $request_data['withTag']:'')
-            ->excludeTag(array_key_exists('excludeTag',$request_data)? $request_data['excludeTag']:'')
+            ->isPublic()
             ->ordered(array_key_exists('ordered',$request_data)? $request_data['ordered']:'latest_add_component')
             ->paginate(config('preference.threads_per_page'))
             ->appends($request_data);
@@ -174,12 +174,12 @@ trait ThreadQueryTraits{
         return Cache::remember('ThreadPosts.'.$thread->id.$query_id, $time, function () use($thread, $request_data) {
             $posts =  \App\Models\Post::where('thread_id',$thread->id)
             ->with('author.title','last_reply')
+            ->withReplyTo(array_key_exists('withReplyTo',$request_data)? $request_data['withReplyTo']:'')//可以只看用于回复某个回帖的
+            ->inComponent(array_key_exists('inComponent',$request_data)? $request_data['inComponent']:'')//可以只看从这个贴发散的全部讨论
             ->withType(array_key_exists('withType',$request_data)? $request_data['withType']:'')//可以筛选显示比如只看post，只看comment，只看。。。
             ->withComponent(array_key_exists('withComponent',$request_data)? $request_data['withComponent']:'')//可以选择是只看component，还是不看component只看post，还是全都看
             ->withFolded(array_key_exists('withFolded',$request_data)? $request_data['withFolded']:'')//是否显示已折叠内容
             ->userOnly(array_key_exists('userOnly',$request_data)? $request_data['userOnly']:'')//可以只看某用户（这样选的时候，默认必须同时属于非匿名）
-            ->withReplyTo(array_key_exists('withReplyTo',$request_data)? $request_data['withReplyTo']:'')//可以只看用于回复某个回帖的
-            ->inComponent(array_key_exists('inComponent',$request_data)? $request_data['inComponent']:'')//可以只看从这个贴发散的全部讨论
             ->ordered(array_key_exists('ordered',$request_data)? $request_data['ordered']:'')//排序方式
             ->paginate(config('preference.posts_per_page'))
             ->appends($request_data);

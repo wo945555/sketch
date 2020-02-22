@@ -15,7 +15,7 @@ class CreatePostsTable extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');//post_id
-            $table->string('type',10)->nullable();//'chapter', 'question', 'answer', 'request', 'post', 'comment', 'review', 'poll'...
+            $table->string('type',10)->nullable()->index();//'chapter', 'question', 'answer', 'request', 'post', 'comment', 'review', 'poll'...
             $table->unsignedInteger('user_id')->default(0)->index();//作者id
             $table->unsignedInteger('thread_id')->default(0)->index();//讨论帖id
 
@@ -44,7 +44,7 @@ class CreatePostsTable extends Migration
 
             $table->integer('reply_count')->default(0);//得到的回复数
             $table->integer('view_count')->default(0);//得到的单独点击数
-            $table->integer('char_count')->default(0);//总字数
+            $table->integer('char_count')->default(0)->index();//总字数
 
             $table->dateTime('responded_at')->nullable();//最后被回应时间
             $table->dateTime('deleted_at')->nullable();// 软删除必备
