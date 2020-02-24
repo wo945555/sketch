@@ -25,12 +25,8 @@ class FAQController extends Controller
 
     public function index()
     {
-        $faqs = $this->find_faqs();
-        foreach($faqs as $key => $value)
-        {
-            $faqs[$key] = FAQResource::collection($faqs[$key]);
-        }
-        return response()->success($faqs);
+        $faqs = $this->all_faqs();
+        return response()->success(FAQResource::collection($faqs));
     }
 
     public function store(Request $request)
