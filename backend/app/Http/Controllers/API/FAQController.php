@@ -10,6 +10,7 @@ use Cache;
 use DB;
 use App\Models\Helpfaq;
 use App\Http\Resources\FAQResource;
+use Illuminate\Validation\Rule;
 
 use App\Sosadfun\Traits\FAQObjectTraits;
 
@@ -26,14 +27,18 @@ class FAQController extends Controller
     public function index()
     {
         $faqs = $this->all_faqs();
-        return response()->success(FAQResource::collection($faqs));
+        return response()->success([
+            'faqs' => FAQResource::collection($faqs),
+            'faq_keys' => config('faq')
+            ]);
     }
 
     public function store(Request $request)
     {
         if (!auth('api')->user()->isAdmin()) {abort(403,'管理员才可以创建FAQ');}
+        $faq_keys = $this->get_faq_keys();
         $validatedData = $request->validate([
-            'key' => 'required|string|min:1|max:6',
+            'key' => ['required', Rule::in($faq_keys)],
             'question' => 'required|string|min:1|max:180',
             'answer'=>'required|string|min:1|max:2000',
         ]);
