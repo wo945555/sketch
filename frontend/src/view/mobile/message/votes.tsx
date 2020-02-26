@@ -11,63 +11,6 @@ interface State {
   votes:API.Get['/user/$0/vote_received'];
 }
 
-/*
-// for testing, clean up later
-const mockVotes = {
-  'code': 200,
-  'data': [
-      {
-          'type': 'vote',
-          'id': 3,
-          'attributes': {
-              'votable_type': 'quote',
-              'votable_id': 17,
-              'attitude': '',
-              'created_at': '2020-02-18 04:43:13',
-          },
-          'author': [],
-          'receiver': [],
-      },
-      {
-          'type': 'vote',
-          'id': 2,
-          'attributes': {
-              'votable_type': 'quote',
-              'votable_id': 17,
-              'attitude': '',
-              'created_at': '2020-02-18 04:42:48',
-          },
-          'author': [],
-          'receiver': [],
-      },
-      {
-          'type': 'vote',
-          'id': 1,
-          'attributes': {
-              'votable_type': 'quote',
-              'votable_id': 17,
-              'attitude': '',
-              'created_at': '2020-02-18 04:41:38',
-          },
-          'author': [],
-          'receiver': [],
-      },
-      {
-        'type': 'vote',
-        'id': 2,
-        'attributes': {
-            'votable_type': 'quote',
-            'votable_id': 17,
-            'attitude': '',
-            'created_at': '2020-02-18 04:42:48',
-        },
-        'author': [],
-        'receiver': [],
-    }
-  ],
-};
-*/
-
 const msgContent = '内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中';
 
 // TODO: author, content, attitude are waiting for API fix: https://trello.com/c/bxlkk1Eb/13-api-show-user-vote%E6%98%BE%E7%A4%BAauthor%E4%B8%BA%E7%A9%BA
@@ -87,6 +30,7 @@ export class Votes extends React.Component<MobileRouteProps, State> {
 
   public render () {
     const { votes } = this.state;
+    /* TODO: navbar setting, waiting for UI mockup */
     return (<Page
         top={<NavBar goBack={this.props.core.route.back} onMenuClick={() => console.log('open setting')}>
           点赞提醒

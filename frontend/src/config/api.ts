@@ -345,9 +345,9 @@ export namespace ResData {
     type:'vote';
     id:number;
     attributes:{
-      votable_type:string;
+      votable_type:ReqData.Vote.type;
       votable_id:number;
-      attitude:string;
+      attitude:ReqData.Vote.attitude;
       created_at:Timestamp;
     };
     author:User;
