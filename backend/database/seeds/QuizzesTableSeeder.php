@@ -11,6 +11,6 @@ class QuizzesTableSeeder extends Seeder
      */
     public function run()
     {
-        $users = factory(\App\Models\Quiz::class)->times(30)->create();
+        $users = factory(\App\Models\Quiz::class)->times(500)->create();
     }
 }
