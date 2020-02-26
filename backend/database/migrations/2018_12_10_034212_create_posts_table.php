@@ -15,7 +15,7 @@ class CreatePostsTable extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');//post_id
-            $table->string('type',10)->nullable()->index();//'chapter', 'question', 'answer', 'request', 'post', 'comment', 'review', 'poll'...
+            $table->string('type',10)->nullable();//'chapter', 'question', 'answer', 'request', 'post', 'comment', 'review', 'poll'...
             $table->unsignedInteger('user_id')->default(0)->index();//作者id
             $table->unsignedInteger('thread_id')->default(0)->index();//讨论帖id
 
@@ -29,7 +29,7 @@ class CreatePostsTable extends Migration
             $table->dateTime('edited_at')->nullable();//最后编辑时间
 
             $table->unsignedInteger('in_component_id')->default(0)->index();//从属单元id
-            $table->unsignedInteger('reply_to_id')->default(0)->index();//如果是回帖，给出它回复对象的id
+            $table->unsignedInteger('reply_to_id')->default(0);//如果是回帖，给出它回复对象的id
             $table->string('reply_to_brief')->nullable();//如果是回帖，给出它回复对象的brief
             $table->integer('reply_to_position')->default(0);//回复对象句子在原来评论中的位置
             $table->unsignedInteger('last_reply_id')->default(0)->index();//最新回复id
@@ -44,14 +44,19 @@ class CreatePostsTable extends Migration
 
             $table->integer('reply_count')->default(0);//得到的回复数
             $table->integer('view_count')->default(0);//得到的单独点击数
-            $table->integer('char_count')->default(0)->index();//总字数
+            $table->integer('char_count')->default(0);//总字数
 
             $table->dateTime('responded_at')->nullable();//最后被回应时间
             $table->dateTime('deleted_at')->nullable();// 软删除必备
 
             $table->tinyInteger('fold_state')->default(0);//折叠
-            $table->index(['thread_id','type']);
-            $table->index(['reply_to_id','reply_tp_position']);
+
+            $table->tinyInteger('len')->default(0);//长度
+            $table->boolean('is_comment')->default(0);//是否点评
+            $table->index(['thread_id','fold_state','is_comment','created_at']);
+            $table->index(['thread_id','user_id']);
+            $table->index(['reply_to_id','position']);
+            $table->index(['type','is_bianyuan','len']);
 
         });
     }

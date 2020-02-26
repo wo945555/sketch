@@ -28,6 +28,8 @@ class CreateQuotesTable extends Migration
             $table->dateTime('deleted_at')->nullable();//删除时间
             $table->tinyInteger('review_count')->default(0);//前审核次数
             $table->tinyInteger('pass_count')->default(0);//通过的前审核次数
+            $table->index(['approved','created_at']);
+            $table->index(['approved','notsad']);
         });
     }
 

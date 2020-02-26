@@ -31,7 +31,7 @@ class CreateHomeworksTable extends Migration
             $table->unsignedInteger('summary_thread_id')->default(0);
             $table->unsignedInteger('purchase_count')->default(0);
             $table->unsignedInteger('worker_count')->default(0);
-            $table->unsignedInteger('critic_count')->default(0)-;
+            $table->unsignedInteger('critic_count')->default(0);
             $table->unsignedInteger('finished_work_count')->default(0);
             $table->dateTime('deleted_at')->nullable();
         });

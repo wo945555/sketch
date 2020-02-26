@@ -18,10 +18,7 @@ return [
         'ordered' => [
             'default' => '最早回复',
             'latest_created' => '最新发布',
-            'most_replied' => '最多回复',
             'most_upvoted' => '最高赞',
-            'random' => '随机乱序',
-            'latest_responded' => '最新被回复',
         ],
     ],
     'book_filter' => [
@@ -42,10 +39,7 @@ return [
         'ordered' => [
             'default' => '最早发布',
             'latest_created' => '最新发布',
-            'most_replied' => '最多回复',
             'most_upvoted' => '最高赞',
-            'random' => '随机乱序',
-            'latest_responded' => '最新被回复',
         ],
     ],
     'list_filter' => [
@@ -66,10 +60,7 @@ return [
         'ordered' => [
             'default' => '最早发布',
             'latest_created' => '最新发布',
-            'most_replied' => '最多回复',
             'most_upvoted' => '最高赞',
-            'random' => '随机乱序',
-            'latest_responded' => '最新被回复',
         ],
     ],
     'box_filter' => [
@@ -91,10 +82,7 @@ return [
         'ordered' => [
             'default' => '时间顺序',
             'latest_created' => '最新发布',
-            'most_replied' => '最多回复',
             'most_upvoted' => '最高赞',
-            'random' => '随机乱序',
-            'latest_responded' => '最新被回复',
         ],
     ],
     'homework_filter' => [
@@ -115,10 +103,7 @@ return [
         'ordered' => [
             'default' => '最早回复',
             'latest_created' => '最新发布',
-            'most_replied' => '最多回复',
             'most_upvoted' => '最高赞',
-            'random' => '随机乱序',
-            'latest_responded' => '最新被回复',
         ],
     ],
     'book_index_filter' => [
@@ -195,10 +180,7 @@ return [
         'ordered' => [
             'default' => '最早回复',
             'latest_created' => '最新发布',
-            'most_replied' => '最多回复',
             'most_upvoted' => '最高赞',
-            'random' => '随机乱序',
-            'latest_responded' => '最新被回复',
         ],
     ],
 
