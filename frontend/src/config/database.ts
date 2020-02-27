@@ -93,11 +93,10 @@ export namespace Database {
     next_id:number;
     reviewee_id:number;
     reviewee_type:string;
-    recommend:boolean;
-    editor_recommend:boolean;
     rating:number;
     redirect_count:number;
     author_attitude:number;
+    summary:string;
   }
 
   export interface Thread {
@@ -233,16 +232,5 @@ export namespace Database {
     keep_updated?:boolean;
     is_updated?:boolean;
   }
-
-  export interface Review {
-    id?:Increments;
-    thread_id?:UInt;
-    recommend?:boolean;
-    long?:boolean;
-    author_disapprove?:boolean;
-    editor_recommend?:boolean;
-    rating?:UInt;
-    redirect_count?:UInt;
-
-  }
+  
 }
