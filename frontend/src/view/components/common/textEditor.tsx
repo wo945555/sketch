@@ -52,7 +52,7 @@ const toolbarConfig = {
     ['bold', 'italic', 'underline', 'image'],
     ],
   },
-}
+};
 const formats = [
   'size',
   'color', 'background',

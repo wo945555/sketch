@@ -231,7 +231,7 @@ export class DB {
       },
     });
   }
-  public getMessages (
+  public getMessages = (
     query:{
       withStyle:ReqData.Message.style;
       chatWith?:Increments;
@@ -239,13 +239,13 @@ export class DB {
       read?:ReqData.Message.read;
     },
     id:number = this.user.id,
-  ) {
+  ) => {
     return this._get(`/user/$0/message`, {
       pathInsert: [id],
       query,
     });
   }
-  public getPublicNotice () {
+  public getPublicNotice = () => {
     return this._get('/publicnotice', {
       errorCodes: [401],
     });
@@ -256,6 +256,12 @@ export class DB {
         body: content,
       },
       errorCodes: [403],
+    });
+  }
+  public getActivities = (id:number = this.user.id) => {
+    return this._get(`/user/$0/activity`, {
+      pathInsert: [id],
+      errorCodes: [401, 403, 404],
     });
   }
 
@@ -294,6 +300,7 @@ export class DB {
       },
     });
   }
+  // get votes for a votable item
   public getVotes (type:ReqData.Vote.type, id:number, attitude?:ReqData.Vote.attitude) {
     return this._get('/vote', {
       query: {
@@ -301,6 +308,12 @@ export class DB {
         votable_id: id,
         attitude,
       },
+    });
+  }
+  // get votes received by a user
+  public getUserVotes (userId:number) {
+    return this._get('/user/$0/vote_received', {
+      pathInsert: [userId],
     });
   }
   public deleteVote (voteId:number) {
