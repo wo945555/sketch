@@ -35,6 +35,7 @@ import { Core } from '../core/index';
 import { Carousel } from '../view/components/common/carousel';
 import { NoticeBar } from '../view/components/common/notice-bar';
 import { Loading } from '../view/components/common/loading';
+import { InputText } from '../view/components/common/input/text';
 import { ThreadPreview } from '../view/components/thread/thread-preview';
 import { randomCnWords } from '../utils/fake';
 import { ChannelPreview } from '../view/components/home/channel-preview';
@@ -352,10 +353,42 @@ storiesOf('Common Components', module)
   )
   .add('Menu', () => (
     <Menu>
-      <MenuItem icon="far fa-thumbs-up icon" title="点赞提醒" badgeNum={1000}/>
-      <MenuItem icon="fas fa-gift icon" title="打赏提醒" badgeNum={1}/>
+      <MenuItem icon="far fa-thumbs-up icon" title="点赞提醒" badgeNum={1000} />
+      <MenuItem icon="fas fa-gift icon" title="打赏提醒" badgeNum={1} />
     </Menu>
-  ));
+  ))
+  .add('InputText', () => (React.createElement(class extends React.Component<{}, { value: string }> {
+    public state = {
+      value: '',
+    };
+    public render() {
+      const placeholderCentered = boolean('placeholderCentered', true);
+      const withLabel = boolean('withLabel', true);
+      return <InputText
+        label={withLabel ? <i className="fa fa-search" /> : null}
+        value={this.state.value}
+        placeholder="placeholder"
+        placeholderCentered={placeholderCentered}
+        style={{
+          height: '30px',
+        }}
+        onChange={(value) => {
+          this.setState({
+            value,
+          });
+        }}
+        onConfirm={() =>
+          console.log('onConfirm')
+        }
+        onClick={() =>
+          console.log('onClick')
+        }
+        onKeyDown={(e) =>
+          console.log('onKeyDown', e)
+        }
+      />;
+    }
+  })));
 
 storiesOf('Common Components/Notice Bar', module)
   .add('short message', () => <NoticeBar
