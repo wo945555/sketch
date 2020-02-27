@@ -5,7 +5,7 @@
 
   .title {
     margin: 0;
-    padding: 10px 20px;
+    padding: var(--padding-1);
     width: 100%;
     text-align: left;
     font-size: var(--font-size-3);
@@ -13,15 +13,12 @@
   }
 
   .list {
-    width: 100%;
-
     .item-container {
-      padding: 10px 0;
 
       .item-first-line {
-        margin: 0 20px;
         display: flex;
         justify-content: space-between;
+        font-size: var(--font-size-2);
 
         .item-title {
           font-size: var(--font-size-2);
@@ -35,7 +32,6 @@
       }
 
       .item-brief {
-        margin: 0 20px;
         text-align: left;
         font-size: var(--font-size-1);
       }

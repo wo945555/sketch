@@ -4,57 +4,51 @@ import { Page } from '../../components/common/page';
 import { List } from '../../components/common/list';
 import { NavBar } from '../../components/common/navbar';
 import { MessageMenu } from './message-menu';
-import { Card } from '../../components/common/card';
-import { Badge } from '../../components/common/badge';
-import ClampLines from 'react-clamp-lines';
-import { pageStyle, largeListItemStyle, badgeStyle, topCardStle, contentCardStyle, replyNotificationCardStyle, replyMessageContentStyle, unreadStyle } from './styles';
-import { mockReplyNotifications } from './mock-data';
+import './style.scss';
+import { MarkAllAsRead } from './mark-all-as-read';
+import { Menu, MenuItem } from '../../components/common/menu';
+import { RoutePath } from '../../../config/route-path';
+import { API, ResData } from '../../../config/api';
+import { ActivityItem } from './activity-item';
 
 interface State {
-
+  activities:API.Get['/user/$0/activity'];
 }
 
 export class Message extends React.Component<MobileRouteProps, State> {
+  public state:State = {
+    activities:{
+      activities: [],
+      paginate: ResData.allocThreadPaginate(),
+    },
+  };
+
+  public async componentDidMount() {
+    const { getActivities } = this.props.core.db;
+    const activities = await getActivities();
+    this.setState({activities});
+    console.log(activities);
+  }
   public render () {
-    return (<Page style={pageStyle}
+    const history = this.props.core.history;
+    return (<Page
         top={<NavBar goBack={this.props.core.route.back} onMenuClick={() => console.log('open setting')}>
           <MessageMenu/>
         </NavBar>}>
-        <Card style={topCardStle}>
-          <a className="is-text" style={{color:'#d2646a'}}>全部标记已读</a>
-        </Card>
-        <Card style={contentCardStyle}>
-          <List>
-            <List.Item onClick={() => console.log('click item ')} arrow={true} style={largeListItemStyle}>
-              <i className="far fa-thumbs-up icon"></i>
-              点赞提醒
-              <Badge num={1000} max={100} style={badgeStyle}/>
-            </List.Item>
-            <List.Item onClick={() => console.log('click item ')} arrow={true} style={largeListItemStyle}>
-              <i className="fas fa-gift icon"></i>
-              打赏提醒
-              <Badge num={1} max={100} style={badgeStyle}/>
-            </List.Item>
-          </List>
-        </Card>
-        {/* reply notifications */}
-        <Card style={replyNotificationCardStyle}>
-        <List style={{background:'transparent'}}>
-          {mockReplyNotifications.map((n, i) =>
-          <List.Item key={i} style={{background:'white', marginBottom:'0.3em'}}>
-            <h6 className="is-6" style={n.read ? {} : unreadStyle}>{n.author}回复了你的主题{n.title}</h6>
-            <div style={replyMessageContentStyle}>
-              <ClampLines
-                text={n.message}
-                id={'text' + i}
-                lines={2}
-                ellipsis="..."
-                buttons={false}
-                innerElement="p"/>
-            </div>
-          </List.Item>)}
+
+        <MarkAllAsRead />
+
+        <Menu>
+          <MenuItem icon="far fa-thumbs-up icon" title="点赞提醒"
+            onClick={() => history.push(RoutePath.votes)}
+            badgeNum={1000}/>
+          <MenuItem icon="fas fa-gift icon" title="打赏提醒" badgeNum={1}/>
+        </Menu>
+
+        <List className="message-list">
+          {this.state.activities.activities.map((n, i) =>
+            <ActivityItem read={true} activity={n} key={i}/>)}
         </List>
-        </Card>
       </Page>);
   }
 }

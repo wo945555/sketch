@@ -19,6 +19,7 @@ import { Suggestion } from './home/suggestion';
 import { Library } from './home/library';
 import { Collection } from './collection';
 import { ForumTags } from '../components/thread/forum-tags';
+import { Votes } from './message/votes';
 
 interface Props {
   core:Core;
@@ -62,10 +63,11 @@ export const MobileRoutes = {
   [RoutePath.status]: Status,
 
   //message
-  [RoutePath.messages]: Message,
-  [RoutePath.dialogue]: Dialogue,
   [RoutePath.personalMessages]: PersonalMessage,
   [RoutePath.publicNotice]: PublicNotice,
+  [RoutePath.dialogue]: Dialogue,
+  [RoutePath.messages]: Message,
+  [RoutePath.votes]: Votes,
 
   // other
   [RoutePath.tags]: ForumTags,

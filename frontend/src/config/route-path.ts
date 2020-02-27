@@ -21,10 +21,11 @@ export enum RoutePath {
   statusCollection = '/status/collection',
 
   // messages
-  messages = '/messages',
-  dialogue = '/messages/pm/:uid',
-  personalMessages = '/message/pm',
+  personalMessages = '/messages/pm/all',
+  dialogue = '/messages/pm/dialogue/:uid',
   publicNotice = '/messages/publicnotice',
+  messages = '/messages/activity',
+  votes = '/messages/vote',
 
   // other
   tags = '/tags',
