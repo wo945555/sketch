@@ -3,11 +3,18 @@
 use Faker\Generator as Faker;
 
 $factory->define(App\Models\Quiz::class, function (Faker $faker) {
-    $type = $faker->optional($weight = 0.15, $default = 'register')->randomElement($array = array ('register','essay','level_up'));
+    // register, essay 和 level_up的比例为 11 : 1 : 15(3+3+3)
+    $rnd_int = $faker->numberBetween($min = 1, $max = 27);
+    if ($rnd_int <= 11) {
+        $type = 'register';
+    } elseif ($rnd_int == 12) {
+        $type = 'essay';
+    } else {
+        $type = 'level_up';
+    }
     return [
         'is_online' => true,
         'type' => $type,
-        // 15% 为'essay'或'level_up, 85% 为'register'
         'quiz_level' => $type == 'level_up' ? $faker->numberBetween($min = 0, $max = 2) : -1,
         'body' => str_random(10),
         'hint' => str_random(10)
