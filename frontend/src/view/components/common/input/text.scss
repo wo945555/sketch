@@ -1,12 +1,10 @@
 .input-text {
     background-color: #f4f5f9;
-    border-radius: 1.5em;
-    padding-left: 1em;
-    padding-right: 1em;
+    padding: 0 16px;
     display: flex;
     align-items: center;
     .label {
-        padding-right: 0.5em;
+        padding-right: 10px;
     }
     .text-box {
         background: transparent !important;
