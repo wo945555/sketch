@@ -148,6 +148,7 @@ export namespace ResData {
     attributes:Database.Post;
     info:PostInfo;
     parent:Post[];
+    thread?:Thread;
   }
 
   export function allocPost () : Post {
@@ -216,6 +217,20 @@ export namespace ResData {
     date:Timestamp;
     timezone_type:number;
     timezone:string;
+  }
+
+  export interface Activity {
+    type:'activity';
+    id:number;
+    attributes:{
+      kind:number;
+      seen:boolean;
+      item_id:number;
+      item_type:string;
+      user_id:number;
+    };
+    item:Post | Status | Quote | Thread;
+    author?:User;
   }
 
   export interface Message {
@@ -493,6 +508,10 @@ export namespace API {
       followers:ResData.User[],
       paginate:ResData.ThreadPaginate,
     };
+    '/user/$0/activity':{
+      activities:ResData.Activity[],
+      paginate:ResData.ThreadPaginate,
+    };
     '/user/$0/message':{
       messages:ResData.Message[],
       paginate:ResData.ThreadPaginate,
@@ -509,6 +528,7 @@ export namespace API {
       titles:ResData.Title[],
       paginate:ResData.ThreadPaginate,
     };
+    '/user/$0/vote_received':ResData.Vote[];
     '/vote':{
       votes:ResData.Vote[],
       paginate:ResData.ThreadPaginate,

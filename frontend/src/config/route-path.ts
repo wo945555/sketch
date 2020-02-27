@@ -25,6 +25,7 @@ export enum RoutePath {
   dialogue = '/messages/pm/dialogue/:uid',
   publicNotice = '/messages/publicnotice',
   messages = '/messages/activity',
+  votes = '/messages/vote',
 
   // other
   tags = '/tags',
