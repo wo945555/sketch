@@ -17,24 +17,20 @@ trait FAQObjectTraits{
     public function clear_all_faqs()
     {
         Cache::forget('all_faqs');
-        Cache::forget('find_faqs');
     }
 
-    public function find_faqs()
+    public function get_faq_keys()
     {
-        return Cache::remember('find_faqs', 10, function () {
-            $total_faq =[];
-            foreach(config('faq') as $key1=>$value1)
+        $faq_keys = [];
+        foreach(config('faq') as $key1=>$value1)
+        {
+            foreach($value1['children'] as $key2 => $value2)
             {
-                foreach($value1['children'] as $key2 => $value2)
-                {
-                    $combokey = $key1.'-'.$key2;
-                    $faqs = self::all_faqs()->where('key',$combokey);
-                    $total_faq[$combokey]=$faqs;
-                }
+                $combokey = $key1.'-'.$key2;
+                array_push($faq_keys, $combokey);
             }
-            return $total_faq;
-        });
+        }
+        return $faq_keys;
     }
 
 }
