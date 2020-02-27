@@ -434,7 +434,7 @@ trait AdminManageTraits{
             $content->tags()->syncWithoutDetaching($tag->id);
             if($tag->tag_type==='编推'){
                 if($content_type==='post'&&$content->info&&$content->info->reviewee){
-                    $content->info->update(['editor_recommend'=>1]);
+                    $content->info->update(['summary'=>'editorRec']);
                     $content->info->reviewee->update(['recommended'=>1]);
                 }
                 if($content_type==='thread'){
@@ -451,7 +451,7 @@ trait AdminManageTraits{
             $content->tags()->detach($tag->id);
             if($tag->tag_type==='编推'){
                 if($content_type==='post'&&$content->info&&$content->info->reviewee){
-                    $content->info->update(['editor_recommend'=>0]);
+                    $content->info->update(['summary'=>'']);
                     $content->info->reviewee->update(['recommended'=>0]);
                 }
                 if($content_type==='thread'){

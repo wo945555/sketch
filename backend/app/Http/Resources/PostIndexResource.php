@@ -37,6 +37,8 @@ class PostIndexResource extends JsonResource
                 'reply_count' => (int)$this->reply_count,
                 'view_count' => (int)$this->views,
                 'char_count' => (int)$this->char_count,
+                'is_comment' => (boolean)$this->is_comment,
+                'len' => (string) $this->len,
             ],
             'info' => $info,
             'parent' => $parent,

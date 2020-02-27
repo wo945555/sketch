@@ -55,7 +55,7 @@ class CreatePostsTable extends Migration
             $table->boolean('is_comment')->default(0);//是否点评
             $table->index(['thread_id','fold_state','is_comment','created_at']);
             $table->index(['thread_id','user_id']);
-            $table->index(['reply_to_id','position']);
+            $table->index(['reply_to_id','reply_to_position']);
             $table->index(['type','is_bianyuan','len']);
 
         });

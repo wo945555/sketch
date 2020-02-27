@@ -24,7 +24,7 @@ $factory->define(App\Models\PostInfo::class, function (Faker $faker) {
             return \App\Models\Thread::inRandomOrder()->first()->id;
         },
         'reviewee_type' => 'thread',
-        'recommend' => true,
+        'summary' => 'recommend',
         'rating' => rand(1, 10),
     ];
 });

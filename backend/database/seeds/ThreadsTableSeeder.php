@@ -62,7 +62,7 @@ class ThreadsTableSeeder extends Seeder
                     $posts->each(function ($post) use ($thread){
                         $info = factory(PostInfo::class)->create([
                             'post_id' => $post->id,
-                            'editor_recommend' => rand(0,1),
+                            'summary' => 'editorRec',
                         ]);
                         $post->type = 'review';
                         $post->save();

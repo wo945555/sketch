@@ -71,12 +71,13 @@ class PostTest extends TestCase
         ->assertStatus(409);
 
         $post_data2=[
-            'type' => 'comment',
+            'type' => 'post',
             'body' => '首先是饥荒，接着是劳苦和疾病，争执和创伤，还有破天荒可怕的死亡；他颠倒着季侯的次序，轮流地降下了，狂雪和猛火，把那些无遮无盖的人们2',
             'brief' => '首先是饥荒，接着是劳苦和疾病，争执和创伤',
             'reply_to_id' => $chapter_post->id,
             'reply_to_brief' => $chapter_post->brief,
             'reply_to_position' => 0,
+            'is_comment'=>true,
         ];
         $response = $this->post('api/thread/'.$thread->id.'/post/', $post_data2)
         ->assertStatus(200)
@@ -85,7 +86,7 @@ class PostTest extends TestCase
             'data' => [
                 'type'=> 'post',
                 'attributes' => [
-                    'post_type' => 'comment',
+                    'post_type' => 'post',
                     'thread_id' => $thread->id,
                     'body' => $post_data2['body'],
                     'brief' => $post_data2['brief'],
@@ -93,6 +94,7 @@ class PostTest extends TestCase
                     'reply_to_id' => $post_data2['reply_to_id'],
                     'reply_to_brief' => $post_data2['reply_to_brief'],
                     'reply_to_position' => $post_data2['reply_to_position'],
+                    'is_comment' => true,
                 ],
                 'author' => [
                     'type'=> 'user',
@@ -108,12 +110,13 @@ class PostTest extends TestCase
         // $post2 = $content['data'];
 
         $post_data3=[
-            'type' => 'comment',
+            'type' => 'post',
             'body' => '首先是饥荒，接着是劳苦和疾病，争执和创伤，还有破天荒可怕的死亡；他颠倒着季侯的次序，轮流地降下了，狂雪和猛火，把那些无遮无盖的人们3',
             'brief' => '首先是饥荒，接着是劳苦和疾病，争执和创伤',
             'reply_to_id' => $chapter_post->id,
             'reply_to_brief' => $chapter_post->brief,
             'reply_to_position' => 10,
+            'is_comment' => true,
         ];
 
         $response = $this->post('api/thread/'.$thread->id.'/post/', $post_data3)
@@ -123,7 +126,7 @@ class PostTest extends TestCase
             'data' => [
                 'type'=> 'post',
                 'attributes' => [
-                    'post_type' => 'comment',
+                    'post_type' => 'post',
                     'thread_id' => $thread->id,
                     'body' => $post_data3['body'],
                     'brief' => $post_data3['brief'],
@@ -131,6 +134,7 @@ class PostTest extends TestCase
                     'reply_to_id' => $post_data3['reply_to_id'],
                     'reply_to_brief' => $post_data3['reply_to_brief'],
                     'reply_to_position' => $post_data3['reply_to_position'],
+                    'is_comment' => true,
                 ],
                 'author' => [
                     'type'=> 'user',

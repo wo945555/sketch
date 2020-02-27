@@ -34,7 +34,7 @@ class Post extends Model
 
     public function simpleInfo()
     {
-        return $this->hasOne(PostInfo::class, 'post_id')->select('post_id','order_by','previous_id','next_id','reviewee_id','reviewee_type','recommend','editor_recommend','rating','redirect_count','author_attitude','previous_id','next_id','abstract', 'summary');
+        return $this->hasOne(PostInfo::class, 'post_id')->select('post_id','order_by','previous_id','next_id','reviewee_id','reviewee_type','rating','redirect_count','author_attitude','previous_id','next_id','abstract', 'summary');
     }
 
     public function thread()
@@ -138,9 +138,8 @@ class Post extends Model
 
     public function scopeWithType($query, $withType=[])
     {
-        $withType = (array)$withType;
-        if(!array_diff($withType, $this->post_types)){
-            return $query->whereIn('posts.type', $withType);
+        if(in_array($withType, $this->post_types)){
+            return $query->where('posts.type', $withType);
         }
         return $query;
     }
@@ -167,18 +166,43 @@ class Post extends Model
         return $query->where('posts.is_bianyuan', false);
     }
 
+    public function scopeWithComment($query, $withComment)
+    {
+        if($withComment==='include_comment'){
+            return $query;
+        }
+        return $query->where('is_comment',0);
+    }
+
     public function scopeWithComponent($query, $withComponent)
     {
         if($withComponent==='component_only'){
-            return $query->whereIn('posts.type', array_diff( $this->post_types, ['post','comment']));
+            return $query->where('posts.type', '<>', 'post');
         }
-        if($withComponent==='post_N_comment'){
-            return $query->whereIn('posts.type',['post','comment']);
+        return $query;
+    }
+
+
+    public function scopeCaseType($query, $caseType)
+    {
+        if($caseType==='unsolved_only'){
+            return $query->where('post_infos.summary', null);
         }
-        if($withComponent==='include_comment'){
+        if($caseType==='solved_only'){
+            return $query->where('post_infos.summary', '<>', null);
+        }
+        if($caseType==='all'){
             return $query;
         }
-        return $query->where('posts.type', '<>', 'comment');
+        return $query;
+    }
+
+    public function scopeWithSummary($query, $withSummary)
+    {
+        if($withSummary){
+            return $query->where('post_infos.summary', $withSummary);
+        }
+        return $query;
     }
 
     public function scopeWithReplyTo($query, $withReplyTo)
@@ -220,24 +244,24 @@ class Post extends Model
         }
     }
 
-    public function scopeReviewLength($query, $reviewLength)
+    public function scopeWithLength($query, $length)
     {
-        if($reviewLength==='short'){ //短推
-            return $query->where('posts.char_count','>=',config('constants.review_short'))
-            ->where('posts.char_count','<', config('constants.review_medium'));
+        if($length==='short'){ //短推
+            return $query->where('posts.len',1);
         }
-        if($reviewLength==='medium'){ //中推
-            return $query->where('posts.char_count','>=', config('constants.review_medium'))
-            ->where('posts.char_count','<', config('constants.review_long'));
+        if($length==='medium'){ //中推
+            return $query->where('posts.len',2);
         }
-        if($reviewLength==='long'){ //长推
-            return $query->where('posts.char_count','>=', config('constants.review_long'));
+        if($length==='long'){ //长推
+            return $query->where('posts.len',3);
         }
-        if($reviewLength==='no_limit'){ //无限制
+        if($length==='no_limit'){ //无限制
             return $query;
         }
-        // default there is a character limit to filter out too short "reviews" from index
-        return $query->where('posts.char_count','>=', config('constants.show_reviews_with_characters_over'));
+        if($length==='not_small'){
+            return $query->where('posts.len','>',1);
+        }
+        return $query;
     }
 
     public function scopeReviewType($query, $reviewType)
@@ -251,24 +275,13 @@ class Post extends Model
         return $query;
     }
 
-    public function scopeReviewThread($query, $thread_id)
+    public function scopeReferTo($query, $reviewee_type='', $reviewee_id=0)
     {
-        if($thread_id){
-            return $query->where('post_infos.reviewee_id', $thread_id);
+        if($reviewee_id>0&&$reviewee_type){
+            return $query->where('post_infos.reviewee_type', $reviewee_type)->where('post_infos.reviewee_id', $reviewee_id);
         }else{
             return $query;
         }
-    }
-
-    public function scopeReviewRecommend($query, $withRecommend)
-    {
-        if($withRecommend==='recommend_only'){
-            return $query->where('post_infos.recommend', true);
-        }
-        if($withRecommend==='none_recommend_only'){
-            return $query->where('post_infos.recommend', false);
-        }
-        return $query;
     }
 
     public function scopeReviewAuthorAttitude($query, $withAuthorAttitude)
@@ -278,17 +291,6 @@ class Post extends Model
         }
         if($withAuthorAttitude==='none_approved_only'){
             return $query->where('post_infos.author_attitude', 2);
-        }
-        return $query;
-    }
-
-    public function scopeReviewEditor($query, $withEditor)
-    {
-        if($withEditor==='editor_only'){
-            return $query->where('post_infos.editor_recommend', true);
-        }
-        if($withEditor==='none_editor_only'){
-            return $query->where('post_infos.editor_recommend', false);
         }
         return $query;
     }
@@ -310,7 +312,6 @@ class Post extends Model
             return $query;
         }
     }
-
 
     public function favorite_replies()//这个post里面，回复它的post的comment中，最多赞的
     {

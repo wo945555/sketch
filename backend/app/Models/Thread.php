@@ -277,16 +277,6 @@ class Thread extends Model
         ->first();
     }
 
-    public function top_review()//对这个thread的review里最热门的一个
-    {
-        return Post::with('info')
-        ->reviewThread($this->id)
-        // ->reviewAuthorAttitude('approved_only')
-        ->reviewRecommend('recommend_only')
-        ->ordered('redirect_count')
-        ->first();
-    }
-
     public function latest_rewards()
     {
         return Reward::with('author')
@@ -300,9 +290,8 @@ class Thread extends Model
     public function random_editor_recommendation()
     {
         $post = Post::join('post_infos','posts.id','=','post_infos.post_id')
-        ->reviewThread($this->id)
-        ->reviewEditor('editor_only')
-        ->reviewRecommend('recommend_only')
+        ->referTo('thread', $this->id)
+        ->withSummary('editorRec')
         ->inRandomOrder()
         ->select('posts.*')
         ->first();

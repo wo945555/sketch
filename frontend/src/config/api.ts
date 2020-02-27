@@ -133,11 +133,10 @@ export namespace ResData {
         next_id: 0,
         reviewee_id: 0,
         reviewee_type: 'thread',
-        recommend: false,
-        editor_recommend: false,
         rating: 0,
         redirect_count: 0,
         author_attitude: 0,
+        summary: '';
       },
       reviewee: allocThread(),
     };
@@ -533,7 +532,6 @@ export namespace API {
       chapters:ResData.Post[],
       paginate:ResData.ThreadPaginate,
       most_upvoted:ResData.Post,
-      top_review:null|ResData.Post,
     };
     '/collection':{ // fixme: need check
       threads:ResData.Thread[],
