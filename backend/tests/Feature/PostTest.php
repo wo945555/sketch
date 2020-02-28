@@ -151,7 +151,6 @@ class PostTest extends TestCase
 
     }
 
-    //还差update test等等……
 
     /** @test */
     public function an_authorised_user_can_update_own_post()
