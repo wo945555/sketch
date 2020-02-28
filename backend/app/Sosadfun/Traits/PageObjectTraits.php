@@ -40,8 +40,7 @@ trait PageObjectTraits{
         return Cache::remember('short_recommendations', 5, function () {
             $short_reviews = \App\Models\Post::join('post_infos','posts.id','=','post_infos.post_id')
             ->withType('review')
-            ->reviewRecommend('recommend_only')
-            ->reviewEditor('editor_only')
+            ->withSummary('editorRec')
             ->inRandomOrder()
             ->take(config('preference.short_recommendations_on_homepage'))
             ->select('posts.*')
