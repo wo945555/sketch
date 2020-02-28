@@ -136,7 +136,7 @@ export namespace ResData {
         rating: 0,
         redirect_count: 0,
         author_attitude: 0,
-        summary: '';
+        summary: '',
       },
       reviewee: allocThread(),
     };
