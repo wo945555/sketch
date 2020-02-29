@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Models\UserInfo;
 use App\Observers\UserObserver;
 use App\Observers\UserInfoObserver;
+use App\Models\RegistrationApplication;
+use App\Observers\RegAppObserver;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -22,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
         User::observe(UserObserver::class);
         UserInfo::observe(UserInfoObserver::class);
+        RegistrationApplication::observe(RegAppObserver::class);
 
         Relation::morphMap([
             'post' => 'App\Models\Post',

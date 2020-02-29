@@ -235,6 +235,7 @@ return [
         'ConstantObjects' => App\Helpers\ConstantObjects::class,
         'StringProcess' => App\Helpers\StringProcess::class,
         'CacheUser' => App\Helpers\CacheUser::class,
+        'CacheRegistrationApplication' => App\Helpers\CacheRegistrationApplication::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
 
 
