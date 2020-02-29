@@ -6,6 +6,7 @@ use DB;
 use Cache;
 use App\Models\Quiz;
 use App\Models\QuizOption;
+use Illuminate\Database\Eloquent\Collection;
 
 trait QuizObjectTraits{
     use DelayCountModelTraits;
@@ -17,11 +18,15 @@ trait QuizObjectTraits{
     public static function random_quizzes($level=-1, $quizType='', $number=5)
     {
         return Cache::remember('random_quizzes'.'|level:'.$level.'|type:'.$quizType.'|number:'.$number, 3, function () use ($level, $quizType, $number) {
-            return Quiz::withQuizLevel($level)
+            $quizzes = Quiz::withQuizLevel($level)
             ->withQuizType($quizType)
             ->isOnline()
             ->inRandomOrder()
             ->take($number)->get();
+            if (in_array($quizType, config('constants.quiz_has_option'))) {
+                $quizzes->load('quiz_options');
+            }
+            return $quizzes;
         });
     }
 
@@ -64,17 +69,18 @@ trait QuizObjectTraits{
             "correct_count" => [],
             "select_count" => []
         ];
+        $expected_quiz_ids = array_map('intval', explode(',', $recorded_questions));
+        sort($expected_quiz_ids);
+        $selected_qna = Quiz::with('quiz_options')->findOrFail($expected_quiz_ids)->keyBy('id');
         foreach ($quizzes as $quiz) {
             if (!is_array($quiz) || !array_key_exists('id', $quiz) || !array_key_exists('answer', $quiz) || !is_int($quiz['id']) || !$quiz['answer']) {
                 abort(422, '请求数据格式有误。');
             }
             $submitted_quiz_ids[] = $quiz['id'];
-            $correct_quiz_number += self::is_answer_correct($quiz['id'],$quiz['answer'],$counter);
+            $correct_quiz_number += self::is_answer_correct($quiz['id'],$quiz['answer'],$counter,$selected_qna);
         }
 
         // 检查答的题目是不是数据库中记录的题目
-        $expected_quiz_ids = array_map('intval', explode(',', $recorded_questions));
-        sort($expected_quiz_ids);
         sort($submitted_quiz_ids);
         if ($expected_quiz_ids != $submitted_quiz_ids) {
             abort(444, '回答的题目和数据库中应该回答的题不符合。');
@@ -88,13 +94,14 @@ trait QuizObjectTraits{
      * @param int $id The quiz_id
      * @param string $answer The answer user submitted
      * @param array $counter The counter
+     * @param Collection $qna The question-and-answer collections. [1=>['id'=>1,'type'=>'register',...],2=>...]
      * @return bool Whether the answer is correct or not
      */
-    public static function is_answer_correct(int $id, string $answer, array &$counter) {
-        $quiz = self::find_quiz_set($id);
-        if (!$quiz) {
-            abort(444, '回答的题目和数据库中应该回答的题不符合。');
+    public static function is_answer_correct(int $id, string $answer, array &$counter, Collection &$qna) {
+        if (!$qna->has($id)) {
+            abort(444, '请求数据有误。');
         }
+        $quiz = $qna->get($id);
         $possible_answers = $quiz->quiz_options;
         $correct_answers = $possible_answers->where('is_correct',true)->pluck('id')->toArray();
         self::update_counter($counter, 'quiz_count', $id);
