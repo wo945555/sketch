@@ -1,12 +1,18 @@
 <?php
 namespace App\Sosadfun\Traits;
 
+
 use DB;
 use Cache;
 use App\Models\Quiz;
 use App\Models\QuizOption;
 
 trait QuizObjectTraits{
+    use DelayCountModelTraits;
+
+    private function delay_count($model_class, $key, $attribute_name, $value){
+        return $this->delay_modify_attribute_for_model($model_class, $key, $attribute_name, $value);
+    }
 
     public static function random_quizzes($level=-1, $quizType='', $number=5)
     {
@@ -91,7 +97,6 @@ trait QuizObjectTraits{
         }
         $possible_answers = $quiz->quiz_options;
         $correct_answers = $possible_answers->where('is_correct',true)->pluck('id')->toArray();
-//        $quiz->delay_count('quiz_count', 1);
         self::update_counter($counter, 'quiz_count', $id);
         $user_answers = array_map('intval', explode(',', $answer));
         sort($correct_answers);
@@ -106,12 +111,9 @@ trait QuizObjectTraits{
             if ($user_answer <= 0) {
                 abort(422, '请求数据格式有误。');
             }
-            $option = QuizOption::find($user_answer);
-//            $option->delay_count('select_count', 1);
             self::update_counter($counter, 'select_count', $user_answer);
         }
         if ($correct_answers == $user_answers) {
-//            $quiz->delay_count('correct_count', 1);
             self::update_counter($counter, 'correct_count', $id);
             return true;
         }
@@ -136,16 +138,13 @@ trait QuizObjectTraits{
      */
     public static function perform_counter(array &$counter) {
         foreach ($counter['quiz_count'] as $id => $value) {
-            $quiz = self::find_quiz_set($id);
-            $quiz->delay_count('quiz_count', $value);
+            (new self)->delay_count('App\Models\Quiz', $id, 'quiz_count', $value);
         }
         foreach ($counter['correct_count'] as $id => $value) {
-            $quiz = self::find_quiz_set($id);
-            $quiz->delay_count('correct_count', $value);
+            (new self)->delay_count('App\Models\Quiz', $id, 'correct_count', $value);
         }
         foreach ($counter['select_count'] as $id => $value) {
-            $option = QuizOption::find($id);
-            $option->delay_count('select_count', $value);
+            (new self)->delay_count('App\Models\QuizOption', $id, 'select_count', $value);
         }
     }
 

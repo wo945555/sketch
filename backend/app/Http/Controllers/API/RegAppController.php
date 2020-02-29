@@ -40,6 +40,14 @@ class RegAppController extends Controller
         ]);
     }
 
+    private function rate_limit_check($function_name, $email=null, $ip=null) {
+        $item = $email ?? $ip;
+        if(Cache::has("Ratelimit-regapp-$function_name-$item")){
+            return abort(498,'访问过于频繁。');
+        }
+        Cache::put("Ratelimit-regapp-$function_name-$item", true, 5);
+    }
+
     public function submit_email(Request $request)
     {
         $validator = $this->validator($request->all());
@@ -48,17 +56,14 @@ class RegAppController extends Controller
             return response()->error($validator->errors(), 422);
         }
 
-        if(Cache::has('IP-refresh-limit-' . request()->ip())){
-            abort(498);
-        }
-        Cache::put('IP-refresh-limit-' . request()->ip(), true, 5);
+        $this->rate_limit_check(__FUNCTION__,null,request()->ip());
 
         $message = $this->checkApplicationViaEmail($request->email);
         if ($message['code'] != 200) {
             abort($message['code'],$message['msg']);
         }
 
-        $application = $this->findApplicationViaEmail($request->email);
+        $application = RegistrationApplication::find($request->email,$nullable=true);
 
         if(!$application){
 
@@ -77,12 +82,8 @@ class RegAppController extends Controller
                 'email_token' => str_random(10),
                 'token' => str_random(35),
             ]);
-            $this->refreshCheckApplicationViaEmail($request->email);
-            $this->refreshFindApplicationViaEmail($request->email);
-        }
-
-        if ($application->is_forbidden) {
-            abort(499,'此邮箱已被拉黑');
+//            $this->refreshCheckApplicationViaEmail($request->email);
+//            $this->refreshFindApplicationViaEmail($request->email);
         }
 
         $success['registration_application'] = new RegistrationApplicationResource($application);
@@ -98,29 +99,15 @@ class RegAppController extends Controller
             $success['essay'] = new QuizResource($essay);
         }
 
-        $this->refreshFindApplicationViaEmail($request->email);
+//        $this->refreshFindApplicationViaEmail($request->email);
         return response()->success($success);
     }
 
     public function submit_quiz(Request $request)
     {
-        if(Cache::has('Ratelimit-email-application-quiz-' . $request->email)){
-            return abort(498);
-        }
-        Cache::put('Ratelimit-email-application-quiz-' . $request->email, true, 5);
+        $this->rate_limit_check(__FUNCTION__,$request->email);
 
-        $message = $this->checkApplicationViaEmail($request->email);
-        if ($message["code"] != 200) {
-            abort($message["code"],$message["msg"]);
-        }
-
-        $application = RegistrationApplication::where('email',$request->email)->first();
-        if(!$application) {
-            abort(404,'申请记录不存在。');
-        }
-        if ($application->is_forbidden) {
-            abort(499,'此邮箱已被拉黑。');
-        }
+        $application = RegistrationApplication::find($request->email);
         if($application->cut_in_line) {
             abort(409,'后续步骤已经完成，不需要再次提交测试。');
         }
@@ -145,7 +132,7 @@ class RegAppController extends Controller
             ]);
         }
 
-        $this->refreshCheckApplicationViaEmail($request->email);
+//        $this->refreshCheckApplicationViaEmail($request->email);
         $success['registration_application'] = new RegistrationApplicationResource($application);
         return response()->success($success);
     }
@@ -161,23 +148,9 @@ class RegAppController extends Controller
             return response()->error($validator->errors(), 422);
         }
 
-        if(Cache::has('IP-refresh-limit-submit_email_confirmation_token-' . request()->ip())){
-            abort(498,'访问过于频繁。');
-        }
-        Cache::put('IP-refresh-limit-submit_email_confirmation_token-' . request()->ip(), true, 5);
+        $this->rate_limit_check(__FUNCTION__,$request->email);
 
-        $message = $this->checkApplicationViaEmail($request->email);
-        if ($message["code"] != 200) {
-            abort($message["code"],$message["msg"]);
-        }
-
-        $application = RegistrationApplication::where('email',$request->email)->first();
-        if(!$application) {
-            abort(404,'申请记录不存在。');
-        }
-        if ($application->is_forbidden) {
-            abort(499,'此邮箱已被拉黑。');
-        }
+        $application = RegistrationApplication::find($request->email);
         if($application->email_verified_at||$application->submitted_at||$application->is_passed||$application->user_id>0||$application->cut_in_line){
             abort(409,'你已经成功验证过邮箱，不需要重复验证。');
         }
@@ -194,29 +167,14 @@ class RegAppController extends Controller
             'ip_address_verify_email' => request()->ip(),
         ]);
 
-        $this->refreshCheckApplicationViaEmail($request->email);
         return response()->success(["email" => $request->email]);
     }
 
     public function resend_email_verification(Request $request)
     {
-        if(Cache::has('IP-refresh-limit-resend_email_verification-' . request()->ip())){
-            abort(498,'访问过于频繁。');
-        }
-        Cache::put('IP-refresh-limit-resend_email_verification-' . request()->ip(), true, 5);
+        $this->rate_limit_check(__FUNCTION__,$request->email);
 
-        $message = $this->checkApplicationViaEmail($request->email);
-        if ($message["code"] != 200) {
-            abort($message["code"],$message["msg"]);
-        }
-
-        $application = RegistrationApplication::where('email',$request->email)->first();
-        if(!$application) {
-            abort(404,'申请记录不存在。');
-        }
-        if ($application->is_forbidden) {
-            abort(499,'此邮箱已被拉黑。');
-        }
+        $application = RegistrationApplication::find($request->email);
         if($application->email_verified_at||$application->submitted_at||$application->is_passed||$application->user_id>0||$application->cut_in_line){
             abort(409,'你已经成功验证过邮箱，不需要重复验证。');
         }
@@ -228,16 +186,12 @@ class RegAppController extends Controller
         }
 
         $application->sendVerificationEmail();
-        $this->refreshCheckApplicationViaEmail($request->email);
         return response()->success(["email" => $request->email]);
     }
 
     public function submit_essay(Request $request)
     {
-        if(Cache::has('IP-refresh-limit-submit_essay-' . request()->ip())){
-            abort(498,'访问过于频繁。');
-        }
-        Cache::put('IP-refresh-limit-submit_essay-' . request()->ip(), true, 5);
+        $this->rate_limit_check(__FUNCTION__,$request->email);
 
         $validator = Validator::make($request->all(), [
             'body' => 'required|string|min:450|max:2000',
@@ -249,18 +203,7 @@ class RegAppController extends Controller
             return response()->error($validator->errors(), 422);
         }
 
-        $message = $this->checkApplicationViaEmail($request->email);
-        if ($message["code"] != 200) {
-            abort($message["code"],$message["msg"]);
-        }
-
-        $application = RegistrationApplication::where('email',$request->email)->first();
-        if(!$application) {
-            abort(404,'申请记录不存在。');
-        }
-        if ($application->is_forbidden) {
-            abort(499,'此邮箱已被拉黑。');
-        }
+        $application = RegistrationApplication::find($request->email);
         if ($application->cut_in_line||$application->is_passed) {
             abort(409,'后续步骤已经完成，不需要再次提交申请。');
         }
@@ -276,7 +219,7 @@ class RegAppController extends Controller
         if($application->essay_question_id != $request->essay_id) {
             abort(444,'回答的小论文题目和记录的应该回答的题目不符合。');
         }
-
+        // TODO: 就是这里
         $application->update([
             'body' => $request->body,
             'submitted_at' => Carbon::now(),
@@ -285,29 +228,14 @@ class RegAppController extends Controller
             'submission_count' => $application->submission_count+1,
             'ip_address_submit_essay' => request()->ip(),
         ]);
-        $this->refreshCheckApplicationViaEmail($request->email);
         return response()->success(['registration_application' => new RegistrationApplicationResource($application)]);
     }
 
     public function resend_invitation_email(Request $request)
     {
-        if(Cache::has('IP-refresh-limit-resend_invitation_email-' . request()->ip())){
-            abort(498,'访问过于频繁。');
-        }
-        Cache::put('IP-refresh-limit-resend_invitation_email-' . request()->ip(), true, 5);
+        $this->rate_limit_check(__FUNCTION__,$request->email);
 
-        $message = $this->checkApplicationViaEmail($request->email);
-        if ($message["code"] != 200) {
-            abort($message["code"],$message["msg"]);
-        }
-
-        $application = RegistrationApplication::where('email',$request->email)->first();
-        if(!$application) {
-            abort(404,'申请记录不存在。');
-        }
-        if ($application->is_forbidden) {
-            abort(499,'此邮箱已被拉黑。');
-        }
+        $application = RegistrationApplication::find($request->email);
         if($application->user_id>0){
             abort(409,'你已经成功接受邀请并注册，不需要重复验证。');
         }
@@ -315,11 +243,10 @@ class RegAppController extends Controller
             abort(409,'已成功发信，暂时不能重复发送邮件。');
         }
         if(!$application->is_passed) {
-            abort(411,'未完成前序步骤，不能发送验证邮件。');
+            abort(411,'尚未通过申请，不能发送验证邮件。');
         }
 
         $application->sendInvitationEmail();
-        $this->refreshCheckApplicationViaEmail($request->email);
         return response()->success(["email" => $request->email]);
     }
 }
