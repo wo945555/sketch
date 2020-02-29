@@ -22,6 +22,7 @@ class MessageSystemSeeder extends Seeder
         // seed public notices
         $public_notices = factory(\App\Models\PublicNotice::class)->times(5)->create(['user_id' => $admin->id]);
 
-        
+        // seed user messages
+        $messages = factory(\App\Models\Message::class)->times(100)->create();
     }
 }

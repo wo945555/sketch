@@ -5,7 +5,7 @@ import { List } from '../../components/common/list';
 import { NavBar } from '../../components/common/navbar';
 import ClampLines from 'react-clamp-lines';
 import './style.scss';
-import { API } from '../../../config/api';
+import { API, ResData } from '../../../config/api';
 
 interface State {
   votes:API.Get['/user/$0/vote_received'];
@@ -13,7 +13,7 @@ interface State {
 
 const msgContent = '内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中';
 
-// TODO: author, content, attitude are waiting for API fix: https://trello.com/c/bxlkk1Eb/13-api-show-user-vote%E6%98%BE%E7%A4%BAauthor%E4%B8%BA%E7%A9%BA
+// TODO: content are waiting for API fix: https://trello.com/c/bxlkk1Eb/219-api-show-user-vote%E6%B2%A1%E6%9C%89author%EF%BC%8Cattitue%E5%92%8Ccontent
 
 export class Votes extends React.Component<MobileRouteProps, State> {
   public state:State = {
@@ -28,34 +28,39 @@ export class Votes extends React.Component<MobileRouteProps, State> {
     console.log(votes);
   }
 
+  private renderVote(vote:ResData.Vote) {
+    const author = vote.author.attributes.name;
+    return (
+      <List.Item key={vote.id}>
+        <div className="item-container">
+          <div className="item-first-line">
+            <span>{author}赞了你</span>
+            <span className="right">{vote.attributes.created_at}</span>
+          </div>
+          <div className="item-brief">
+            <ClampLines
+              text={msgContent}
+              id={'text' + vote.id}
+              lines={2}
+              ellipsis="..."
+              buttons={false}
+              innerElement="p"/>
+          </div>
+        </div>
+      </List.Item>
+    );
+  }
+
   public render () {
     const { votes } = this.state;
-    /* TODO: navbar setting, waiting for UI mockup */
     return (<Page
-        top={<NavBar goBack={this.props.core.route.back} onMenuClick={() => console.log('open setting')}>
+        top={<NavBar goBack={this.props.core.route.back}>
           点赞提醒
         </NavBar>}>
 
         { votes.length > 0 && (
           <List className="message-list">
-            { votes.map((n, i) =>
-              <List.Item key={i}>
-                <div className="item-container">
-                  <div className="item-first-line">
-                    <span>有人赞了你</span>
-                    <span className="right">{n.attributes.created_at}</span>
-                  </div>
-                  <div className="item-brief">
-                    <ClampLines
-                      text={msgContent}
-                      id={'text' + i}
-                      lines={2}
-                      ellipsis="..."
-                      buttons={false}
-                      innerElement="p"/>
-                  </div>
-                </div>
-              </List.Item>)}
+            { votes.map((n, i) => this.renderVote(n))}
           </List>
         )}
       </Page>);
