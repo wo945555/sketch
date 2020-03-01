@@ -14,10 +14,22 @@ trait RegistrationApplicationObjectTraits{
         Cache::forget('checkApplicationViaEmail.'.$email);
     }
 
-    public function findApplicationViaEmail($email)
+    public function findApplicationViaEmail($email, $nullable=false)
     {
-        return Cache::remember('findApplicationViaEmail.'.$email, 30, function() use($email) {
+        return Cache::remember('findApplicationViaEmail.'.$email, 30, function() use($email, $nullable) {
+            $message = $this->checkApplicationViaEmail($email);
+            if ($message["code"] != 200) {
+                abort($message["code"],$message["msg"]);
+            }
             $application = RegistrationApplication::where('email',$email)->first();
+            if (!$nullable) {
+                if (!$application) {
+                    abort(404,'申请记录不存在。');
+                }
+                if ($application->is_forbidden) {
+                    abort(499,'此邮箱已被拉黑。');
+                }
+            }
             return $application;
         });
     }
@@ -52,4 +64,11 @@ trait RegistrationApplicationObjectTraits{
         });
     }
 
+    public function rate_limit_check($function_name, $email=null, $ip=null) {
+        $item = $email ?? $ip;
+        if(Cache::has("Ratelimit-regapp-$function_name-$item")){
+            return abort(498,'访问过于频繁。');
+        }
+        Cache::put("Ratelimit-regapp-$function_name-$item", true, 5);
+    }
 }

@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 use Carbon;
 use App\Sosadfun\Traits\SwitchableMailerTraits;
 use App\Sosadfun\Traits\QuizObjectTraits;
-use CacheRegistrationApplication;
 use App\Sosadfun\Traits\RegistrationApplicationObjectTraits;
 
 class RegistrationApplication extends Model
@@ -20,30 +19,6 @@ class RegistrationApplication extends Model
     protected $guarded = [];
     protected $dates = ['last_invited_at', 'submitted_at', 'created_at', 'reviewed_at', 'email_verified_at', 'send_verification_at'];
     const UPDATED_AT = null;
-
-    public function __call($method, $parameters)
-    {
-        if ($method == 'find') {
-            $email = $parameters[0];
-            $nullable = $parameters[1] ?? false;
-            $message = $this->checkApplicationViaEmail($email);
-            if ($message["code"] != 200) {
-                abort($message["code"],$message["msg"]);
-            }
-            $regapp = CacheRegistrationApplication::registrationApplication($parameters[0]);
-            if (!$nullable) {
-                if (!$regapp) {
-                    abort(404,'申请记录不存在。');
-                }
-                if ($regapp->is_forbidden) {
-                    abort(499,'此邮箱已被拉黑。');
-                }
-            }
-            return $regapp;
-        } else {
-            return parent::__call($method, $parameters);
-        }
-    }
 
     public function user()
     {

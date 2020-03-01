@@ -40,14 +40,6 @@ class RegAppController extends Controller
         ]);
     }
 
-    private function rate_limit_check($function_name, $email=null, $ip=null) {
-        $item = $email ?? $ip;
-        if(Cache::has("Ratelimit-regapp-$function_name-$item")){
-            return abort(498,'访问过于频繁。');
-        }
-        Cache::put("Ratelimit-regapp-$function_name-$item", true, 5);
-    }
-
     public function submit_email(Request $request)
     {
         $validator = $this->validator($request->all());
@@ -58,12 +50,7 @@ class RegAppController extends Controller
 
         $this->rate_limit_check(__FUNCTION__,null,request()->ip());
 
-        $message = $this->checkApplicationViaEmail($request->email);
-        if ($message['code'] != 200) {
-            abort($message['code'],$message['msg']);
-        }
-
-        $application = RegistrationApplication::find($request->email,$nullable=true);
+        $application = self::findApplicationViaEmail($request->email,$nullable=true);
 
         if(!$application){
 
@@ -82,8 +69,7 @@ class RegAppController extends Controller
                 'email_token' => str_random(10),
                 'token' => str_random(35),
             ]);
-//            $this->refreshCheckApplicationViaEmail($request->email);
-//            $this->refreshFindApplicationViaEmail($request->email);
+            $this->refreshCheckApplicationViaEmail($request->email);
         }
 
         $success['registration_application'] = new RegistrationApplicationResource($application);
@@ -107,7 +93,7 @@ class RegAppController extends Controller
     {
         $this->rate_limit_check(__FUNCTION__,$request->email);
 
-        $application = RegistrationApplication::find($request->email);
+        $application = self::findApplicationViaEmail($request->email);
         if($application->cut_in_line) {
             abort(409,'后续步骤已经完成，不需要再次提交测试。');
         }
@@ -150,7 +136,7 @@ class RegAppController extends Controller
 
         $this->rate_limit_check(__FUNCTION__,$request->email);
 
-        $application = RegistrationApplication::find($request->email);
+        $application = self::findApplicationViaEmail($request->email);
         if($application->email_verified_at||$application->submitted_at||$application->is_passed||$application->user_id>0||$application->cut_in_line){
             abort(409,'你已经成功验证过邮箱，不需要重复验证。');
         }
@@ -174,7 +160,7 @@ class RegAppController extends Controller
     {
         $this->rate_limit_check(__FUNCTION__,$request->email);
 
-        $application = RegistrationApplication::find($request->email);
+        $application = self::findApplicationViaEmail($request->email);
         if($application->email_verified_at||$application->submitted_at||$application->is_passed||$application->user_id>0||$application->cut_in_line){
             abort(409,'你已经成功验证过邮箱，不需要重复验证。');
         }
@@ -203,7 +189,7 @@ class RegAppController extends Controller
             return response()->error($validator->errors(), 422);
         }
 
-        $application = RegistrationApplication::find($request->email);
+        $application = self::findApplicationViaEmail($request->email);
         if ($application->cut_in_line||$application->is_passed) {
             abort(409,'后续步骤已经完成，不需要再次提交申请。');
         }
@@ -219,7 +205,6 @@ class RegAppController extends Controller
         if($application->essay_question_id != $request->essay_id) {
             abort(444,'回答的小论文题目和记录的应该回答的题目不符合。');
         }
-        // TODO: 就是这里
         $application->update([
             'body' => $request->body,
             'submitted_at' => Carbon::now(),
@@ -235,7 +220,7 @@ class RegAppController extends Controller
     {
         $this->rate_limit_check(__FUNCTION__,$request->email);
 
-        $application = RegistrationApplication::find($request->email);
+        $application = self::findApplicationViaEmail($request->email);
         if($application->user_id>0){
             abort(409,'你已经成功接受邀请并注册，不需要重复验证。');
         }
