@@ -20,8 +20,8 @@ class CreateMessagesTable extends Migration
             $table->unsignedInteger('body_id')->default(0);//消息内容id
             $table->boolean('private')->default(false);//是否私人对话
             $table->boolean('seen')->default(false);//是否已读
-            $table->dateTime('created_at')->nullable()->index();//创建时间
-            $table->dateTime('deleted_at')->nullable()->index();//创建时间
+            $table->dateTime('created_at')->nullable();//创建时间
+            $table->dateTime('deleted_at')->nullable();//创建时间
         });
     }
 

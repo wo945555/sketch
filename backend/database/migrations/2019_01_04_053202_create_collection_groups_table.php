@@ -16,8 +16,8 @@ class CreateCollectionGroupsTable extends Migration
         Schema::create('collection_groups', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id')->index();//是谁收藏的
-            $table->string('name',10)->nullable()->index();//收藏夹名称
-            $table->unsignedInteger('update_count')->default(0)->index();
+            $table->string('name',10)->nullable();//收藏夹名称
+            $table->unsignedInteger('update_count')->default(0);
             $table->tinyInteger('order_by')->default(0);//收藏夹内排序方式
         });
     }

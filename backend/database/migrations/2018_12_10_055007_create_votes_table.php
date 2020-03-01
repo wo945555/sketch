@@ -17,11 +17,12 @@ class CreateVotesTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedInteger('user_id')->default(0)->index();
             $table->unsignedInteger('receiver_id')->default(0)->index();
-            $table->unsignedInteger('votable_id')->default(0)->index();
-            $table->string('votable_type',10)->nullable()->index();
-            $table->string('attitude_type', 10)->nullable()->index();  //upvote,downvote,funnyvote,foldvote
+            $table->unsignedInteger('votable_id')->default(0);
+            $table->string('votable_type',10)->nullable();
+            $table->string('attitude_type', 10)->nullable();  //upvote,downvote,funnyvote,foldvote
             $table->dateTime('created_at')->nullable()->index();
-            $table->unique(['user_id','votable_type', 'votable_id','attitude_type']);
+            $table->index(['votable_id', 'votable_type']);
+            $table->unique(['user_id', 'votable_id', 'votable_type', 'attitude_type']);
         });
     }
 

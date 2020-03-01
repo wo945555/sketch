@@ -7,6 +7,14 @@ use Genert\BBCode\BBCode;
 class StringProcess
 {
 
+    public static function check_html_tag($string=null)
+    {
+        if(strip_tags($string,"<br>")!=$string){
+            abort(422, 'found html tags in input string, unable to process');
+        }
+        return $string;
+    }
+
     public static function simpletrim($text=null, int $len)//截取一个特定长度的字串
     {
         $text = trim($text);
@@ -17,16 +25,16 @@ class StringProcess
         return $substr;
     }
 
-    public static function warn_in_application($text=null)
-    {
-        $words = explode('|', config('forbiddenwords.highlight_in_application'));
-        foreach($words as $word){
-            if($text&&$word&&strpos($text,$word)>=0){
-                $text = preg_replace('/'.$word.'/','<code>'.$word.'</code>',$text);
-            }
-        }
-        return $text;
-    }
+    // public static function warn_in_application($text=null)
+    // {
+    //     $words = explode('|', config('forbiddenwords.highlight_in_application'));
+    //     foreach($words as $word){
+    //         if($text&&$word&&strpos($text,$word)>=0){
+    //             $text = preg_replace('/'.$word.'/','<code>'.$word.'</code>',$text);
+    //         }
+    //     }
+    //     return $text;
+    // }
 
     public static function trimSpaces($text=null)//去掉输入的一段文字里，多余的html-tag，多余的换行，和每段开头多余的空格
     {
@@ -155,19 +163,19 @@ class StringProcess
     }
 
 
-    public static function wrapParagraphs($post= null)
-    {
-        $post = self::trimSpaces($post);
-        $bbCode = new BBCode();
-        $bbCode = self::addCustomParserBBCode($bbCode);
-        $post = $bbCode->convertToHtml($post);
-        $post = str_replace("<br>", "</p><br><p>", $post);
-        $post = preg_replace('/\n{1,}/', "</p><p>", $post);
-        if($post){
-            $post = "<p>{$post}</p>";
-        }
-        return $post;
-    }
+    // public static function wrapParagraphs($post= null)
+    // {
+    //     $post = self::trimSpaces($post);
+    //     $bbCode = new BBCode();
+    //     $bbCode = self::addCustomParserBBCode($bbCode);
+    //     $post = $bbCode->convertToHtml($post);
+    //     $post = str_replace("<br>", "</p><br><p>", $post);
+    //     $post = preg_replace('/\n{1,}/', "</p><p>", $post);
+    //     if($post){
+    //         $post = "<p>{$post}</p>";
+    //     }
+    //     return $post;
+    // }
 
     public static function string_not_in_public(){
         return config('forbiddenwords.default').config('forbiddenwords.adult_content').config('forbiddenwords.politics').config('forbiddenwords.ads');

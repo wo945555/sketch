@@ -14,17 +14,20 @@ trait GeneratePostDataTraits{
         $data = $this->only('body','brief','title','type');
         if(in_array($this->type, config('constants.owner_component_types'))&&$thread->user_id!=auth('api')->id()){abort(403);}
         if(!in_array($this->type,config('constants.all_post_types'))){abort(422,'post_type not allowed');}
-        $data['body'] = StringProcess::trimSpaces($data['body']);
+        $data['body'] = StringProcess::check_html_tag($data['body']);
         if($this->isDuplicatePost($data)){
             abort(409,'请求已登记，请耐心等待缓存更新，无需重复提交相同数据');
         }
         if(!$this->brief){$data['brief']=StringProcess::trimtext($data['body'], 45);}
         $data['creation_ip'] = request()->ip();
         $data['char_count'] = mb_strlen($data['body']);
+        $data['len'] = $this->check_len($data['char_count']);
         $data['use_markdown']=$this->use_markdown ? true:false;
         $data['use_indentation']=$this->use_indentation ? true:false;
         $data['user_id']=auth()->id();
         $data['thread_id']= $thread->id;
+        $data['is_anonymous']=0;
+        if($this->is_comment&&$this->reply_to_id>0){$data['is_comment']=1;}
 
         if($this->is_anonymous&&$thread->channel()->allow_anonymous){
             $data['is_anonymous']=1;
@@ -55,16 +58,19 @@ trait GeneratePostDataTraits{
         if(!in_array($post_data['type'], config('constants.with_info_component_types'))) {
             return;
         }
-        $info_data = $this->only('warning','annotation','rating','reviewee_id','reviewee_type');
-        if(array_key_exists('annotation',$info_data)){$info_data['annotation']=StringProcess::trimSpaces($info_data['annotation']);}
-        if(array_key_exists('warning',$info_data)){$info_data['warning']=StringProcess::trimSpaces($info_data['warning']);}
+        $info_data = $this->only('warning','annotation','rating','reviewee_id','reviewee_type','summary');
+        if(array_key_exists('annotation',$info_data)){$info_data['annotation']=StringProcess::check_html_tag($info_data['annotation']);}
+        if(array_key_exists('warning',$info_data)){$info_data['warning']=StringProcess::check_html_tag($info_data['warning']);}
 
         $info_data['abstract']=StringProcess::trimtext($post_data['body'],150);
 
         $max_order_by = $thread->max_component_order();
         $info_data['order_by'] = $max_order_by ? $max_order_by+1 : 1;
 
-        $info_data['recommend'] = $this->recommend? true:false;
+        if($this->summary&&!in_array($this->summary,['recommend'])){
+            $info_data['summary']=null;
+        }
+
 
         if($this->reviewee_id==$thread->id&&$this->reviewee_type==='thread'){
             $info_data['reviewee_id']=0;
@@ -89,10 +95,11 @@ trait GeneratePostDataTraits{
             if($reply){
                 $data['reply_to_id'] = $reply->id;
                 $data['reply_to_brief'] = $this->reply_to_brief??$reply->brief;
-                $data['is_bianyuan']=$data['is_bianyuan']||$reply->is_bianyuan;
+                $data['reply_to_position'] = $this->reply_to_position??0;
+                $data['is_bianyuan']=$this->is_bianyuan||$reply->is_bianyuan;
                 $data['in_component_id'] = $reply->in_component_id>0?$reply->in_component_id:$reply->id;
-                if(($reply->type==='post'&&$data['char_count']<50)||$reply->type==='comment'){
-                    $data['type'] = 'comment';
+                if(($reply->type==='post'&&$data['char_count']<50)||$this->is_comment){
+                    $data['is_comment'] = 1;
                 }
                 if($reply->type==='question'&&$thread->user_id===auth()->id()){
                     $data['type'] = 'answer';
@@ -108,9 +115,10 @@ trait GeneratePostDataTraits{
     public function generateUpdatePostData($post, $thread)
     {
         $data = $this->only('body','brief','title');
-        $data['body'] = StringProcess::trimSpaces($data['body']);
+        $data['body'] = StringProcess::check_html_tag($data['body']);
         if(!$this->brief){$data['brief']=StringProcess::trimtext($data['body'], 45);}
         $data['char_count'] = mb_strlen($data['body']);
+        $data['len'] = $this->check_len($data['char_count']);
         $data['use_markdown']=$this->use_markdown ? true:false;
         $data['use_indentation']=$this->use_indentation ? true:false;
         $data['edited_at'] = Carbon::now();
@@ -129,26 +137,28 @@ trait GeneratePostDataTraits{
             $data['is_bianyuan']=true;
         }
 
-        if($post->reply_to_id>0&&($post->type==="comment"||$post->type==="post")&&$this->type==='comment'){
-            $data['type']='comment';
+        if($post->reply_to_id>0&&$post->type==="post"){
+            $data['is_comment'] = $this->is_comment? 1:0;
         }
 
         return $data;
     }
 
-    public function generateUpdatePostInfoData($post_data, $thread)
+    public function generateUpdatePostInfoData($post_data, $thread, $post)
     {
         if(array_key_exists('type', $post_data)&&!in_array($post_data['type'], config('with_info_component_types'))) {
             return;
         }
-        $info_data = $this->only('warning','annotation','rating','reviewee_id','reviewee_type');
-        
-        if(array_key_exists('annotation',$info_data)){$info_data['annotation']=StringProcess::trimSpaces($info_data['annotation']);}
-        if(array_key_exists('warning',$info_data)){$info_data['warning']=StringProcess::trimSpaces($info_data['warning']);}
+        $info_data = $this->only('warning','annotation','rating','reviewee_id','reviewee_type','summary');
+
+        if(array_key_exists('annotation',$info_data)){$info_data['annotation']=StringProcess::check_html_tag($info_data['annotation']);}
+        if(array_key_exists('warning',$info_data)){$info_data['warning']=StringProcess::check_html_tag($info_data['warning']);}
 
         $info_data['abstract']=StringProcess::trimtext($post_data['body'],150);
 
-        $info_data['recommend'] = $this->recommend? true:false;
+        if($this->summary&&!in_array($this->summary,['recommend'])){
+            $info_data['summary']=null;
+        }
 
         if($this->reviewee_id==$thread->id&&$this->reviewee_type==='thread'){
             $info_data['reviewee_id']=0;
@@ -160,10 +170,8 @@ trait GeneratePostDataTraits{
 
     public function check_length($old_post,$post)
     {
-        if($old_post->char_count>config('constants.longcomment_length')&&$post->char_count<config('constants.longcomment_length')){
-            $post->user->retract('reduce_long_to_short');
-        }
-
+        if($old_post->char_count>config('constants.longcomment_length')&&$post->char_count<config('constants.longcomment_length'))
+        $post->user->retract('reduce_long_to_short');
     }
 
     public function validateBianyuan($post_data, $thread){
@@ -179,5 +187,19 @@ trait GeneratePostDataTraits{
             }
         }
         return $post_data;
+    }
+
+    public function check_len($len=0)
+    {
+        if($len<=0){
+            return 0;
+        }
+        if($len<50){
+            return 1;
+        }
+        if($len<200){
+            return 1;
+        }
+        return 2;
     }
 }

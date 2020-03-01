@@ -27,6 +27,7 @@ class PostBriefResource extends JsonResource
                 'is_bianyuan' => (bool)$this->is_bianyuan,
             ],
             'thread' => new ThreadBriefResource($this->whenLoaded('simpleThread')),
+            'author' => new UserBriefResource($this->whenLoaded('author')),
         ];
     }
 }

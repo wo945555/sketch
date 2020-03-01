@@ -15,10 +15,11 @@ class CreateHistoricalUserLoginsTable extends Migration
     {
         Schema::create('historical_user_logins', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id')->default(0)->index();
-            $table->dateTime('created_at')->nullable()->index();
+            $table->unsignedInteger('user_id')->default(0);
+            $table->dateTime('created_at')->nullable();
             $table->string('ip', 45)->nullable()->index();
             $table->string('device')->nullable();
+            $table->index(['user_id','created_at']);
         });
     }
 

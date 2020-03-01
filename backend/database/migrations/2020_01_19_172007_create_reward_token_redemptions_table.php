@@ -18,8 +18,7 @@ class CreateRewardTokenRedemptionsTable extends Migration
             $table->unsignedInteger('user_id')->default(0)->index();
             $table->unsignedInteger('token_id')->default(0)->index();
             $table->unsignedInteger('token_creator_id')->default(0)->index();
-            $table->dateTime('created_at')->nullable()->index();
-            $table->dateTime('deleted_at')->nullable()->index();
+            $table->dateTime('created_at')->nullable();
         });
     }
 

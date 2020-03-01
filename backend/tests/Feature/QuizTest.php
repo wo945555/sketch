@@ -16,7 +16,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class QuizTest extends TestCase
 {
-    /** @test */
+
+    /**
+     * @test
+     */
     public function get_quiz_test()
     {
 
@@ -77,8 +80,9 @@ class QuizTest extends TestCase
         $this->assertEquals($quizzes_questions,implode(",",$returned_quizzes_questions));
     }
 
-
-    /** @test **/
+    /**
+     * @test
+     */
     public function submit_quiz_test()
     {
         // 未登录时报错
@@ -195,7 +199,9 @@ class QuizTest extends TestCase
         $this->assertEquals(2, $new_user->quiz_level);
     }
 
-    /** @test **/
+    /**
+     * @test
+     */
     public function get_all_quiz_test()
     {
         // 未登录时报错
@@ -276,7 +282,9 @@ class QuizTest extends TestCase
         $response->assertJsonMissingExact(['level' => 0]);
     }
 
-    /** @test **/
+    /**
+     * @test
+     */
     public function create_quiz_test()
     {
         // 未登录时报错
@@ -436,11 +444,13 @@ class QuizTest extends TestCase
         $this->assertEquals($hint, $quiz['hint']);
 
         // 验证数据库是否更新
-        $last = Quiz::latest()->first();
+        $last = Quiz::orderBy('id','desc')->limit(1)->get()[0];
         $this->assertEquals($body, $last['body']);
     }
 
-    /** @test **/
+    /**
+     * @test
+     */
     public function update_quiz_test()
     {
         // 先插一道题

@@ -19,9 +19,9 @@ class CreateQuizOptionsTable extends Migration
             $table->string('body')->nullable();
             $table->string('explanation')->nullable();
             $table->boolean('is_correct')->default(false);
-            $table->dateTime('created_at')->nullable()->index();
-            $table->dateTime('edited_at')->nullable()->index();
-            $table->unsignedInteger('select_count')->default(0)->index();
+            $table->dateTime('created_at')->nullable();
+            $table->dateTime('edited_at')->nullable();
+            $table->unsignedInteger('select_count')->default(0);
         });
     }
 

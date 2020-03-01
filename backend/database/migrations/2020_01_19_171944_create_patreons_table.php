@@ -17,8 +17,8 @@ class CreatePatreonsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id')->default(0)->index();
             $table->string('patreon_email')->nullable()->index();
-            $table->dateTime('created_at')->nullable()->index();
-            $table->boolean('is_approved')->default(false)->index();
+            $table->dateTime('created_at')->nullable();
+            $table->boolean('is_approved')->default(false);
         });
     }
 

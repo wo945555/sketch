@@ -39,7 +39,7 @@ class ActivityResource extends JsonResource
                 'user_id' => (int) $this->user_id,
             ],
             'item' => $item,
-            'author' => new UserBriefResource($this->whenLoaded('author')),
+            'owner' => new UserBriefResource($this->whenLoaded('owner')),
         ];
     }
 

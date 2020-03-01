@@ -86,6 +86,19 @@ export namespace Database {
     deleted_at?:Timestamp;
   }
 
+  export interface PostInfo {
+    order_by:number;
+    abstract:string;
+    previous_id:number;
+    next_id:number;
+    reviewee_id:number;
+    reviewee_type:string;
+    rating:number;
+    redirect_count:number;
+    author_attitude:number;
+    summary:string;
+  }
+
   export interface Thread {
     id?:Increments;
     user_id?:Increments;
@@ -219,16 +232,5 @@ export namespace Database {
     keep_updated?:boolean;
     is_updated?:boolean;
   }
-
-  export interface Review {
-    id?:Increments;
-    thread_id?:UInt;
-    recommend?:boolean;
-    long?:boolean;
-    author_disapprove?:boolean;
-    editor_recommend?:boolean;
-    rating?:UInt;
-    redirect_count?:UInt;
-
-  }
+  
 }

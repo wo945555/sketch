@@ -119,8 +119,45 @@ export class DB {
   public getPageHomeThread () {
     return this._get('/homethread');
   }
-  public getPageHomeBook () {
-    return this._get('/homebook');
+  public getBooks (spec:{
+    channel:number[],
+    page?:number;
+    withBianyuan?:boolean;
+    ordered?:ReqData.Thread.ordered;
+    withTag?:number[][];
+    excludeTag?:number[];
+  }) {
+    const query = {};
+    if (this.user.isLoggedIn()) {
+      if (spec.page && spec.page > 1) {
+        query['page'] = spec.page;
+      }
+
+      if (spec.channel
+        && spec.channel.length === 1
+        && spec.channel[0] <= 2
+      ) {
+        query['inChannel'] = spec.channel[0];
+      }
+
+      if (spec.withBianyuan) {
+        query['withBianyuan'] = 'include_bianyuan';
+      }
+
+      if (spec.ordered && spec.ordered !== ReqData.Thread.ordered.default) {
+        query['ordered'] = spec.ordered;
+      }
+
+      if (spec.excludeTag && spec.excludeTag.length > 0) {
+        query['excludeTag'] = spec.excludeTag.join('-');
+      }
+
+      if (spec.withTag && spec.withTag.length > 0) {
+        query['withTag'] = spec.withTag.map((tagsOr) => tagsOr.join('_')).join('-');
+      }
+    }
+
+    return this._get('/book', { query });
   }
 
   // follow system
@@ -194,7 +231,7 @@ export class DB {
       },
     });
   }
-  public getMessages (
+  public getMessages = (
     query:{
       withStyle:ReqData.Message.style;
       chatWith?:Increments;
@@ -202,13 +239,13 @@ export class DB {
       read?:ReqData.Message.read;
     },
     id:number = this.user.id,
-  ) {
+  ) => {
     return this._get(`/user/$0/message`, {
       pathInsert: [id],
       query,
     });
   }
-  public getPublicNotice () {
+  public getPublicNotice = () => {
     return this._get('/publicnotice', {
       errorCodes: [401],
     });
@@ -219,6 +256,12 @@ export class DB {
         body: content,
       },
       errorCodes: [403],
+    });
+  }
+  public getActivities = (id:number = this.user.id) => {
+    return this._get(`/user/$0/activity`, {
+      pathInsert: [id],
+      errorCodes: [401, 403, 404],
     });
   }
 
@@ -257,6 +300,7 @@ export class DB {
       },
     });
   }
+  // get votes for a votable item
   public getVotes (type:ReqData.Vote.type, id:number, attitude?:ReqData.Vote.attitude) {
     return this._get('/vote', {
       query: {
@@ -264,6 +308,12 @@ export class DB {
         votable_id: id,
         attitude,
       },
+    });
+  }
+  // get votes received by a user
+  public getUserVotes (userId:number) {
+    return this._get('/user/$0/vote_received', {
+      pathInsert: [userId],
     });
   }
   public deleteVote (voteId:number) {
@@ -428,5 +478,11 @@ export class DB {
   public getNoTongrenTags () {
     // fixme:
     return new Promise<[]>((resolve) => resolve([]));
+  }
+  public getAllTags () {
+    return this._get('/config/allTags');
+  }
+  public getAllChannels () {
+    return this._get('/config/allChannels');
   }
 }

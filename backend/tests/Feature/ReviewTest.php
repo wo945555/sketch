@@ -38,11 +38,10 @@ class ReviewTest extends TestCase
             'is_anonymous' => true,
             'use_markdown' => true,
             'use_indentation' => false,
-            'recommend' => false,
+            'summary' => 'recommend',
             'rating' => 3,
             'type' => 'review',
         ];
-        $data['body'] = StringProcess::trimSpaces($data['body']);
         $response = $this->post('api/thread/'.$list->id.'/post', $data)
         ->assertStatus(200)
         ->assertJson([
@@ -50,17 +49,17 @@ class ReviewTest extends TestCase
             'data' => [
                 'type' => 'post',
                 'attributes' => [
+                    'post_type' => 'review',
                     'title' => $data['title'],
                     'body' => $data['body'],
                     'brief' => $data['brief'],
-                    //'use_markdown' => $data['use_markdown'],
                     'use_indentation' => $data['use_indentation'],
                 ],
                 'info' => [
                     'type' => 'post_info',
                     'attributes' => [
                         'reviewee_id' => $reviewee->id,
-                        'recommend' => $data['recommend'],
+                        'summary' => $data['summary'],
                         'rating' => $data['rating'],
                     ],
                     'reviewee' => [
@@ -83,11 +82,10 @@ class ReviewTest extends TestCase
             'body'=> '改改是人性的堕落还是丧失？',
             'use_markdown' => true,
             'use_indentation' => false,
-            'recommend' => true,
             'rating' => 3,
             'type' => 'review',
+            'summary' =>'',
         ];
-        $data['body'] = StringProcess::trimSpaces($data['body']);
         $content = $response->decodeResponseJson();
         $response = $this->patch('api/post/'.$content['data']['id'], $data)
         ->assertStatus(200)
@@ -96,6 +94,7 @@ class ReviewTest extends TestCase
             'data' => [
                 'type' => 'post',
                 'attributes' => [
+                    'post_type' => 'review',
                     'title' => $data['title'],
                     'body' => $data['body'],
                     'brief' => $data['brief'],
@@ -106,7 +105,7 @@ class ReviewTest extends TestCase
                     'type' => 'post_info',
                     'attributes' => [
                         'reviewee_id' => $reviewee->id,
-                        'recommend' => $data['recommend'],
+                        'summary' => $data['summary'],
                         'rating' => $data['rating'],
                     ],
                 ],

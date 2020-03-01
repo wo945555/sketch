@@ -13,6 +13,11 @@ class Activity extends Model
     	return $this->morphTo();
     }
 
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id','level');
+    }
+
     public function scopeWithType($query,$type='')
     {
         return $query->where('item_type',$type);

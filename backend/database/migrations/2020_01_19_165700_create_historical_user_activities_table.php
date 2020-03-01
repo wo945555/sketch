@@ -15,9 +15,10 @@ class CreateHistoricalUserActivitiesTable extends Migration
     {
         Schema::create('historical_user_activities', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id')->default(0)->index();
+            $table->unsignedInteger('user_id')->default(0);
             $table->string('ip', 45)->nullable()->index();
-            $table->dateTime('created_at')->nullable()->index();
+            $table->dateTime('created_at')->nullable();
+            $table->index(['user_id','created_at']);
         });
     }
 
