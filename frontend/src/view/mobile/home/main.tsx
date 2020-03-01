@@ -9,6 +9,7 @@ import { RoutePath } from '../../../config/route-path';
 import { ChannelPreview } from '../../components/home/channel-preview';
 import { Button } from '../../components/common/button';
 import { Colors } from '../../theme/theme';
+import { HomeworkPreview } from '../../components/home/homework-preview';
 import './main.scss';
 
 interface State {
@@ -59,6 +60,12 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
         }))}
         goToThread={(id) => this.props.core.route.thread(id)}
       />
+
+      <HomeworkPreview homeworks={this.state.data.homeworks}
+        onHomeworkClick={(id:number) => {/* TODO */}}
+        onMoreClick={() => {/* TODO */}}
+      />
+
       <ChannelPreview
         title={'原创榜单'}
         threads={this.state.data.channel_threads[0].threads.map((thread) => ({
