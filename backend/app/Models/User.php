@@ -495,10 +495,6 @@ class User extends Authenticatable
         return $level;
     }
 
-    public function complement_qiandao()
-    {
-        $this->info->complement_qiandao();
-    }
 
     public function admin_reset_password()
     {

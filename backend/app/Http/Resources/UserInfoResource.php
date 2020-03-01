@@ -37,7 +37,7 @@ class UserInfoResource extends JsonResource
                     'qiandao_reward_limit' => (int)$this->qiandao_reward_limit,
                     // TODO email_verified_at
                 ]),
-                $this->mergeWhen(auth('api')->check() && auth('api')->user()->isAdmin()), [ // 这部分是仅管理可见的
+                $this->mergeWhen(auth('api')->check() && auth('api')->user()->isAdmin(), [ // 这部分是仅管理可见的
                     // TODO
                     // collection 相关统计collection_total_count etc.
                     // collection_ip
