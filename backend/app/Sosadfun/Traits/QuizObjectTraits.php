@@ -182,6 +182,7 @@ trait QuizObjectTraits{
             $new_quiz = $orig_quiz->refresh();
             $orig_quiz->quiz_options()->delete();
         }
+        $quiz_options = [];
         foreach ($quiz['option'] as $index => $option) {
             $option_data = [
                 'quiz_id' => $new_quiz->id,
@@ -189,8 +190,9 @@ trait QuizObjectTraits{
                 'explanation' => $option['explanation'],
                 'is_correct' => $option['is_correct'] ?? false
             ];
-            QuizOption::create($option_data);
+            $quiz_options[] = QuizOption::create($option_data);
         }
+        $new_quiz['quiz_options'] = $quiz_options;
         return $new_quiz;
     }
 

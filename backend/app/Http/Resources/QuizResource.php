@@ -38,12 +38,12 @@ class QuizResource extends JsonResource
         }
         $is_admin = auth('api')->check() && auth('api')->user() && auth('api')->user()->isAdmin();
         $include_answer = in_array($this->type, config('constants.quiz_has_option')) && ($this->include_answer || $is_admin);
-        $answers = $this->whenLoaded('quiz_options');
+        $quiz_options = collect($this->quiz_options) ?? $this->whenLoaded('quiz_options');
         $correct_answer = [];
         $options = [];
         if (in_array($this->type, config('constants.quiz_has_option'))) {
-            $correct_answer = $answers->where('is_correct',true)->pluck('id')->toArray();
-            $options = new QuizOptionCollection($this->whenLoaded('quiz_options'),$include_answer);
+            $correct_answer = $quiz_options->where('is_correct',true)->pluck('id')->toArray();
+            $options = new QuizOptionCollection($quiz_options,$include_answer);
         }
         return [
             'type' => $quiz_type,
