@@ -29,6 +29,7 @@ class UserInfoResource extends JsonResource
                 $this->mergeWhen(auth('api')->check() && (auth('api')->user()->isAdmin()||auth('api')->id()===$this->user_id), [ // 这部分是仅自己或管理可见的
                     'qiandao_continued' => (int)$this->qiandao_continued,
                     'qiandao_all' => (int)$this->qiandao_all,
+                    'qiandao_last' => (int)$this->qiandao_last,
                     'qiandao_at' => Carbon::parse($this->qiandao_at)->diffForHumans(),
                     'register_at' => Carbon::parse($this->user->created_at)->diffForHumans(),
                     'invitor_id' => (int)$this->invitor_id,

@@ -10,13 +10,14 @@ trait QiandaoTrait
 		$info = $this->info;
 
 		// 计算连续签到天数
+		// QUESTION: why not subhour 2 here
 		if ($info->qiandao_at > Carbon::now()->subDays(2)) {
 			$info->qiandao_continued+=1;
-			if($info->qiandao_continued>$info->qiandao_max){$info->qiandao_max = $info->qiandao_continued;}
 		}else{
 			$info->qiandao_last = $info->qiandao_continued;
 			$info->qiandao_continued=1;
 		}
+		if($info->qiandao_continued>$info->qiandao_max){$info->qiandao_max = $info->qiandao_continued;}
 		$info->qiandao_all+=1;
 		\App\Models\Checkin::create(['user_id' => $this->id]);
 
@@ -37,7 +38,7 @@ trait QiandaoTrait
 			if($reward_base > 5){$reward_base = 5;}
 			$special_reward = true;
 		}
-		$info->rewardData(5*$reward_base, 1*$reward_base, 0);
+		$info->rewardData(5*$reward_base, $reward_base, 0);
 
 		$data['checkin_reward'] = [
 			'special_reward' => $special_reward,
@@ -51,9 +52,7 @@ trait QiandaoTrait
 		$info->message_limit = $this->level-4;
 		$info->save();
 
-		if($this->checklevelup()){
-			$data['levelup'] = true;
-		}
+		$data['levelup'] = $this->checklevelup();
 
 		// frontend can detect if user can complement checkin on its own
 		return $data;
@@ -63,8 +62,13 @@ trait QiandaoTrait
 	public function complement_qiandao()
     {
 				$info = $this->info;
-        $info->qiandao_reward_limit-=1;
-        $info->qiandao_continued = $info->qiandao_last+1;
+				$info->qiandao_reward_limit-=1;
+				// QUESTION: 原代码是$this->qiandao_continued = $this->qiandao_last+1;
+				// 我觉得原来的是错的
+				$info->qiandao_continued = $info->qiandao_last + $info->qiandao_continued;
+				if($info->qiandao_continued>$info->qiandao_max){
+					$info->qiandao_max = $info->qiandao_continued;
+				}
         $info->qiandao_last = 0;
         $info->save();
     }

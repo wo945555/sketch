@@ -24,10 +24,10 @@ class CheckinResource extends JsonResource
             'attributes' => [
                 'levelup' => (boolean)$this['levelup'],
                 'checkin_reward' => [
-                  (boolean)$checkin_reward['special_reward'],
-                  (int)$checkin_reward['salt'],
-                  (int)$checkin_reward['fish'],
-                  (int)$checkin_reward['ham'],
+                    'special_reward' => (boolean)$checkin_reward['special_reward'],
+                    'salt' => (int)$checkin_reward['salt'],
+                    'fish' => (int)$checkin_reward['fish'],
+                    'ham' => (int)$checkin_reward['ham'],
                 ]
             ],
             'info' => new UserInfoResource($this['user_info']),
