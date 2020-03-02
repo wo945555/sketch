@@ -23,6 +23,8 @@
             display: flex;
             flex-direction: column;
             border-radius: 4px;
+            width: 80px;
+            height: 100px;
             min-width: 80px;
             min-height: 100px;
             background-color: var(--color-bg-front);
@@ -66,7 +68,6 @@
                     }
                 }
                 .footer {
-                    text-align: end;
                     font-size: var(--font-size-small);
                     color: var(--color-font-light);
                     i {
