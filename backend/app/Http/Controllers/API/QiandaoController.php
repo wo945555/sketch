@@ -20,7 +20,7 @@ class QiandaoController extends Controller
         $info = $user->info;
         // QUESTION: why subHour(2), does it mean that a new day starts at 22:00?
         if($info->qiandao_at > Carbon::today()->subHours(2)->toDateTimeString()){
-            return response()->error('你已领取奖励，请勿重复签到', 409);
+            return response()->error('已领取奖励，请勿重复签到', 409);
         }
         $checkin_result = $user->qiandao();
         return response()->success(new CheckinResource($checkin_result));
@@ -33,7 +33,7 @@ class QiandaoController extends Controller
         if (!$user) { return response()->error('用户未登录。', 401); }
         $info = $user->info;
         if($info->qiandao_reward_limit <= 0){
-            return response()->error('你的补签额度不足', 412);
+            return response()->error('补签额度不足', 412);
         }
 
         // QUESTION：我觉得这一段是错的额... qiandao_last记得是上一次断签是连续的日子

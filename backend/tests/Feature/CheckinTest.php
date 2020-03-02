@@ -12,24 +12,24 @@ class CheckinTest extends TestCase
 {
 
 	/** @test */
-    public function a_guest_can_not_check_in()
-    {
+  public function a_guest_can_not_check_in()
+  {
 		$this->get('api/qiandao')->assertStatus(401);
 		$this->get('api/qiandao/complement')->assertStatus(401);
 	}
 	
 	/** @test */
     // user can check in
-    public function user_can_checkin()
-    {
-        $user = factory('App\Models\User')->create();
+  public function user_can_checkin()
+  {
+    $user = factory('App\Models\User')->create();
 		$this->actingAs($user, 'api');
 		
 		$response = $this->get('api/qiandao')
 			->assertStatus(200)
-            ->assertJsonStructure([
-                "code",
-                "data" => [
+        ->assertJsonStructure([
+          "code",
+          "data" => [
 					"type",
 					"attributes" => [
 						"levelup",
@@ -41,8 +41,8 @@ class CheckinTest extends TestCase
 						]	
 					],
 					"info"
-                ]
-			]);
+          ]
+				]);
 
 		$attributes = $response->decodeResponseJson()["data"]["attributes"];
 		$expected = [
@@ -56,18 +56,18 @@ class CheckinTest extends TestCase
 
 		// check if UserInfo is updated in db
 		$info = UserInfo::find($user->id);
-        $this->assertEquals(1, $info->qiandao_max);
-        $this->assertEquals(1, $info->qiandao_continued);
-        $this->assertEquals(1, $info->qiandao_all);
+    $this->assertEquals(1, $info->qiandao_max);
+		$this->assertEquals(1, $info->qiandao_continued);
+		$this->assertEquals(1, $info->qiandao_all);
 		$this->assertEquals(5, $info->salt);
-        $this->assertEquals(1, $info->fish);		
+    $this->assertEquals(1, $info->fish);		
 		$this->assertEquals(0, $info->ham);		
 	}
 
 	/** @test */
-    // user cannot check in twice in the same day
-    public function user_can_not_checkin_twice()
-    {
+  // user cannot check in twice in the same day
+  public function user_can_not_checkin_twice()
+  {
 		$user = factory('App\Models\User')->create();
 		$this->actingAs($user, 'api');
 		
@@ -84,7 +84,7 @@ class CheckinTest extends TestCase
 
 	/** @test */
 	public function user_checkin_continousely_for_10_days()
-    {
+	{
 		$user = factory('App\Models\User')->create();
 		$this->actingAs($user, 'api');
 		
@@ -130,11 +130,11 @@ class CheckinTest extends TestCase
 		// 5*9 + 15 = 60 salt, 
 		// 1*9 + 3 = 12 fish
 		$info = UserInfo::find($user->id);
-        $this->assertEquals(10, $info->qiandao_max);
-        $this->assertEquals(10, $info->qiandao_continued);
-        $this->assertEquals(10, $info->qiandao_all);
+    $this->assertEquals(10, $info->qiandao_max);
+    $this->assertEquals(10, $info->qiandao_continued);
+    $this->assertEquals(10, $info->qiandao_all);
 		$this->assertEquals(60, $info->salt);
-        $this->assertEquals(12, $info->fish);
+    $this->assertEquals(12, $info->fish);
 		$this->assertEquals(0, $info->ham);
 		
 		$u = User::find($user->id);
@@ -146,8 +146,8 @@ class CheckinTest extends TestCase
 	}
 	
 	/** @test */
-    public function user_can_complement_checkin()
-    {
+  public function user_can_complement_checkin()
+  {
 		$user = factory('App\Models\User')->create();
 		$this->actingAs($user, 'api');
 		
@@ -186,7 +186,7 @@ class CheckinTest extends TestCase
 		// check db
 		$info = UserInfo::find($user->id);
 		$this->assertEquals(11, $info->qiandao_max);
-        $this->assertEquals(11, $info->qiandao_continued);
+    $this->assertEquals(11, $info->qiandao_continued);
 		$this->assertEquals(11, $info->qiandao_all);
 		$this->assertEquals(0, $info->qiandao_last);
 		
