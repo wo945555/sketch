@@ -6,9 +6,27 @@ use App\Models\UserInfo;
 use App\Models\User;
 use APP\Models\Checkin;
 use Carbon;
+use Cache;
 
 class CheckinTest extends TestCase
 {
+    // helper
+    // why the method is needed:
+    // checkin API has very strict throttle rate limit (1 request per min)
+    // the throttle feature is based on Illuminate/Routing/Middleware/ThrottleRequests
+    // which uses Illuminate\Cache\RateLimiter
+    // the RateLimiter stores user's attemp count (the number of API requests) in cache and set it to expire in 1 min.
+    // as the cache record will expire in 1 min, the request quote will reset after 1 min
+    // however, when we use Carbon to modify system time, we did not clean up the cache
+    // as a workaround, we manually clean up the cache
+    private function clearThrottleCache($user, $prefix){
+        $key = $prefix.sha1($user->id);
+        // Reset the number of attempts for the given key.
+        Cache::forget($key);
+        Cache::forget($key.':timer');
+        // error_log(cache($key).' |cache key| '.cache($key.':timer'));
+
+    }
 
     /** @test */
     public function a_guest_can_not_check_in()
@@ -17,6 +35,19 @@ class CheckinTest extends TestCase
             ->assertStatus(401);
         $this->get('api/qiandao/complement')
             ->assertStatus(401);
+    }
+
+    // rate limit
+    /** @test */
+    public function user_can_only_checkin_once_per_min()
+    {
+        $user = factory('App\Models\User')->create();
+        $this->actingAs($user, 'api');
+
+        $this->get('api/qiandao')
+            ->assertStatus(200);
+        $this->get('api/qiandao')
+            ->assertStatus(429);    // too many request
     }
 
     /** @test */
@@ -55,15 +86,23 @@ class CheckinTest extends TestCase
         Carbon::setTestNow(Carbon::create(2020, 01, 10, 10));
         $response = $this->get('api/qiandao')
             ->assertStatus(200);
+        
+        $this->clearThrottleCache($user, 'checkin');
         Carbon::setTestNow(Carbon::create(2020, 01, 10, 11));
         $response = $this->get('api/qiandao')
             ->assertStatus(409);
+
+        $this->clearThrottleCache($user, 'checkin');
         Carbon::setTestNow(Carbon::create(2020, 01, 10, 12));
         $response = $this->get('api/qiandao')
             ->assertStatus(409);
+
+        $this->clearThrottleCache($user, 'checkin');
         Carbon::setTestNow(Carbon::create(2020, 01, 11, 10)); // a new day
         $response = $this->get('api/qiandao')
             ->assertStatus(200);
+        
+        $this->clearThrottleCache($user, 'checkin');
         Carbon::setTestNow();
     }
 
@@ -102,6 +141,8 @@ class CheckinTest extends TestCase
             {
                 $this->assertEquals(true, $checkin_result["levelup"]);
             }
+
+            $this->clearThrottleCache($user, 'checkin');
         }
 
         // check db
@@ -135,14 +176,15 @@ class CheckinTest extends TestCase
         $this->get('api/qiandao/complement')
             ->assertStatus(412);
 
-        $user
-            ->info->qiandao_reward_limit = 3;
-        $user
-            ->info
-            ->save();
+        $user->info->qiandao_reward_limit = 3;
+        $user->info->save();
+        
+        Carbon::setTestNow(Carbon::now()->addMinute());
+        $this->clearThrottleCache($user, 'comp_checkin');
         // no break before
         $this->get('api/qiandao/complement')
             ->assertStatus(412);
+        $this->clearThrottleCache($user, 'comp_checkin');
 
         // check in continously for 5 days
         for ($x = 1;$x <= 5;$x++)
@@ -150,6 +192,7 @@ class CheckinTest extends TestCase
             Carbon::setTestNow(Carbon::create(2020, 01, 0 + $x, 10));
             $this->get('api/qiandao')
                 ->assertStatus(200);
+            $this->clearThrottleCache($user, 'checkin');
         }
         // break for 3 days
         // check in again for 6 days
@@ -158,6 +201,7 @@ class CheckinTest extends TestCase
             Carbon::setTestNow(Carbon::create(2020, 01, 8 + $x, 10));
             $response = $this->get('api/qiandao')
                 ->assertStatus(200);
+            $this->clearThrottleCache($user, 'checkin');
 
             $info = $response->decodeResponseJson() ["data"]["info"]["attributes"];
             $this->assertEquals($x, $info["qiandao_continued"]);
@@ -170,9 +214,11 @@ class CheckinTest extends TestCase
         Carbon::setTestNow(Carbon::create(2020, 01, 8 + 7, 10));
         $this->get('api/qiandao/complement')
             ->assertStatus(200);
+        $this->clearThrottleCache($user, 'comp_checkin');
         Carbon::setTestNow(Carbon::create(2020, 01, 8 + 8, 10));
         $this->get('api/qiandao/complement')
             ->assertStatus(412);
+        $this->clearThrottleCache($user, 'comp_checkin');
 
         // check db
         $info = UserInfo::find($user->id);

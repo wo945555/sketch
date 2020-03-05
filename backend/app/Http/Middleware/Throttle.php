@@ -36,7 +36,7 @@ class Throttle extends ThrottleRequests
     public function handle($request, Closure $next, $maxAttempts = 60, $decayMinutes = 1, $prefix = '')
     {
         $key = $prefix.$this->resolveRequestSignature($request);
-        error_log($key.' '.$request->path());
+        // error_log($key.' '.$request->path());
 
         // error_log($maxAttempts.' aaaa');
         $maxAttempts = $this->resolveMaxAttempts($request, $maxAttempts);
