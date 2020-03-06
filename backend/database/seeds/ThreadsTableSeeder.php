@@ -7,6 +7,7 @@ use App\Models\PostInfo;
 use Carbon\Carbon;
 use App\Models\Activity;
 use App\Models\Vote;
+use App\Models\Reward;
 
 class ThreadsTableSeeder extends Seeder
 {
@@ -59,6 +60,12 @@ class ThreadsTableSeeder extends Seeder
                             'votable_id' => $post->id,
                             'votable_type' => 'post'
                         ]);
+                        // seed rewards for post
+                        $votes = factory(Reward::class)->create([
+                            'receiver_id' => $post->user_id,
+                            'rewardable_id' => $post->id,
+                            'rewardable_type' => 'post'
+                        ]);
                     });
                 }
                 if($channel->type ==='list'){
@@ -97,6 +104,12 @@ class ThreadsTableSeeder extends Seeder
                             'votable_id' => $post->id,
                             'votable_type' => 'post'
                         ]);
+                        // seed rewards for post
+                        $votes = factory(Reward::class)->create([
+                            'receiver_id' => $post->user_id,
+                            'rewardable_id' => $post->id,
+                            'rewardable_type' => 'post'
+                        ]);
                     });
                 }
                 // seed votes for thread
@@ -104,6 +117,12 @@ class ThreadsTableSeeder extends Seeder
                     'receiver_id' => $thread->user_id,
                     'votable_id' => $thread->id,
                     'votable_type' => 'thread'
+                ]);
+                // seed rewards for thread
+                $votes = factory(Reward::class)->create([
+                    'receiver_id' => $thread->user_id,
+                    'rewardable_id' => $thread->id,
+                    'rewardable_type' => 'thread'
                 ]);
             });
         }

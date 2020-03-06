@@ -16,7 +16,7 @@ class RewardResource extends JsonResource
     {
         $author = [];
         $receiver = [];
-        if($this->showUser($this)){
+        if($this->showUser()){
             $author = new UserBriefResource($this->whenLoaded('author'));
             $receiver = new UserBriefResource($this->whenLoaded('receiver'));
         }
@@ -36,11 +36,14 @@ class RewardResource extends JsonResource
             'receiver' => $receiver,
         ];
     }
-    private function isOwnReward($user_id){
-        return auth('api')->id()===$user_id;
+    private function isOwnReward(){
+        return auth('api')->id()===$this->user_id;
+    }
+    private function isRewardForMe(){
+        return auth('api')->id()===$this->receiver_id;
     }
 
-    private function showUser($vote){
-        return $this->isOwnReward($vote->user_id)||auth('api')->user()->isAdmin();
+    private function showUser(){
+        return $this->isOwnReward()||$this->isRewardForMe()||auth('api')->user()->isAdmin();
     }
 }
