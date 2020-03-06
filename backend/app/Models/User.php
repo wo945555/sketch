@@ -19,7 +19,6 @@ class User extends Authenticatable
     use SoftDeletes;
     use Notifiable;
     use HasApiTokens;
-    use Traits\QiandaoTrait;
     use FindThreadTrait;
     use Traits\UserHomeworkTraits;
 

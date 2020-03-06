@@ -36,14 +36,11 @@ class Throttle extends ThrottleRequests
     public function handle($request, Closure $next, $maxAttempts = 60, $decayMinutes = 1, $prefix = '')
     {
         $key = $prefix.$this->resolveRequestSignature($request);
-        // error_log($key.' '.$request->path());
 
-        // error_log($maxAttempts.' aaaa');
         $maxAttempts = $this->resolveMaxAttempts($request, $maxAttempts);
 
         if ($this->limiter->tooManyAttempts($key, $maxAttempts)) {
             $retryAfter = $this->getTimeUntilNextRetry($key);
-            // error_log('retryAfterBBB'.$retryAfter);
             $response = response()->error('Too Many Attempts.', 429);
             return $this->addHeaders(
                 $response,
@@ -52,12 +49,10 @@ class Throttle extends ThrottleRequests
                 $retryAfter
             );
         }
-        // error_log($decayMinutes."decay");
         $this->limiter->hit($key, $decayMinutes);
 
         $response = $next($request);
 
-        // error_log($response->headers->get('X-RateLimit-Limit').'bbbb');
         if (!$response->headers->get('X-RateLimit-Limit')){
           $this->addHeaders(
             $response, $maxAttempts,

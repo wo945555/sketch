@@ -6,12 +6,14 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CheckinResource;
 use App\Http\Resources\UserInfoResource;
+use App\Sosadfun\Traits\QiandaoTrait;
 use Auth;
 use Cache;
 use Carbon;
 
 class QiandaoController extends Controller
 {
+    use QiandaoTrait;
 
     public function qiandao()
     {
@@ -22,7 +24,7 @@ class QiandaoController extends Controller
         if($info->qiandao_at > Carbon::today()->subHours(2)->toDateTimeString()){
             return response()->error('已领取奖励，请勿重复签到', 409);
         }
-        $checkin_result = $user->qiandao();
+        $checkin_result = $this->checkin($user);
         return response()->success(new CheckinResource($checkin_result));
     }
 
@@ -47,7 +49,7 @@ class QiandaoController extends Controller
             return response()->error('未发现断签，无需补签', 412);
         }
 
-        $user->complement_qiandao();
+        $this->complement_checkin($user);
         return response()->success(new UserInfoResource($info));
     }
 }
