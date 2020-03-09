@@ -58,6 +58,7 @@ import { bbcodTestCases } from '../test/bbcode/bbcode';
 import { loadTestData, formatTestData } from '../test/bbcode/additionalTest';
 import { App } from '../view';
 import { MenuItem, Menu } from '../view/components/common/menu';
+import { HomeworkPreview } from '../view/components/home/homework-preview';
 
 const core = new Core();
 fakeDB(core.db);
@@ -357,7 +358,7 @@ storiesOf('Common Components', module)
       <MenuItem icon="fas fa-gift icon" title="打赏提醒" badgeNum={1} />
     </Menu>
   ))
-  .add('InputText', () => (React.createElement(class extends React.Component<{}, { value: string }> {
+  .add('InputText', () => (React.createElement(class extends React.Component<{}, { value:string }> {
     public state = {
       value: '',
     };
@@ -595,6 +596,34 @@ storiesOf('Home Components/HomePage', module)
             threads={items}>
         </ChannelPreview>
         </Router>;
+    }
+  }))
+  .add('HomeworkPreview', () => React.createElement(class extends React.Component {
+    public onMoreClick = () => {
+      console.log('click more');
+    }
+
+    public onHomeworkClick = (id:number) => {
+      console.log(`click id: ${id}`);
+    }
+
+    private homeworks:ResData.BriefHomework[] = [
+      {'type':'homework', 'id':5, 'attributes':{'title':'第五次作业', 'topic':'纽约客', 'level':0, 'is_active':true, 'purchase_count':0, 'worker_count':14, 'critic_count':6}},
+      {'type':'homework', 'id':4, 'attributes':{'title':'第四次作业', 'topic':'合不上的行李箱', 'level':0, 'is_active':true, 'purchase_count':0, 'worker_count':10, 'critic_count':8}},
+      {'type':'homework', 'id':3, 'attributes':{'title':'第三次作业', 'topic':'失控', 'level':0, 'is_active':true, 'purchase_count':0, 'worker_count':11, 'critic_count':23}},
+      {'type':'homework', 'id':2, 'attributes':{'title':'第二次作业', 'topic':'最大的恐惧不是死亡', 'level':0, 'is_active':false, 'purchase_count':0, 'worker_count':5, 'critic_count':14}},
+      {'type':'homework', 'id':1, 'attributes':{'title':'第一次作业', 'topic':'春天的故事', 'level':0, 'is_active':false, 'purchase_count':0, 'worker_count':7, 'critic_count':8}},
+    ];
+
+    public render() {
+      return <div style={{
+        backgroundColor:'#f4f5f9',
+      }}>
+        <HomeworkPreview
+          onHomeworkClick={this.onHomeworkClick}
+          onMoreClick={this.onMoreClick}
+          homeworks={this.homeworks}/>
+      </div>;
     }
   }))
   /*
