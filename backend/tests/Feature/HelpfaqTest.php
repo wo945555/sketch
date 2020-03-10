@@ -45,10 +45,6 @@ class HelpfaqTest extends TestCase
             "question" => "能否修改用户名？",
             "answer" => "目前不支持修改个人用户名"
         ];
-        
-        // 未登录时报错
-        $this->post('api/helpfaq', $data)
-            ->assertStatus(401);
 
         // 不是管理员时报错
         $user0 = factory('App\Models\User')->create();
