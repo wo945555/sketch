@@ -71,6 +71,7 @@ class TagController extends Controller
 
     public function update(Request $request, $id)
     {
+        // code clones in update and store, probably refactor out a common method
         $tag = ConstantObjects::findTagProfile($id);
         if(!$tag){return response()->error('标签不存在', 404);}
 
@@ -83,9 +84,18 @@ class TagController extends Controller
             'channel_id' => 'required|numeric',
             'parent_id' => 'required|numeric',
         ]);
+        if ($request->parent_id > 0){
+            $parent = ConstantObjects::findTagProfile($request->parent_id);
+            if (!$parent) {
+                return response()->error('父标签不存在', 412);
+            }
+        }
         $tag_data=$request->only('tag_name','tag_explanation','channel_id','parent_id','tag_type','is_bianyuan','is_primary');
         $tag->update($tag_data);
         ConstantObjects::refreshTagProfile($id);
+        if($tag->parent_id>0){
+            ConstantObjects::refreshTagProfile($tag->parent_id);
+        }
         return response()->success(new TagResource($tag));
     }
 
