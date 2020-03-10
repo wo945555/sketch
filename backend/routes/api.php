@@ -197,7 +197,9 @@ Route::group(['middleware' => ['throttle:60,1,all']], function () {
 
 
     // 标签系统管理
-    Route::apiResource('tag', 'API\TagController');
+    Route::resource('tag', 'API\TagController', ['only' => [
+        'index', 'store', 'edit', 'update', 'show', 'destroy'
+    ]]); 
 
     // patreon & donation record controllers
     Route::get('donation','API\DonationController@index')->name('donation.index');

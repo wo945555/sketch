@@ -14,10 +14,10 @@ class CheckAdmin
     public function handle($request, Closure $next)
     {
         if(!auth('api')->check()) {
-            abort(401);
+            return response()->error('用户未登录', 403);
         }
         if(!auth('api')->user()->isAdmin()){
-            abort(403);
+            return response()->error('需要管理员权限', 403);
         }
         return $next($request);
     }
