@@ -17,6 +17,7 @@ return [
     '417' => 'user further action reqired: needs purchase', // 作业需购买才能阅读
     '420' => 'precondition failed, nothing really done', // 因为输入的内容不可操作，实际上什么都没做
     '422' => 'validation failed',//输入的数据不符合规则，不能validate内容，
+    '429' => 'too many attempts', // throttle
     '433' => 'item is component, has to be a regular post/comment to delete', //目标物并不是普通的回帖，而是chapter/review/question/answer一类的内容，需要转换成普通post才能正常删除
     '444' => 'item or command expired, unable to perform operation', //操作已失效，比如邀请码已经使用或已失效，邀请链接已经使用，福利码已使用或已失效
     '481' => 'classification data corruption', //分类性数据冲突，比如大类信息和频道信息不能对应匹配，或不能检索到对应的大类信息，或许可以考虑更新大类信息；或者，选择回复的

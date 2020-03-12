@@ -225,10 +225,11 @@ class MessageTest extends TestCase
         $admin->role = 'admin';
         $admin->save();
         $this->actingAs($admin, 'api');
+        $title = 'notice title';
         $body = 'send this public notice';
         $unread_reminders = (int)$admin->unread_reminders;
 
-        $response = $this->post('/api/publicnotice', ['body' => $body])
+        $response = $this->post('/api/publicnotice', ['title' => $title, 'body' => $body])
         ->assertStatus(200)
         ->assertJsonStructure([
             'code',
@@ -238,6 +239,7 @@ class MessageTest extends TestCase
                     'id',
                     'attributes' => [
                         'user_id',
+                        'title',
                         'body',
                         'created_at',
                     ],
@@ -251,13 +253,14 @@ class MessageTest extends TestCase
                     'type' => 'public_notice',
                     'attributes' => [
                         'user_id' => $admin->id,
+                        'title' => $title,
                         'body' => $body,
                     ],
                 ],
             ],
         ]);
 
-        $public_notice_id = PublicNotice::orderBy('created_at', 'desc')->first()->id;
+        $public_notice_id = \App\Models\PublicNotice::latest()->first()->id;
         $latest_public_notice_id = DB::table('system_variables')->first()->latest_public_notice_id;
         $this->assertEquals($public_notice_id, $latest_public_notice_id);
     }
