@@ -17,7 +17,7 @@ class DonationController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth:api');
         $this->middleware('admin')->only('patreon_index', 'patreon_approve', 'patreon_upload');
     }
 

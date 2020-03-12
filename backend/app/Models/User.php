@@ -19,7 +19,6 @@ class User extends Authenticatable
     use SoftDeletes;
     use Notifiable;
     use HasApiTokens;
-    use Traits\QiandaoTrait;
     use FindThreadTrait;
     use Traits\UserHomeworkTraits;
 
@@ -495,10 +494,6 @@ class User extends Authenticatable
         return $level;
     }
 
-    public function complement_qiandao()
-    {
-        $this->info->complement_qiandao();
-    }
 
     public function admin_reset_password()
     {
