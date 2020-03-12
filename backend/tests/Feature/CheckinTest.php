@@ -24,6 +24,7 @@ class CheckinTest extends TestCase
         // Reset the number of attempts for the given key.
         Cache::forget($key);
         Cache::forget($key.':timer');
+        Cache::forget('checkin-user-'.$user->id);
         // error_log(cache($key).' |cache key| '.cache($key.':timer'));
 
     }
@@ -86,7 +87,7 @@ class CheckinTest extends TestCase
         Carbon::setTestNow(Carbon::create(2020, 01, 10, 10));
         $response = $this->get('api/qiandao')
             ->assertStatus(200);
-        
+
         $this->clearThrottleCache($user, 'checkin');
         Carbon::setTestNow(Carbon::create(2020, 01, 10, 11));
         $response = $this->get('api/qiandao')
@@ -101,7 +102,7 @@ class CheckinTest extends TestCase
         Carbon::setTestNow(Carbon::create(2020, 01, 11, 10)); // a new day
         $response = $this->get('api/qiandao')
             ->assertStatus(200);
-        
+
         $this->clearThrottleCache($user, 'checkin');
         Carbon::setTestNow();
     }
@@ -178,7 +179,7 @@ class CheckinTest extends TestCase
 
         $user->info->qiandao_reward_limit = 3;
         $user->info->save();
-        
+
         Carbon::setTestNow(Carbon::now()->addMinute());
         $this->clearThrottleCache($user, 'comp_checkin');
         // no break before
@@ -195,8 +196,8 @@ class CheckinTest extends TestCase
             $this->clearThrottleCache($user, 'checkin');
         }
         // break for 3 days
-        // check in again for 6 days
-        for ($x = 1;$x <= 6;$x++)
+        // check in again for 3 days
+        for ($x = 1;$x <= 3;$x++)
         {
             Carbon::setTestNow(Carbon::create(2020, 01, 8 + $x, 10));
             $response = $this->get('api/qiandao')
@@ -206,12 +207,12 @@ class CheckinTest extends TestCase
             $info = $response->decodeResponseJson() ["data"]["info"]["attributes"];
             $this->assertEquals($x, $info["qiandao_continued"]);
             $this->assertEquals($x + 5, $info["qiandao_all"]);
-            $this->assertEquals(($x > 5 ? $x : 5) , $info["qiandao_max"]);
+            $this->assertEquals(5 , $info["qiandao_max"]);
             $this->assertEquals(5, $info["qiandao_last"]);
         }
 
         // complement
-        Carbon::setTestNow(Carbon::create(2020, 01, 8 + 7, 10));
+        // Carbon::setTestNow(Carbon::create(2020, 01, 8 + 7, 10));
         $this->get('api/qiandao/complement')
             ->assertStatus(200);
         $this->clearThrottleCache($user, 'comp_checkin');
@@ -222,10 +223,52 @@ class CheckinTest extends TestCase
 
         // check db
         $info = UserInfo::find($user->id);
-        $this->assertEquals(11, $info->qiandao_max);
-        $this->assertEquals(11, $info->qiandao_continued);
-        $this->assertEquals(11, $info->qiandao_all);
+        $this->assertEquals(6, $info->qiandao_max);
+        $this->assertEquals(6, $info->qiandao_continued);
+        $this->assertEquals(8, $info->qiandao_all);
         $this->assertEquals(0, $info->qiandao_last);
+
+        Carbon::setTestNow();
+    }
+
+    // user cannot complement checkin if qiandao_continued > qiandao_last
+    /** @test */
+    public function user_cannot_complement_checin_if_curr_dur_longer(){
+        $user = factory('App\Models\User')->create();
+        $this->actingAs($user, 'api');
+
+        $user->info->qiandao_reward_limit = 3;
+        $user->info->save();
+
+        // check in continously for 3 days
+        for ($x = 1;$x <= 3;$x++)
+        {
+            Carbon::setTestNow(Carbon::create(2020, 01, 0 + $x, 10));
+            $this->get('api/qiandao')
+                ->assertStatus(200);
+            $this->clearThrottleCache($user, 'checkin');
+        }
+        // break
+        // check in again for 3 days
+        for ($x = 1;$x <= 3;$x++)
+        {
+            Carbon::setTestNow(Carbon::create(2020, 01, 8 + $x, 10));
+            $response = $this->get('api/qiandao')
+                ->assertStatus(200);
+            $this->clearThrottleCache($user, 'checkin');
+        }
+
+        // complement
+        $this->get('api/qiandao/complement')
+            ->assertStatus(412);
+        $this->clearThrottleCache($user, 'comp_checkin');
+
+        // check db
+        $info = UserInfo::find($user->id);
+        $this->assertEquals(3, $info->qiandao_max);
+        $this->assertEquals(3, $info->qiandao_continued);
+        $this->assertEquals(6, $info->qiandao_all);
+        $this->assertEquals(3, $info->qiandao_last);
 
         Carbon::setTestNow();
     }
