@@ -282,8 +282,8 @@ class RegistrationByInvitationEmailTest extends TestCase
         $body = $this->faker->text($maxNbChars = 600);
         $data['body'] = $body;
         $data['essay_id'] = -1;
-        $this->post('api/register/by_invitation_email/submit_essay', $data)
-            ->assertStatus(404);
+        $response = $this->post('api/register/by_invitation_email/submit_essay', $data)
+        ->assertStatus(404);
 
         // 拒绝未完成前序步骤的邮箱
         Artisan::call('cache:clear');

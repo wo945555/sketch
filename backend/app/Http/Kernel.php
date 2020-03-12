@@ -66,9 +66,9 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'filter_thread' => \App\Http\Middleware\FilterThread::class,
         'filter_channel' => \App\Http\Middleware\FilterChannel::class,
-        'user' => \App\Http\Middleware\CheckUser::class,
+        //'user' => \App\Http\Middleware\CheckUser::class,
         'admin' => \App\Http\Middleware\CheckAdmin::class,
-        'reviewer' => \App\Http\Middleware\CheckReviewer::class,
+        //'reviewer' => \App\Http\Middleware\CheckReviewer::class,
         'no_homework_control' => \App\Http\Middleware\NoHomeworkControl::class,
     ];
 
