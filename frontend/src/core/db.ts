@@ -27,7 +27,8 @@ export class DB {
     this.history = history;
     this.protocol = 'http';
     // this.host = 'sosad.fun'; //fixme:
-    this.host = '34.70.54.149';      // 'localhost' for test
+    this.host = '34.70.54.149';      // use db on dev server
+    // this.host = 'localhost';            // use your local db
     this.port = 8000; // for test
   }
   private _handleError (code:number|string, msg:string) {

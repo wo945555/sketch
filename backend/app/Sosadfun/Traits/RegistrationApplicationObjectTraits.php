@@ -9,15 +9,22 @@ use Auth;
 
 trait RegistrationApplicationObjectTraits{
 
-    public function refreshCheckApplicationViaEmail($email)
+    public function findApplicationViaEmail($email, $nullable=false)
     {
-        Cache::forget('checkApplicationViaEmail.'.$email);
-    }
-
-    public function findApplicationViaEmail($email)
-    {
-        return Cache::remember('findApplicationViaEmail.'.$email, 30, function() use($email) {
+        return Cache::remember('findApplicationViaEmail.'.$email, 30, function() use($email, $nullable) {
+            $message = $this->checkApplicationViaEmail($email);
+            if ($message["code"] != 200) {
+                abort($message["code"],$message["msg"]);
+            }
             $application = RegistrationApplication::where('email',$email)->first();
+            if (!$nullable) {
+                if (!$application) {
+                    abort(404,'申请记录不存在。');
+                }
+                if ($application->is_forbidden) {
+                    abort(499,'此邮箱已被拉黑。');
+                }
+            }
             return $application;
         });
     }
@@ -29,27 +36,32 @@ trait RegistrationApplicationObjectTraits{
 
     public function checkApplicationViaEmail($email)
     {
-        return Cache::remember('checkApplicationViaEmail.'.$email, 30, function() use($email) {
-            $existing_user = DB::table('users')->where('email',$email)->first();
-            if($existing_user){
-                return [
-                    'code' => 409,
-                    'msg'=>'该邮箱已注册。'
-                ];
-            }
-
-            $blocked_email = ConstantObjects::black_list_emails()->where('email',$email)->first();
-            if($blocked_email){
-                return [
-                    'code' => 499,
-                    'msg'=>'本邮箱'.$email.'存在违规记录，已被拉黑。'
-                ];
-            }
+        $existing_user = DB::table('users')->where('email',$email)->first();
+        if($existing_user){
             return [
-                'code' => 200,
-                'msg'=>'本邮箱可用。'
+                'code' => 409,
+                'msg'=>'该邮箱已注册。'
             ];
-        });
+        }
+
+        $blocked_email = ConstantObjects::black_list_emails()->where('email',$email)->first();
+        if($blocked_email){
+            return [
+                'code' => 499,
+                'msg'=>'本邮箱'.$email.'存在违规记录，已被拉黑。'
+            ];
+        }
+        return [
+            'code' => 200,
+            'msg'=>'本邮箱可用。'
+        ];
     }
 
+    public function rate_limit_check($function_name, $email=null, $ip=null) {
+        $item = $email ?? $ip;
+        if(Cache::has("Ratelimit-regapp-$function_name-$item")){
+            return abort(498,'访问过于频繁。');
+        }
+        Cache::put("Ratelimit-regapp-$function_name-$item", true, 5);
+    }
 }

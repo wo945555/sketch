@@ -38,13 +38,20 @@ class QuizResource extends JsonResource
         }
         $is_admin = auth('api')->check() && auth('api')->user() && auth('api')->user()->isAdmin();
         $include_answer = in_array($this->type, config('constants.quiz_has_option')) && ($this->include_answer || $is_admin);
+        $quiz_options = collect($this->quiz_options) ?? $this->whenLoaded('quiz_options');
+        $correct_answer = [];
+        $options = [];
+        if (in_array($this->type, config('constants.quiz_has_option'))) {
+            $correct_answer = $quiz_options->where('is_correct',true)->pluck('id')->toArray();
+            $options = new QuizOptionCollection($quiz_options,$include_answer);
+        }
         return [
             'type' => $quiz_type,
             'id' => (int)$this->id,
             'attributes' => [
                 'body' => (string)$this->body,
                 'hint' => (string)$this->hint,
-                'correct_answer' => $this->when($include_answer,$this->quiz_options->where('is_correct',true)->pluck('id')->toArray()),
+                'correct_answer' => $this->when($include_answer,$correct_answer),
                 $this->mergeWhen(auth('api')->check() && auth('api')->user() && auth('api')->user()->isAdmin(), [
                     'type' => (string)$this->type,
                     'is_online' => (bool)$this->is_online,
@@ -53,7 +60,7 @@ class QuizResource extends JsonResource
                     'correct_count' => (int)$this->correct_count,
                     'edited_at' => (string)$this->edited_at
                 ]),
-                'options' => $this->when($quiz_type != 'essay', new QuizOptionCollection($this->quiz_options,$include_answer))
+                'options' => $this->when(in_array($this->type, config('constants.quiz_has_option')), $options)
             ]
         ];
     }

@@ -27,6 +27,11 @@ class Reward extends Model
         return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id','level');
     }
 
+    public function receiver()
+    {
+        return $this->belongsTo(User::class, 'receiver_id')->select('id','name','title_id','level');
+    }
+
     public function scopeWithType($query, $type='')
     {
     	return $query->where('rewardable_type', '=', $type);
