@@ -9,11 +9,6 @@ use Auth;
 
 trait RegistrationApplicationObjectTraits{
 
-    public function refreshCheckApplicationViaEmail($email)
-    {
-        Cache::forget('checkApplicationViaEmail.'.$email);
-    }
-
     public function findApplicationViaEmail($email, $nullable=false)
     {
         return Cache::remember('findApplicationViaEmail.'.$email, 30, function() use($email, $nullable) {
@@ -41,27 +36,25 @@ trait RegistrationApplicationObjectTraits{
 
     public function checkApplicationViaEmail($email)
     {
-        return Cache::remember('checkApplicationViaEmail.'.$email, 30, function() use($email) {
-            $existing_user = DB::table('users')->where('email',$email)->first();
-            if($existing_user){
-                return [
-                    'code' => 409,
-                    'msg'=>'该邮箱已注册。'
-                ];
-            }
-
-            $blocked_email = ConstantObjects::black_list_emails()->where('email',$email)->first();
-            if($blocked_email){
-                return [
-                    'code' => 499,
-                    'msg'=>'本邮箱'.$email.'存在违规记录，已被拉黑。'
-                ];
-            }
+        $existing_user = DB::table('users')->where('email',$email)->first();
+        if($existing_user){
             return [
-                'code' => 200,
-                'msg'=>'本邮箱可用。'
+                'code' => 409,
+                'msg'=>'该邮箱已注册。'
             ];
-        });
+        }
+
+        $blocked_email = ConstantObjects::black_list_emails()->where('email',$email)->first();
+        if($blocked_email){
+            return [
+                'code' => 499,
+                'msg'=>'本邮箱'.$email.'存在违规记录，已被拉黑。'
+            ];
+        }
+        return [
+            'code' => 200,
+            'msg'=>'本邮箱可用。'
+        ];
     }
 
     public function rate_limit_check($function_name, $email=null, $ip=null) {

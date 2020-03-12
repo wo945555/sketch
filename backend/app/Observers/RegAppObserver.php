@@ -10,7 +10,7 @@ use Cache;
  */
 class RegAppObserver
 {
-    public function updated(RegistrationApplication $regapp)
+    public function saved(RegistrationApplication $regapp)
     {
         Cache::forget('findApplicationViaEmail.'.$regapp->email);
     }

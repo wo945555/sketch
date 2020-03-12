@@ -69,7 +69,6 @@ class RegAppController extends Controller
                 'email_token' => str_random(10),
                 'token' => str_random(35),
             ]);
-            $this->refreshCheckApplicationViaEmail($request->email);
         }
 
         $success['registration_application'] = new RegistrationApplicationResource($application);
@@ -85,7 +84,6 @@ class RegAppController extends Controller
             $success['essay'] = new QuizResource($essay);
         }
 
-//        $this->refreshFindApplicationViaEmail($request->email);
         return response()->success($success);
     }
 
@@ -118,7 +116,6 @@ class RegAppController extends Controller
             ]);
         }
 
-//        $this->refreshCheckApplicationViaEmail($request->email);
         $success['registration_application'] = new RegistrationApplicationResource($application);
         return response()->success($success);
     }
