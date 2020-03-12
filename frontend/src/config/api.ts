@@ -373,6 +373,20 @@ export namespace ResData {
       order_by:number;
     };
   }
+
+  export interface BriefHomework {
+    type:'homework';
+    id:number;
+    attributes:{
+      title:string;
+      topic:string;
+      level:number;
+      is_active:boolean;
+      purchase_count:number;
+      worker_count:number;
+      critic_count:number;
+    };
+  }
 }
 
 export namespace ReqData {
@@ -480,7 +494,7 @@ export namespace API {
     '/':{
       quotes:ResData.Quote[],
       recent_recommendations:ResData.Post[],
-      homeworks:ResData.Thread[],
+      homeworks:ResData.BriefHomework[],
       channel_threads:{channel_id:number, threads:ResData.Thread[]}[],
     };
     '/homethread':{
