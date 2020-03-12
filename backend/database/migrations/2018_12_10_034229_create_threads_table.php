@@ -31,6 +31,7 @@ class CreateThreadsTable extends Migration
             $table->boolean('is_public')->default(true);//是否公开
             $table->boolean('is_bianyuan')->default(false);//是否边缘限制
             $table->boolean('no_reply')->default(false);//是否禁止回复
+            $table->boolean('no_reward')->default(false);//是否不给奖励
 
             $table->boolean('use_markdown')->default(false);//是否使用md语法
             $table->boolean('use_indentation')->default(true);//是否使用段首缩进格式
