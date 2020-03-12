@@ -167,7 +167,7 @@ class QuizController extends Controller
                 $result['attribute']['is_quiz_level_up'] = true;
             }
         }else{
-            $result['quizzes'] = QuizCollection::make(Quiz::whereIn('id',collect($quiz)->pluck('id')->toArray())->get(),true);
+            $result['quizzes'] = QuizCollection::make(Quiz::with('quiz_options')->whereIn('id',collect($quiz)->pluck('id')->toArray())->get(),true);
         }
         $user_info->update([
             'quiz_questions' => null

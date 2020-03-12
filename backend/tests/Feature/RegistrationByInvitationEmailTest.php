@@ -82,8 +82,8 @@ class RegistrationByInvitationEmailTest extends TestCase
 
         // 验证是否取到了正确的题目
         $response=$response->decodeResponseJson();
-        $email = $response["data"]["registration_application"]["attributes"]["email"];
-        $quizzes_questions = RegistrationApplication::find($email)->quiz_questions;
+        $id = $response["data"]["registration_application"]["id"];
+        $quizzes_questions = RegistrationApplication::find($id)->quiz_questions;
         $returned_quizzes_questions = [];
         $this->assertCount(config('constants.registration_quiz_total'),$response["data"]["quizzes"]);
         foreach ($response["data"]["quizzes"] as $quiz) {
@@ -356,7 +356,6 @@ class RegistrationByInvitationEmailTest extends TestCase
             ]);
 
         // 验证数据库是否已被更新
-        // TODO: 就是这里
         $regapp = RegistrationApplication::where('email',$data['email'])->first();
         $this->assertEquals($body,$regapp->body);
         $this->assertNotNull($regapp->submitted_at);
@@ -459,7 +458,7 @@ class RegistrationByInvitationEmailTest extends TestCase
         $response->assertStatus(200)->assertJsonFragment(['has_quizzed' => true]);
 
         // 验证数据库中的数据
-        $db_regapp = RegistrationApplication::find($regapp->email);
+        $db_regapp = RegistrationApplication::find($regapp->id);
         $db_essay = Quiz::find($db_regapp->essay_question_id);
 
         $response->assertExactJson([

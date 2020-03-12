@@ -12,7 +12,7 @@ class RegAppObserver
 {
     public function updated(RegistrationApplication $regapp)
     {
-        Cache::put("cachedRegApp.{$regapp->email}", $regapp, 30);
+        Cache::forget('findApplicationViaEmail.'.$regapp->email);
     }
 
 }
