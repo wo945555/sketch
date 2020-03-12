@@ -82,7 +82,7 @@ class QuizController extends Controller
         $failed_quiz = [];
         DB::transaction(function () use ($request, &$succeeded_quiz, &$failed_quiz){
             foreach ($request->quizzes as $index => $quiz) {
-                $result = $this->save_quiz($quiz);
+                $result = self::save_quiz($quiz);
                 if ($result) {
                     $succeeded_quiz[] = $result;
                 } else {
@@ -94,13 +94,6 @@ class QuizController extends Controller
             'quizzes' => QuizCollection::make(collect($succeeded_quiz)),
             'failed' => $failed_quiz
         ]);
-    }
-
-    public function show($id)
-    {
-        // $quiz = Quiz::on('mysql::write')->find($id);
-        // $quiz->load('quiz_options');
-        // return view('quiz.show', compact('quiz'));
     }
 
     public function update($id, Request $request)
@@ -120,7 +113,7 @@ class QuizController extends Controller
         }
         $result = null;
         DB::transaction(function () use ($quiz, $orig_quiz, &$result) {
-            $result = $this->save_quiz($quiz, $orig_quiz);
+            $result = self::save_quiz($quiz, $orig_quiz);
         });
         if (!$result) {
             abort(422, '没有选择至少一个正确选项。');
@@ -174,69 +167,11 @@ class QuizController extends Controller
                 $result['attribute']['is_quiz_level_up'] = true;
             }
         }else{
-            $result['quizzes'] = QuizCollection::make(Quiz::whereIn('id',collect($quiz)->pluck('id')->toArray())->get(),true);
+            $result['quizzes'] = QuizCollection::make(Quiz::with('quiz_options')->whereIn('id',collect($quiz)->pluck('id')->toArray())->get(),true);
         }
         $user_info->update([
             'quiz_questions' => null
         ]);
         return response()->success($result);
     }
-
-    private function save_quiz($quiz, $orig_quiz = null) {
-        // 先检查有没有至少一个正确选项
-        if (!array_key_exists('option', $quiz)) {
-            $quiz['option'] = [];
-        }
-        $has_correct_answer = false;
-        foreach ($quiz['option'] as $option) {
-            if (array_key_exists('is_correct', $option) && $option['is_correct']) {
-                $has_correct_answer = true;
-            }
-        }
-        if (!$has_correct_answer && in_array($quiz['type'], config('constants.quiz_has_option'))) {
-            return null;
-        }
-        $quiz_data['body'] = $quiz['body'];
-        $quiz_data['quiz_level'] = $quiz['level'] ?? -1;
-        $quiz_data['hint'] = $quiz['hint'] ?? null;
-        $quiz_data['type'] = $quiz['type'];
-        $quiz_data['is_online'] = $quiz['is_online'] ?? true;
-        $new_quiz = null;
-        if (!$orig_quiz) {
-            $new_quiz = Quiz::create($quiz_data);
-        } else {
-            $orig_quiz->update($quiz_data);
-            $new_quiz = $orig_quiz->refresh();
-            $orig_quiz->quiz_options()->delete();
-        }
-        foreach ($quiz['option'] as $index => $option) {
-            $option_data = [
-                'quiz_id' => $new_quiz->id,
-                'body' => $option['body'],
-                'explanation' => $option['explanation'],
-                'is_correct' => $option['is_correct'] ?? false
-            ];
-            QuizOption::create($option_data);
-        }
-        return $new_quiz;
-    }
-
-    // private function find_quiz_answers($quiz_id)
-    // {
-    //     return $quiz_option = $this->all_quiz_answers()->filter(function($item) use ($quiz_id) {
-    //         return $item->quiz_id == $quiz_id && $item->is_correct;
-    //     })->sortBy('id')->pluck('id')->toArray();
-    // }
-    //
-    // private function select_submitted_answers($quiz_answer)
-    // {
-    //     $submitted_answers = [];
-    //     foreach($quiz_answer as $key=>$answer){
-    //         if($key!='quiz_id'){
-    //             array_push($submitted_answers, $key);
-    //         }
-    //     }
-    //     sort($submitted_answers);
-    //     return $submitted_answers;
-    // }
 }

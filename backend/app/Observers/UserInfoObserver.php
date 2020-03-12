@@ -9,8 +9,8 @@ use App\Models\UserInfo;
  */
 class UserInfoObserver
 {
-    public function updated(UserInfo $userinfo)
+    public function saved(UserInfo $userinfo)
     {
-        Cache::put("cachedUserInfo.{$userinfo->user_id}", $userinfo, 15);
+        Cache::forget("cachedUserInfo.{$userinfo->user_id}");
     }
 }

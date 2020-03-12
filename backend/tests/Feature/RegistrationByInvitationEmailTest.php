@@ -281,7 +281,7 @@ class RegistrationByInvitationEmailTest extends TestCase
         $data['email'] = 'null@null.com';
         $body = $this->faker->text($maxNbChars = 600);
         $data['body'] = $body;
-        $data['essay_id'] = 1;
+        $data['essay_id'] = -1;
         $this->post('api/register/by_invitation_email/submit_essay', $data)
             ->assertStatus(404);
 
