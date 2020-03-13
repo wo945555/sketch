@@ -50,7 +50,7 @@ class TagController extends Controller
         if ($request->parent_id > 0){
             $parent = ConstantObjects::findTagProfile($request->parent_id);
             if (!$parent) {
-                return response()->error('父标签不存在', 412);
+                abort(412, '父标签不存在');
             }
         }
         $tag_data=$request->only('tag_name', 'tag_explanation', 'channel_id', 'parent_id', 'tag_type', 'is_bianyuan','is_primary');
@@ -65,7 +65,7 @@ class TagController extends Controller
     public function show($id)
     {
         $tag = ConstantObjects::findTagProfile($id);
-        if(!$tag) return response()->error('标签不存在', 404);
+        if(!$tag) abort(404, '标签不存在');
         return response()->success(new TagResource($tag));
     }
 
@@ -73,7 +73,7 @@ class TagController extends Controller
     {
         // code clones in update and store, probably refactor out a common method
         $tag = ConstantObjects::findTagProfile($id);
-        if(!$tag){return response()->error('标签不存在', 404);}
+        if(!$tag){ abort(404, '标签不存在'); }
 
         $this->validate($request, [
             'tag_name' => 'required|string|max:10',
@@ -87,7 +87,7 @@ class TagController extends Controller
         if ($request->parent_id > 0){
             $parent = ConstantObjects::findTagProfile($request->parent_id);
             if (!$parent) {
-                return response()->error('父标签不存在', 412);
+                abort(412, '父标签不存在');
             }
         }
         $tag_data=$request->only('tag_name','tag_explanation','channel_id','parent_id','tag_type','is_bianyuan','is_primary');
@@ -102,9 +102,9 @@ class TagController extends Controller
     public function destroy($id)
     {
         $tag = ConstantObjects::findTagProfile($id);
-        if(!$tag){return response()->error('标签不存在', 404);}
+        if(!$tag){abort(404, '标签不存在');}
         if ($tag->children()->count() > 0) {
-            return response()->error('请先删除子标签', 412);
+            abort(412, '请先删除子标签');
         }
         DB::transaction(function()use($tag){
             $tag->threads()->detach();

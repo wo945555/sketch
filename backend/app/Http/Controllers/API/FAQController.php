@@ -49,7 +49,7 @@ class FAQController extends Controller
     public function update(Request $request, $id)
     {
         $faq = Helpfaq::find($id);
-        if (!$faq) {return response()->error('FAQ不存在', 404);}
+        if (!$faq) { abort(404, 'FAQ不存在'); }
         $validatedData = $request->validate([
             'question' => 'required|string|min:1|max:180',
             'answer'=>'required|string|min:1|max:2000',
@@ -62,7 +62,7 @@ class FAQController extends Controller
     public function destroy($id)
     {
         $faq = Helpfaq::find($id);
-        if (!$faq){return response()->error('FAQ不存在', 404);}
+        if (!$faq){ abort(404, 'FAQ不存在'); }
         $faq->delete();
         $this->clear_all_faqs();
         return response()->success([
