@@ -279,7 +279,11 @@ class RegistrationByInvitationEmailTest extends TestCase
         // 拒绝申请记录不存在的邮箱
         Artisan::call('cache:clear');
         $data['email'] = 'null@null.com';
-        $body = $this->faker->text($maxNbChars = 600);
+        $body='';
+        for($i=500;$i>0;$i--){
+            $character = $this->faker->randomLetter;
+            $body.=$character;
+        }
         $data['body'] = $body;
         $data['essay_id'] = -1;
         $response = $this->post('api/register/by_invitation_email/submit_essay', $data)
