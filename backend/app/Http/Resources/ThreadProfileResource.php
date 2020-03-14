@@ -29,8 +29,8 @@ class ThreadProfileResource extends JsonResource
             $tongren = new TongrenResource($this->tongren);
         }
         $component_index_brief = [];
-        if($this->component_index_brief){
-            $component_index_brief = PostIndexResource::collection($this->component_index_brief);
+        if($this->component_index){
+            $component_index_brief = PostIndexResource::collection($this->component_index);
         }
         $random_review = [];
         if($this->random_review){
