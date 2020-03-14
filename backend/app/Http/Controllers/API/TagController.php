@@ -12,12 +12,6 @@ use App\Http\Resources\TagResource;
 use DB;
 use App\Http\Resources\ThreadBriefResource;
 
-// QUESTION: as we are using soft delete for tags, probably we should add a route to restore deleted tags
-// consider the case:
-//    1. user creates tag "A",
-//    2. user deletes tag "A"
-//    3. user creates tag "A" again -> will be rejected as the name has already been used
-// probably should add route "restore" for this case
 class TagController extends Controller
 {
     public function __construct()
