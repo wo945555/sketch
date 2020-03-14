@@ -26,7 +26,7 @@ class QiandaoController extends Controller
         // a new day starts at 22:00
         if(Cache::has('checkin-user-'.$user->id) ||
             $info->qiandao_at > Carbon::today()->subHours(2)->toDateTimeString()) {
-            return response()->error('已领取奖励，请勿重复签到', 409);
+            abort(409, '已领取奖励，请勿重复签到');
         }
         Cache::put('checkin-user-'.$user->id, true, 5);
         $info = $user->info;
@@ -40,15 +40,15 @@ class QiandaoController extends Controller
         $user = auth('api')->user();
         $info = $user->info;
         if($info->qiandao_reward_limit <= 0){
-            return response()->error('补签额度不足', 412);
+            abort(412, '补签额度不足');
         }
 
         if($info->qiandao_continued >= $info->qiandao_last){
-            return response()->error('你的连续签到天数不少与上次断签天数，无需补签', 412);
+            abort(412, '你的连续签到天数不少与上次断签天数，无需补签');
         }
 
         if($info->qiandao_last == 0){
-            return response()->error('未发现断签，无需补签', 412);
+            abort(412, '未发现断签，无需补签');
         }
 
         $this->complement_checkin($user);

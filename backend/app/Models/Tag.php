@@ -15,12 +15,12 @@ class Tag extends Model
 
     public function threads()
     {
-        return $this->belongsToMany(Thread::class);
+        return $this->belongsToMany('App\Models\Thread', 'tag_thread', 'tag_id', 'thread_id');
     }
 
     public function posts()
     {
-        return $this->belongsToMany(Post::class);
+        return $this->belongsToMany('App\Models\Post', 'tag_post', 'tag_id', 'post_id');
     }
 
     public function parent()

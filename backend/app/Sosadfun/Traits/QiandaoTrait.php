@@ -5,8 +5,7 @@ namespace App\Sosadfun\Traits;
 use Carbon;
 use DB;
 
-trait QiandaoTrait
-{
+trait QiandaoTrait {
 	public function checkin($user){
 		$info = $user->info;
 		$data = [
