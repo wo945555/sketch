@@ -44,6 +44,6 @@ class RewardResource extends JsonResource
     }
 
     private function showUser(){
-        return $this->isOwnReward()||$this->isRewardForMe()||auth('api')->user()->isAdmin();
+        return $this->isOwnReward()||$this->isRewardForMe()||(auth('api')->check()&&auth('api')->user()->isAdmin());
     }
 }

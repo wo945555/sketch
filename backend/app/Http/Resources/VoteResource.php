@@ -44,7 +44,7 @@ class VoteResource extends JsonResource
     }
 
     private function showUser(){
-        return $this->isUpvote($this->attitude_type)||$this->isOwnVote($this->user_id)||auth('api')->user()->isAdmin();
+        return $this->isUpvote($this->attitude_type)||$this->isOwnVote($this->user_id)||(auth('api')->check()&&auth('api')->user()->isAdmin());
     }
 
 }
