@@ -9,6 +9,7 @@
       font-family: var(--font-family-medium);
       width: fit-content;
       border-bottom: 3px solid var(--color-primary);
+      margin-bottom: 12px;
     }
     .order {
       color: var(--color-font-light);
@@ -28,6 +29,7 @@
   .list-item {
     font-size: var(--font-size-14);
     line-height: var(--font-size-14);
+    padding: var(--margin-size-8) 0;
     .index {
       font-weight: 600;
       font-family: var(--font-family-bold);

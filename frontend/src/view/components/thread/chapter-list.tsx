@@ -21,6 +21,10 @@ export class ChapterList extends React.Component<Props, State> {
   };
 
   public render () {
+    const list = this.props.chapters.slice();
+    if (this.state.order === 'latest') {
+      list.reverse();
+    }
     return <Card className="comps-thread-chapter-list">
       <div className="title-container">
         <div className="title">章节目录</div>
@@ -32,11 +36,11 @@ export class ChapterList extends React.Component<Props, State> {
       </div>
 
       <List>
-        {this.props.chapters.map((chapter, i) => <List.Item
+        {list.map((chapter, i) => <List.Item
+            noBorder
             key={chapter.id}
             onClick={() => this.props.goChapter(chapter.id)}
           >
-            <span className="index">{i}</span>
             <span className="chapter-title">
               {chapter.attributes.title}
             </span>

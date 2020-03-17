@@ -5,7 +5,7 @@ import { NavBar } from '../common/navbar';
 export type RewardData = {
     title:string;
     brief:string;
-    rate:number; // 评分
+    rate:number; // 评分, 1-10
     suggest:boolean; //向他人推荐
     body:string;
     useMarkdown:boolean;

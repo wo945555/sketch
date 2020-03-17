@@ -8,11 +8,12 @@ import './style.scss';
 import { MarkAllAsRead } from './mark-all-as-read';
 import { Menu, MenuItem } from '../../components/common/menu';
 import { RoutePath } from '../../../config/route-path';
-import { API, ResData } from '../../../config/api';
+import { ResData } from '../../../config/api';
 import { ActivityItem } from './activity-item';
+import { DBResponse } from '../../../core/db';
 
 interface State {
-  activities:API.Get['/user/$0/activity'];
+  activities:DBResponse<'getActivities'>;
 }
 
 export class Message extends React.Component<MobileRouteProps, State> {

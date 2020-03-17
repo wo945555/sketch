@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { API, ResData } from '../../../config/api';
+import { ResData } from '../../../config/api';
 import { MobileRouteProps } from '../router';
 import { Page } from '../../components/common/page';
 import { NavBar } from '../../components/common/navbar';
-import { Card } from '../../components/common/card';
 import { ExpandableMessage } from '../../components/message/expandable-message';
+import { DBResponse } from '../../../core/db';
 
 interface State {
-  publicNoticeData:API.Get['/publicnotice'];
+  publicNoticeData:DBResponse<'getPublicNotice'>;
 }
 
 // TODO: unread

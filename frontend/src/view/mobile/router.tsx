@@ -47,12 +47,12 @@ export const MobileRoutes = {
   // '/homethread': HomeThread,
   // '/threads': HomeThread,
   // '/books': Books,
-  '/book/:id': Book,
+  [RoutePath.chapter]: Chapter,
+  [RoutePath.book]: Book,
   // '/thread/:id': Thread,
 
   // forum
   [RoutePath.forum]: Forum,
-  [RoutePath.chapter]: Chapter,
 
   // user
   [RoutePath.user]: User,

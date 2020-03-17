@@ -5,10 +5,11 @@ import { List } from '../../components/common/list';
 import { NavBar } from '../../components/common/navbar';
 import ClampLines from 'react-clamp-lines';
 import './style.scss';
-import { API, ResData } from '../../../config/api';
+import { ResData } from '../../../config/api';
+import { DBResponse } from '../../../core/db';
 
 interface State {
-  votes:API.Get['/user/$0/vote_received'];
+  votes:DBResponse<'getUserVotes'>;
 }
 
 const msgContent = '内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中内容等待API中';

@@ -11,12 +11,11 @@ type NoticeProps = {
 
 type NoticeConfig = {
     title:string;
-    detail?:string;
     noticeType:string;
     id:string;
 };
 
-type NoticeContent = string|{title:string, detail:string};
+type NoticeContent = string;
 
 enum NoticeType {
     success = 'success',
@@ -47,22 +46,13 @@ class Notice extends React.Component<NoticeProps, {}> {
     }
 }
 
-function addNotice(content:string|{title:string, detail:string}, type:string) : string {
+function addNotice(content:NoticeContent, type:string) : string {
     const id = uuid.v4();
-    if (typeof content === 'string') {
-        noticeList.push({
-            title: content,
-            noticeType: type,
-            id: id,
-        });
-    } else {
-        noticeList.push({
-            title: content.title,
-            detail: content.detail,
-            noticeType: type,
-            id: id,
-        });
-    }
+    noticeList.push({
+        title: content,
+        noticeType: type,
+        id: id,
+    });
     if (noticeList.length > 6) {
         noticeList.shift();
     }
@@ -120,6 +110,15 @@ export const notice =  {
     pending,
     closeNotice,
     requestError: (err) => {
-        return error(JSON.parse(err.message).msg);
+        try {
+            const errorMsg = JSON.parse(err.message);
+            if (errorMsg.msg) {
+                return error(errorMsg.msg);
+            } else {
+                return error('未知错误');
+            }
+        } catch (e) {
+            return error('未知错误');
+        }
     },
 };

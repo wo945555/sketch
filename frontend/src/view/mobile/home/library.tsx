@@ -3,12 +3,13 @@ import { Page } from '../../components/common/page';
 import { NavBar } from '../../components/common/navbar';
 import { RoutePath } from '../../../config/route-path';
 import { ForumMenu } from '../../components/thread/forum-menu';
-import { ReqData, API, ResData } from '../../../config/api';
+import { ReqData, ResData } from '../../../config/api';
 import { MobileRouteProps } from '../router';
 import { ThreadPreview } from '../../components/thread/thread-preview';
+import { DBResponse } from '../../../core/db';
 
 interface State {
-  data:API.Get['/book'];
+  data:DBResponse<'getBooks'>;
   onPage:number;
   ordered:ReqData.Thread.ordered;
 }
