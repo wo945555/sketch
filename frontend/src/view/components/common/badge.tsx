@@ -42,7 +42,7 @@ export class Badge extends React.Component<Props, State> {
     }
 
     return (
-      <div className="badge" style={style || {}}>
+      <div className="comps-common-badge" style={style || {}}>
         {children}
         {!hidden_value &&
         <sup className={`${style_name}`}>

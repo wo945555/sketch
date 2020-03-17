@@ -7,11 +7,11 @@
         padding-bottom: 8px;
         font-weight: bold;
         .title-left {
-            font-size: var(--font-size-3);
+            font-size: var(--font-size-16);
             line-height: 18px;
         }
         .title-right {
-            font-size: var(--font-size-2);
+            font-size: var(--font-size-14);
             color: var(--color-primary);
             line-height: 14px;
         }
@@ -36,8 +36,8 @@
                 text-align: center;
                 .tag-text {
                     font-weight: bold;
-                    font-size: var(--font-size-small);
-                    line-height: var(--font-size-small);
+                    font-size: var(--font-size-10);
+                    line-height: var(--font-size-10);
                 }
                 .is-active-tag {
                     color: var(--color-primary);
@@ -50,8 +50,8 @@
                 flex: 1;
                 display: flex;
                 flex-direction: column;
-                font-size: var(--font-size-small);
-                line-height: var(--font-size-small);
+                font-size: var(--font-size-10);
+                line-height: var(--font-size-10);
                 padding: 8px;
                 .title {
                     color: var(--color-font-light);
@@ -59,7 +59,7 @@
                 .topic-container {
                     flex: 1;
                     .topic {
-                        font-size: var(--font-size-2);
+                        font-size: var(--font-size-14);
                         line-height: 16.8px;
                         display: -webkit-box;
                         -webkit-box-orient: vertical;
@@ -68,7 +68,7 @@
                     }
                 }
                 .footer {
-                    font-size: var(--font-size-small);
+                    font-size: var(--font-size-10);
                     color: var(--color-font-light);
                     i {
                         font-size: 9px;

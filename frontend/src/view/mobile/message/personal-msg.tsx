@@ -52,7 +52,10 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
 
   public render () {
     return (<Page className="msg-page"
-        top={<NavBar goBack={this.props.core.route.back} onMenuClick={() => console.log('open setting')}>
+        top={<NavBar goBack={this.props.core.route.back}
+        menu={NavBar.MenuIcon({
+          onClick: () => console.log('open setting'),
+        })}>
           <MessageMenu/>
         </NavBar>}>
 

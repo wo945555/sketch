@@ -35,8 +35,9 @@ export class InputText extends React.Component<Props, {}> {
   }
 
   public render() {
+    const componentClassName = 'components-common-input-text';
     return <div
-      className={this.props.placeholderCentered ? 'input-text placeholder-center' : 'input-text'}
+      className={this.props.placeholderCentered ? componentClassName + ' placeholder-center' : componentClassName}
       style={this.props.style}>
       {this.props.label ? <div className="label">{this.props.label}</div> : <div />}
       <input

@@ -73,29 +73,24 @@ export class DB {
 
     const errorMsgKeys = Object.keys(spec.errorMsg || {});
 
-    const handleErrorCodes = (code:ErrorCodeKeys) => {
-      if (spec.errorMsg && errorMsgKeys.indexOf('' + code) >= 0) {
-        throw this._handleError(code, spec.errorMsg[code]);
-      }
-      if (spec.errorCodes && spec.errorCodes.indexOf(code) >= 0) {
-        throw this._handleError(code, ErrorMsg[code]);
-      }
-    };
-
-    try {
-      const response = await fetch(url, options);
-      const result = await response.json();
-      if (!result.code || !result.data) {
-        console.error('response:', result);
-        throw this._handleError(500, ErrorMsg.JSONParseError);
-      }
-      if (result.code === 200) {
-        return result.data as T;
-      }
-      throw handleErrorCodes(result.code);
-    } catch (e) {
-      throw this._handleError(501, ErrorMsg.FetchError);
+    const response = await fetch(url, options);
+    const result = await response.json();
+    if (!result.code || !result.data) {
+      console.error('response:', result);
+      throw this._handleError(500, ErrorMsg.JSONParseError);
     }
+    if (result.code === 200) {
+      return result.data as T;
+    }
+    // 特别错误提示
+    if (spec.errorMsg && errorMsgKeys.indexOf('' + result.code) >= 0) {
+      throw this._handleError(result.code, spec.errorMsg[result.code]);
+    }
+    // 通用错误提示
+    if (spec.errorCodes && spec.errorCodes.indexOf(result.code) >= 0) {
+      throw this._handleError(result.code, ErrorMsg[result.code]);
+    }
+    throw this._handleError(result.code, '未知错误');
   }
   private _get<Path extends keyof API.Get> (path:Path, ops:FetchOptions = {}) {
     return this._fetch<API.Get[Path]>(path, {method: 'GET'}, ops);
@@ -369,6 +364,11 @@ export class DB {
       },
     });
   }
+  public getThreadProfile (threadId:number) {
+    return this._get(`/thread/$0/profile`, {
+      pathInsert: [threadId],
+    });
+  }
   // public publishThread (req:{
   //     title:string;
   //     brief:string;
@@ -382,18 +382,24 @@ export class DB {
   //     return this._post( '/thread', req);
   // }
 
-  // public addPostToThread (threadId:number, post:{
-  //     body:string;
-  //     brief:string;
-  //     is_anonymous?:boolean;
-  //     majia?:string;
-  //     reply_id?:number;
-  //     use_markdown?:boolean;
-  //     use_indentation?:boolean;
-  //     is_bianyuan?:boolean;
-  // }) {
-  //     return this._post(`/thread/${threadId}/post`, post);
-  // }
+  public addPostToThread (threadId:number, post:{
+      body:string;
+      type:ReqData.Post.withType,
+      title?:string;
+      brief?:string;
+      is_anonymous?:boolean;
+      majia?:string;
+      reviewee_id?:number;
+      reviewee_type?:string;
+      reply_to_id?:number;
+      reply_to_brief?:string;
+      reply_to_position?:string;
+  }) {
+      return this._post(`/thread/$0/post`, {
+        pathInsert: [threadId],
+        body: post,
+      });
+  }
 
   // Book System
   public addChapterToThread (threadId:number, chapter:{
@@ -408,18 +414,18 @@ export class DB {
       body: chapter,
     });
   }
-  public getBook (id:number, page?:number) {
-    const query = page ? { page } : undefined;
-    return this._get('/book/$0', {
-      pathInsert: [id],
-      query,
-    });
-  }
 
   // Collection System
   public collectThread (threadId:number) {
     return this._post(`/thread/$0/collect`, {
       pathInsert: [threadId],
+      errorMsg: {
+        404: '找不到这本图书',
+        409: '已经收藏，不要重复收藏',
+        410: '不能频繁收藏',
+        413: '书籍申请删除中不能收藏',
+      },
+      errorCodes: [401],
     });
   }
   public getCollection (withType?:ReqData.Collection.type) {

@@ -32,7 +32,10 @@ export class Message extends React.Component<MobileRouteProps, State> {
   public render () {
     const history = this.props.core.history;
     return (<Page
-        top={<NavBar goBack={this.props.core.route.back} onMenuClick={() => console.log('open setting')}>
+        top={<NavBar goBack={this.props.core.route.back}
+        menu={NavBar.MenuIcon({
+          onClick: () => console.log('open setting'),
+        })}>
           <MessageMenu/>
         </NavBar>}>
 

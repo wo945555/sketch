@@ -10,7 +10,7 @@ export class Tag extends React.Component<{
   style?:React.CSSProperties;
   onClick?:() => void;
   selected?:boolean;
-  size?:'small'|'default';
+  size?:'small'|'default'|'tiny';
   color?:Colors;
   selectedColor?:Colors;
   rounded?:boolean;

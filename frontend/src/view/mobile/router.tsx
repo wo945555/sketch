@@ -20,6 +20,9 @@ import { Library } from './home/library';
 import { Collection } from './collection';
 import { ForumTags } from '../components/thread/forum-tags';
 import { Votes } from './message/votes';
+import { Book } from './forum/book';
+import { Reply } from '../components/thread/reply';
+import { Review } from '../components/thread/review';
 
 interface Props {
   core:Core;
@@ -44,7 +47,7 @@ export const MobileRoutes = {
   // '/homethread': HomeThread,
   // '/threads': HomeThread,
   // '/books': Books,
-  // '/book/:id': Book,
+  '/book/:id': Book,
   // '/thread/:id': Thread,
 
   // forum

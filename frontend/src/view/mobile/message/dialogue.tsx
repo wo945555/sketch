@@ -55,7 +55,9 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
   private messageListRef:HTMLDivElement|null = null;
   public render () {
     return (<Page className="msg-page"
-        top={<NavBar goBack={this.props.core.route.back} onMenuClick={() => console.log('open setting')}>
+        top={<NavBar goBack={this.props.core.route.back}       menu={NavBar.MenuIcon({
+          onClick: () => console.log('open setting'),
+        })}>
           {this.props.location.state && this.props.location.state.chatWithName}
         </NavBar>}>
         <Card className="dialogue-card" ref={(card) => this.messageListRef = card ? card.rootElement : null}>

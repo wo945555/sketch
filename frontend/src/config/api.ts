@@ -60,16 +60,72 @@ export namespace ResData {
     attributes:Database.Channel;
   }
 
+  export interface Reward {
+    id:number;
+    type:'reward';
+    attributes:{
+      'rewardable_type':string;
+      'rewardable_id':number;
+      'reward_value':number;
+      'reward_type':string;
+      'created_at':Timestamp;
+      'deleted_at':Timestamp;
+    };
+    author:User[];
+    receiver:User[];
+  }
+
+  export function allocReward () : Reward {
+    return {
+      id: 0,
+      type: 'reward',
+      attributes: {
+        rewardable_type: '',
+        rewardable_id: 0,
+        reward_value: 0,
+        reward_type: '',
+        created_at: '',
+        deleted_at: '',
+      },
+      author: [],
+      receiver: [],
+    };
+  }
+
+  export interface Tongren {
+    id:number;
+    type:'tongren';
+    attributes:{
+      thread_id:number;
+      tongren_yuanzhu:string;
+      tongren_CP:string;
+    };
+  }
+
+  export function allocTongren () : Tongren {
+    return {
+      id: 0,
+      type: 'tongren',
+      attributes: {
+        thread_id: 0,
+        tongren_yuanzhu: '',
+        tongren_CP: '',
+      },
+    };
+  }
+
   export interface Thread {
     type:'thread';
     id:number;
     attributes:Database.Thread;
     author:User;
-    channel?:Channel;
-    tags?:Tag[];
-    recommendations?:Recommendation[];
+    tags:Tag[];
     last_component?:Post;
     last_post?:Post;
+    component_index_brief:Post[];
+    recent_rewards:Reward[];
+    random_review:Post[];
+    tongren:Tongren[];
   }
 
   export function allocThread () : Thread {
@@ -81,6 +137,11 @@ export namespace ResData {
         channel_id: 0,
       },
       author: allocUser(),
+      component_index_brief: [],
+      recent_rewards: [],
+      random_review: [],
+      tongren: [],
+      tags: [],
     };
   }
 
@@ -561,11 +622,8 @@ export namespace API {
       posts:ResData.Post[],
       paginate:ResData.ThreadPaginate,
     };
-    '/book/$0':{
-      thread:ResData.Thread,
-      chapters:ResData.Post[],
-      paginate:ResData.ThreadPaginate,
-      most_upvoted:ResData.Post,
+    '/thread/$0/profile':{
+      // fixme:
     };
     '/collection':{ // fixme: need check
       threads:ResData.Thread[],
@@ -607,6 +665,7 @@ export namespace API {
       id:number;
     };
     '/quote':any; //fixme:
+    '/thread/$0/post':ResData.Post;
   }
 
   export interface Patch {

@@ -5,7 +5,6 @@ import { RoutePath } from '../../../config/route-path';
 import { ForumMenu } from '../../components/thread/forum-menu';
 import { ReqData, API, ResData } from '../../../config/api';
 import { MobileRouteProps } from '../router';
-import { Card } from '../../components/common/card';
 import { ThreadPreview } from '../../components/thread/thread-preview';
 
 interface State {
@@ -44,8 +43,10 @@ export class Library extends React.Component<MobileRouteProps, State> {
   public render () {
     return <Page top={<NavBar
       goBack={() => this.props.core.route.back()}
-      onMenuClick={() => this.props.core.route.go(RoutePath.search)}
-      menuIcon="fa fa-search"
+      menu={NavBar.MenuIcon({
+        onClick: () => this.props.core.route.go(RoutePath.search),
+        icon: 'fa fa-search',
+      })}
     >文库</NavBar>}>
       <ForumMenu
         core={this.props.core}

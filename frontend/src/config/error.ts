@@ -1,3 +1,6 @@
+/**
+ * 通用错误提示
+ */
 export const ErrorMsg = {
   FetchError: '请求后端错误',
   JSONParseError: 'JSON格式解析错误',

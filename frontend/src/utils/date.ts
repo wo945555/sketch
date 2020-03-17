@@ -5,3 +5,8 @@ export function parseDate (date?:Timestamp) {
   // fixme:
   return '11天前';
 }
+
+export function isNewThread (date?:Timestamp) {
+  if (!date) { return false; }
+  return (new Date(date)).getTime() - (Date.now()) <= 1000 * 3600 * 24;
+}

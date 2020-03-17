@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { classnames } from '../../../utils/classname';
 import { List } from './list';
 import { Badge } from './badge';
 import './menu.scss';
@@ -31,7 +30,7 @@ export function Menu (props:{
   children:React.ReactNode;
 }) {
   return (
-    <List className="menu">
+    <List className="components-common-menu">
       {props.children}
     </List>);
 }
