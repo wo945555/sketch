@@ -140,7 +140,7 @@ class PassportController extends Controller
             abort(499);
         }
 
-        if($requset->invitation_type==='token'){
+        if($request->invitation_type==='token'){
 
             $invitation_token = App\Models\InvitationToken::where('token', request('invitation_token'))->first();
 
