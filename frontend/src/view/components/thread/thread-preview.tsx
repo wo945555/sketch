@@ -20,7 +20,7 @@ export class ThreadPreview extends React.Component<Props, State> {
     const { attributes, id, author, tags, last_post } = this.props.data;
     const mini = this.props.mini || false; // true表示精简版， false表示非精简版
 
-    return <Card className="thread-item" key={id}>
+    return <Card className="thread-item" key={id} onClick={() => this.props.onClick(id)}>
 
     <div className="first-line">
       { !mini && tags && <span className="tags">
@@ -31,7 +31,7 @@ export class ThreadPreview extends React.Component<Props, State> {
           >{tag.attributes.tag_name}</Tag>)
         }
       </span>}
-      <div className="thread-title" onClick={() => this.props.onClick(id)}>
+      <div className="thread-title">
         {attributes.title}
       </div>
     </div>

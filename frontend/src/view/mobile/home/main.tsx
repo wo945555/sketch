@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Quotes } from '../../components/home/quotes';
-import { API } from '../../../config/api';
 import { MobileRouteProps } from '../router';
 import { Page } from '../../components/common/page';
 import { MainMenu } from '../main-menu';
@@ -11,9 +10,10 @@ import { Button } from '../../components/common/button';
 import { Colors } from '../../theme/theme';
 import { HomeworkPreview } from '../../components/home/homework-preview';
 import './main.scss';
+import { DBResponse } from '../../../core/db';
 
 interface State {
-  data:API.Get['/'];
+  data:DBResponse<'getPageHome'>;
 }
 
 export class HomeMain extends React.Component<MobileRouteProps, State> {

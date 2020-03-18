@@ -1,16 +1,17 @@
 import * as React from 'react';
-import { API, ResData, ReqData } from '../../../config/api';
+import { ResData, ReqData } from '../../../config/api';
 import { MobileRouteProps } from '../router';
 import { Page } from '../../components/common/page';
 import { NavBar } from '../../components/common/navbar';
 import { Card } from '../../components/common/card';
 import { ChatBubble } from '../../components/message/chat-bubble';
 import { TextEditor } from '../../components/common/textEditor';
+import { DBResponse } from '../../../core/db';
 
 // TODO: implement fetch new msg by scroll up: https://www.pubnub.com/blog/react-chat-message-history-and-infinite-scroll/
 
 interface State {
-  data:API.Get['/user/$0/message'];
+  data:DBResponse<'getMessages'>;
 }
 
 export class Dialogue extends React.Component<MobileRouteProps, State> {
@@ -55,7 +56,9 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
   private messageListRef:HTMLDivElement|null = null;
   public render () {
     return (<Page className="msg-page"
-        top={<NavBar goBack={this.props.core.route.back} onMenuClick={() => console.log('open setting')}>
+        top={<NavBar goBack={this.props.core.route.back}       menu={NavBar.MenuIcon({
+          onClick: () => console.log('open setting'),
+        })}>
           {this.props.location.state && this.props.location.state.chatWithName}
         </NavBar>}>
         <Card className="dialogue-card" ref={(card) => this.messageListRef = card ? card.rootElement : null}>

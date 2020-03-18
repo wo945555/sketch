@@ -9,11 +9,11 @@
   --font-family-bold: PingFangSC-Semibold;
   --font-family-medium: PingFangSC-Medium;
 
-  --font-size-small: 10px;
-  --font-size-1: 12px;
-  --font-size-2: 14px;
-  --font-size-3: 16px;
-  --font-size-4: 18px;
+  --font-size-10: 10px;
+  --font-size-12: 12px;
+  --font-size-14: 14px;
+  --font-size-16: 16px;
+  --font-size-18: 18px;
 
   // todo: base/big margin, padding ...etc
   --padding-xsmall: 8px 16px;
@@ -23,15 +23,16 @@
 
   --margin-1: 0 12px;
   --margin-2: 0 16px;  
-  --top-margin-1: 8px;
-  --top-margin-3: 16px;
+
+  --margin-size-8: 8px;
+  --margin-size-16: 16px;
 }
 
 html, body {
   padding: 0;
   margin: 0;
   font-family: var(--font-family-regular);
-  font-size: var(--font-size-1);
+  font-size: var(--font-size-12);
 }
 
 input {
@@ -50,7 +51,7 @@ a {
 }
 
 i {
-  font-size: var(--font-size-2);
+  font-size: var(--font-size-14);
 }
 
 // set h1, h2, h3, h4, h5 font-size, font-family

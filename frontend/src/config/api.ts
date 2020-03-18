@@ -60,16 +60,72 @@ export namespace ResData {
     attributes:Database.Channel;
   }
 
+  export interface Reward {
+    id:number;
+    type:'reward';
+    attributes:{
+      'rewardable_type':string;
+      'rewardable_id':number;
+      'reward_value':number;
+      'reward_type':string;
+      'created_at':Timestamp;
+      'deleted_at':Timestamp;
+    };
+    author:User[];
+    receiver:User[];
+  }
+
+  export function allocReward () : Reward {
+    return {
+      id: 0,
+      type: 'reward',
+      attributes: {
+        rewardable_type: '',
+        rewardable_id: 0,
+        reward_value: 0,
+        reward_type: '',
+        created_at: '',
+        deleted_at: '',
+      },
+      author: [],
+      receiver: [],
+    };
+  }
+
+  export interface Tongren {
+    id:number;
+    type:'tongren';
+    attributes:{
+      thread_id:number;
+      tongren_yuanzhu:string;
+      tongren_CP:string;
+    };
+  }
+
+  export function allocTongren () : Tongren {
+    return {
+      id: 0,
+      type: 'tongren',
+      attributes: {
+        thread_id: 0,
+        tongren_yuanzhu: '',
+        tongren_CP: '',
+      },
+    };
+  }
+
   export interface Thread {
     type:'thread';
     id:number;
     attributes:Database.Thread;
     author:User;
-    channel?:Channel;
-    tags?:Tag[];
-    recommendations?:Recommendation[];
+    tags:Tag[];
     last_component?:Post;
     last_post?:Post;
+    component_index_brief:Post[];
+    recent_rewards:Reward[];
+    random_review:Post[];
+    tongren:Tongren[];
   }
 
   export function allocThread () : Thread {
@@ -81,6 +137,11 @@ export namespace ResData {
         channel_id: 0,
       },
       author: allocUser(),
+      component_index_brief: [],
+      recent_rewards: [],
+      random_review: [],
+      tongren: [],
+      tags: [],
     };
   }
 
@@ -146,8 +207,13 @@ export namespace ResData {
     type:'post';
     id:number;
     attributes:Database.Post;
+    author:User;
     info:PostInfo;
     parent:Post[];
+    last_reply:null|Post;
+    recent_rewards:Reward[];
+    recent_upvotes:Post[];
+    new_replies:Post[];
     thread?:Thread;
   }
 
@@ -160,6 +226,11 @@ export namespace ResData {
       },
       info: allocPostInfo(),
       parent: [],
+      author: allocUser(),
+      last_reply: null,
+      recent_upvotes: [],
+      recent_rewards: [],
+      new_replies: [],
     };
   }
 
@@ -284,7 +355,6 @@ export namespace ResData {
       },
     };
   }
-
   export interface PublicNotice {
     type:'public_notice';
     id:number;
@@ -407,7 +477,7 @@ export namespace ReqData {
       none_bianyuan_only = 'none_bianyuan_only',
     }
 
-    export enum withType {
+    export enum Type {
       thread = 'thread',
       book = 'book',
       list = 'list', //收藏单
@@ -469,7 +539,7 @@ export namespace ReqData {
   }
 
   export namespace Post {
-    export enum withType {
+    export enum Type {
       post = 'post',
       comment = 'comment',
       chapter = 'chatper',
@@ -486,147 +556,5 @@ export namespace ReqData {
       latest_responded = 'latest_responded',
       random = 'random',
     }
-  }
-}
-
-export namespace API {
-  export interface Get {
-    '/':{
-      quotes:ResData.Quote[],
-      recent_recommendations:ResData.Post[],
-      homeworks:ResData.BriefHomework[],
-      channel_threads:{channel_id:number, threads:ResData.Thread[]}[],
-    };
-    '/homethread':{
-      [idx:string]:{
-        channel:ResData.Channel,
-        threads:ResData.Thread[],
-      },
-    };
-    '/book':{
-      threads:ResData.Thread[],
-      paginate:ResData.ThreadPaginate,
-    };
-    '/user/$0/following':{
-      user:ResData.User,
-      followings:ResData.User[],
-      paginate:ResData.ThreadPaginate,
-    };
-    '/user/$0/followingStatuses':{
-      user:ResData.User,
-      followingStatuses:ResData.User[],
-      paginate:ResData.ThreadPaginate,
-    };
-    '/user/$0/follower':{
-      user:ResData.User,
-      followers:ResData.User[],
-      paginate:ResData.ThreadPaginate,
-    };
-    '/user/$0/activity':{
-      activities:ResData.Activity[],
-      paginate:ResData.ThreadPaginate,
-    };
-    '/user/$0/message':{
-      messages:ResData.Message[],
-      paginate:ResData.ThreadPaginate,
-      style:ReqData.Message.style,
-    };
-    '/publicnotice':{
-      public_notices:ResData.PublicNotice[],
-    };
-    '/config/titles':{
-      titles:ResData.Title[],
-    };
-    '/user/$0/title':{
-      user:ResData.User,
-      titles:ResData.Title[],
-      paginate:ResData.ThreadPaginate,
-    };
-    '/user/$0/vote_received':ResData.Vote[];
-    '/vote':{
-      votes:ResData.Vote[],
-      paginate:ResData.ThreadPaginate,
-    };
-    '/thread':{
-      threads:ResData.Thread[],
-      paginate:ResData.ThreadPaginate,
-    };
-    '/thread/$0':{
-      thread:ResData.Thread,
-      posts:ResData.Post[],
-      paginate:ResData.ThreadPaginate,
-    };
-    '/thread/$0/post':{
-      thread:ResData.Thread,
-      posts:ResData.Post[],
-      paginate:ResData.ThreadPaginate,
-    };
-    '/book/$0':{
-      thread:ResData.Thread,
-      chapters:ResData.Post[],
-      paginate:ResData.ThreadPaginate,
-      most_upvoted:ResData.Post,
-    };
-    '/collection':{ // fixme: need check
-      threads:ResData.Thread[],
-      paginate:ResData.ThreadPaginate,
-    };
-    '/config/noTongrenTags':ResData.Tag[]; // fixme:
-    '/config/allTags':{
-      tags:ResData.Tag[],
-    };
-    '/config/allChannels':{
-      channels:ResData.Channel[],
-    };
-  }
-
-  export interface Post {
-    '/user/$0/follow':{
-      user:ResData.User,
-    };
-    '/message':{
-      message:ResData.Message,
-    };
-    '/groupmessage':{
-      messages:ResData.Message[],
-    };
-    '/publicnotice':{
-      public_notice:ResData.PublicNotice,
-    };
-    '/vote':ResData.Vote;
-    '/thread/$0/chapter':any; //fixme:
-    '/thread/$0/collect':ResData.Collection;
-    '/register':{
-      token:string;
-      name:string;
-      id:number;
-    };
-    '/login':{
-      token:string;
-      name:string;
-      id:number;
-    };
-    '/quote':any; //fixme:
-  }
-
-  export interface Patch {
-    '/user/$0/follow':ResData.User;
-    '/thread/$0/post/$1/turnToPost':ResData.Post;
-    '/thread/$0/synctags':{tags:number[]};
-    '/user/$0/title/$1':{
-      user:ResData.User,
-      title:ResData.Title,
-    };
-  }
-
-  export interface Delete {
-    '/user/$0/follow':{
-      user:ResData.User,
-    };
-    '/vote/$0':string;
-  }
-
-  export interface Put {
-
   }
 }

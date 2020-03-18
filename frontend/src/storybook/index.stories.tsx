@@ -552,7 +552,9 @@ storiesOf('Common Components/Navigation Bar', module)
     };
     public render () {
       return <NavBar goBack={action('goBack')}
-      onMenuClick={() => this.setState({showPopup: true})}>
+        menu={NavBar.MenuIcon({
+          onClick: () => this.setState({showPopup: true}),
+        })}>
       {text('title', 'example title')}
       {this.state.showPopup &&
         <PopupMenu
@@ -755,45 +757,30 @@ storiesOf('Thread Components', module)
   .add('list preview', () => <Card>
     <ThreadPreview
       mini={boolean('mini', false)}
-      data={{
-        type: 'thread',
-        id: 1,
-        attributes: {
-          title: randomCnWords(number('title', 20), 0.15),
-          brief: randomCnWords(number('brief', 40), 0.2),
-          view_count: number('view', 200),
-          reply_count: number('reply', 40),
-          channel_id: 1,
-        },
-        last_post: {
-          type: 'post',
+      data={(() => {
+        const thread = ResData.allocThread();
+        thread.id = 1;
+        thread.attributes.title = randomCnWords(number('title', 20), 0.15);
+        thread.attributes.brief = randomCnWords(number('brief', 40), 0.2);
+        thread.attributes.view_count = number('view', 200);
+        thread.attributes.reply_count = number('reply', 40);
+        thread.attributes.channel_id = 1;
+        thread.last_post = ResData.allocPost();
+        thread.last_post.id = 1;
+        thread.last_post.attributes.title = randomCnWords(number('post title', 40), 0.2);
+        thread.last_post.attributes.brief = randomCnWords(20);
+        thread.author.attributes.name = randomCnWords(number('author name', 3), 0),
+        thread.author.id = 1;
+        thread.tags.push({
+          type: 'tag',
           id: 1,
           attributes: {
-            title: randomCnWords(number('post title', 40), 0.2),
-            body: '',
-            brief: randomCnWords(20),
+            tag_name: '日常闲聊',
+            tag_type: '',
           },
-          info: ResData.allocPostInfo(),
-          parent: [],
-        },
-        author: {
-          id: 1,
-          attributes: {
-            name: randomCnWords(number('author name', 3), 0),
-          },
-          type: 'user',
-        },
-        tags: [
-          {
-            type: 'tag',
-            id: 1,
-            attributes: {
-              tag_name: '日常闲聊',
-              tag_type: '',
-            },
-          },
-        ],
-      }}
+        });
+        return thread;
+      })()}
       onTagClick={action('toChannelTag')}
       onClick={action('onClick')}
       onUserClick={action('onUserClick')}

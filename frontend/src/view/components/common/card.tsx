@@ -9,6 +9,7 @@ export class Card extends React.Component<{
   style?:React.CSSProperties;
   className?:string;
   title?:string|{text:string, link:string};
+  onClick?:() => void;
 }, {
   // state
   }> {
@@ -16,6 +17,7 @@ export class Card extends React.Component<{
 
     public render () {
       return <div className={classnames('card', this.props.className)}
+        onClick={this.props.onClick}
         ref={(el) => this.rootElement = el}
         style={this.props.style}>
           {this.props.title && (typeof this.props.title !== 'string' ?

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { API, ResData, ReqData } from '../../../config/api';
+import { ResData, ReqData } from '../../../config/api';
 import { MobileRouteProps } from '../router';
 import { Page } from '../../components/common/page';
 import { NavBar } from '../../components/common/navbar';
@@ -8,10 +8,11 @@ import { List } from '../../components/common/list';
 import { RoutePath } from '../../../config/route-path';
 import { MarkAllAsRead } from './mark-all-as-read';
 import { Menu, MenuItem } from '../../components/common/menu';
+import { DBResponse } from '../../../core/db';
 
 interface State {
-  messageData:API.Get['/user/$0/message'];
-  publicNoticeData:API.Get['/publicnotice'];
+  messageData:DBResponse<'getMessages'>;
+  publicNoticeData:DBResponse<'getPublicNotice'>;
 }
 
 // TODO: 管理通知: waiting for API
@@ -52,7 +53,10 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
 
   public render () {
     return (<Page className="msg-page"
-        top={<NavBar goBack={this.props.core.route.back} onMenuClick={() => console.log('open setting')}>
+        top={<NavBar goBack={this.props.core.route.back}
+        menu={NavBar.MenuIcon({
+          onClick: () => console.log('open setting'),
+        })}>
           <MessageMenu/>
         </NavBar>}>
 

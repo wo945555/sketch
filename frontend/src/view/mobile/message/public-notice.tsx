@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { API, ResData } from '../../../config/api';
+import { ResData } from '../../../config/api';
 import { MobileRouteProps } from '../router';
 import { Page } from '../../components/common/page';
 import { NavBar } from '../../components/common/navbar';
-import { Card } from '../../components/common/card';
 import { ExpandableMessage } from '../../components/message/expandable-message';
+import { DBResponse } from '../../../core/db';
 
 interface State {
-  publicNoticeData:API.Get['/publicnotice'];
+  publicNoticeData:DBResponse<'getPublicNotice'>;
 }
 
 // TODO: unread
@@ -63,7 +63,11 @@ export class PublicNotice extends React.Component<MobileRouteProps, State> {
 
   public render () {
     return (<Page className="msg-page"
-        top={<NavBar goBack={this.props.core.route.back} onMenuClick={() => console.log('open setting')}>
+        top={<NavBar goBack={this.props.core.route.back}
+        menu={NavBar.MenuIcon({
+          onClick: () => console.log('open setting'),
+        })}
+        >
           公共通知
         </NavBar>}>
         {this.state.publicNoticeData.public_notices.map((n) => this.renderNotice(n))}

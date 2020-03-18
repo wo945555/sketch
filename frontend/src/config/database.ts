@@ -126,9 +126,9 @@ export namespace Database {
     total_char?:UInt;
     responded_at?:Timestamp;
     last_post_id?:Increments;
-    added_component_at?:Timestamp;
+    add_component_at?:Timestamp;
     last_component_id?:Increments;
-    deleted_at?:Timestamp;
+    deletion_applied_at?:Timestamp;
   }
 
   export interface Vote {

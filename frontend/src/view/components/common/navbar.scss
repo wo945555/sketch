@@ -1,4 +1,4 @@
-.navbar {
+.comps-common-navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -6,11 +6,12 @@
   position: relative; 
   height: 44px;
   padding: 0 16px;
-  font-size: var(--font-size-4);
+  font-size: var(--font-size-18);
   
   .navbar-prev {
     padding: 0 8px;
     cursor: pointer;
+    font-size: var(--font-size-14);
   }
 
   .navbar-start {
@@ -19,8 +20,17 @@
     flex: 1;
   }
 
-  .navbar-menu {
+  .menu-icon, .menu-text {
     cursor: pointer;
     padding: 0 8px;
+  }
+
+  .menu-text {
+    font-size: var(--font-size-14);
+    line-height: var(--font-size-14);
+  }
+
+  .menu-text.disabled {
+    color: var(--color-font-disabled);
   }
 }

@@ -8,11 +8,12 @@ import './style.scss';
 import { MarkAllAsRead } from './mark-all-as-read';
 import { Menu, MenuItem } from '../../components/common/menu';
 import { RoutePath } from '../../../config/route-path';
-import { API, ResData } from '../../../config/api';
+import { ResData } from '../../../config/api';
 import { ActivityItem } from './activity-item';
+import { DBResponse } from '../../../core/db';
 
 interface State {
-  activities:API.Get['/user/$0/activity'];
+  activities:DBResponse<'getActivities'>;
 }
 
 export class Message extends React.Component<MobileRouteProps, State> {
@@ -32,7 +33,10 @@ export class Message extends React.Component<MobileRouteProps, State> {
   public render () {
     const history = this.props.core.history;
     return (<Page
-        top={<NavBar goBack={this.props.core.route.back} onMenuClick={() => console.log('open setting')}>
+        top={<NavBar goBack={this.props.core.route.back}
+        menu={NavBar.MenuIcon({
+          onClick: () => console.log('open setting'),
+        })}>
           <MessageMenu/>
         </NavBar>}>
 
