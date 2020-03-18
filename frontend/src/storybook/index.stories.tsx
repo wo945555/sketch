@@ -384,8 +384,8 @@ storiesOf('Common Components', module)
         onClick={() =>
           console.log('onClick')
         }
-        onKeyDown={(e) =>
-          console.log('onKeyDown', e)
+        onKeyDown={() =>
+          console.log('onKeyDown')
         }
       />;
     }
