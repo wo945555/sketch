@@ -142,22 +142,25 @@ class PassportController extends Controller
 
         if($request->invitation_type==='token'){
 
-            $invitation_token = App\Models\InvitationToken::where('token', request('invitation_token'))->first();
+            $invitation_token = \App\Models\InvitationToken::where('token', request('invitation_token'))->first();
 
-            $application = App\Models\RegistrationApplication::where('email', request('email'))->first();
+            $application = \App\Models\RegistrationApplication::where('email', request('email'))->first();
 
-            if(!$invitation_token){abort(404);}
+            if(!$invitation_token){abort(404,'邀请码不存在');}
 
             if(($invitation_token->invitation_times < 1)||($invitation_token->invite_until <  Carbon::now())){abort(444);}
 
-            $this->validator($request->all())->validate();
+            $validator = $this->validator($request->all());
+            if ($validator->fails()) {
+                return response()->error($validator->errors(), 422);
+            }
 
             $user = $this->create_by_invitation_token($request->all(), $invitation_token, $application);
 
         }
-        if($requset->invitation_type==='email'){
+        if($request->invitation_type==='email'){
 
-            $application = RegistrationApplication::where('email',request('email'))->where('token',request('token'))->first();
+            $application = \App\Models\RegistrationApplication::where('email',request('email'))->where('token',request('token'))->first();
 
             if(!$application){abort(404);}
 
@@ -165,7 +168,10 @@ class PassportController extends Controller
 
             if(!$application->is_passed){abort(444);}
 
-            $this->validator($request->all())->validate();
+            $validator = $this->validator($request->all());
+            if ($validator->fails()) {
+                return response()->error($validator->errors(), 422);
+            }
 
             $user = $this->create_by_invitation_email($request->all(), $application);
         }
