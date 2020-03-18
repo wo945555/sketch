@@ -160,13 +160,14 @@ class PassportController extends Controller
         }
         if($request->invitation_type==='email'){
 
+            if(!request('email')||!request('token')){abort(422,'缺少必要的信息，不能定位申请记录')}
             $application = \App\Models\RegistrationApplication::where('email',request('email'))->where('token',request('token'))->first();
 
-            if(!$application){abort(404);}
+            if(!$application){abort(404,'不存在对应的申请记录');}
 
-            if($application->user_id>0){abort(409);}
+            if($application->user_id>0){abort(409,'本申请已经注册，不能重复注册');}
 
-            if(!$application->is_passed){abort(444);}
+            if(!$application->is_passed){abort(444,'申请未通过');}
 
             $validator = $this->validator($request->all());
             if ($validator->fails()) {
@@ -176,7 +177,7 @@ class PassportController extends Controller
             $user = $this->create_by_invitation_email($request->all(), $application);
         }
 
-        if(!$user||!$request->invitation_type){abort(422);}
+        if(!$user||!$request->invitation_type){abort(422,'缺少注册类型信息，未能注册成功');}
 
         $success['token'] =  $user->createToken('MyApp')->accessToken;
         $success['name'] =  $user->name;
