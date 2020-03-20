@@ -3,14 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RewardTokenRedemption extends Model
 {
-    use SoftDeletes;
     const UPDATED_AT = null;
     protected $guarded = [];
-    protected $dates = ['created_at', 'deleted_at'];
+    protected $dates = ['created_at'];
 
     public function user()
     {

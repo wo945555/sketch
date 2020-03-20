@@ -9,9 +9,9 @@ use App\Models\User;
  */
 class UserObserver
 {
-    public function updated(User $user)
+    public function saved(User $user)
     {
-        Cache::put("cachedUser.{$user->id}", $user, 15);
+        Cache::forget("cachedUser.{$user->id}");
     }
 
 }

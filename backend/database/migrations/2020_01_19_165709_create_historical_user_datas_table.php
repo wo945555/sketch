@@ -15,12 +15,13 @@ class CreateHistoricalUserDatasTable extends Migration
     {
         Schema::create('historical_user_datas', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id')->default(0)->index();
-            $table->dateTime('created_at')->nullable()->index();
+            $table->unsignedInteger('user_id')->default(0);
+            $table->dateTime('created_at')->nullable();
             $table->unsignedInteger('daily_clicks')->default(0);
             $table->unsignedInteger('daily_posts')->default(0);
             $table->unsignedInteger('daily_chapters')->default(0);
             $table->unsignedInteger('daily_characters')->default(0);
+            $table->index(['user_id','created_at']);
         });
     }
 

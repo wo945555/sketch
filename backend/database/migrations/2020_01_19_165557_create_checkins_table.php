@@ -17,6 +17,7 @@ class CreateCheckinsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id')->default(0)->index();
             $table->dateTime('created_at')->index();
+            $table->index(['user_id','created_at']);
         });
     }
 

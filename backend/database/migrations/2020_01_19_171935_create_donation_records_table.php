@@ -17,14 +17,14 @@ class CreateDonationRecordsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id')->default(0)->index();
             $table->string('donation_email')->nullable()->index();
-            $table->dateTime('donated_at')->nullable()->index();
+            $table->dateTime('donated_at')->nullable();
             $table->unsignedInteger('donation_amount')->nullable()->index();
             $table->boolean('show_amount')->default(true);
             $table->boolean('is_anonymous')->default(true);
             $table->string('donation_majia', 50)->nullable();
             $table->text('donation_message')->nullable();
-            $table->string('donation_kind', 10)->nullable()->index();
-            $table->boolean('is_claimed')->default(false)->index();
+            $table->string('donation_kind', 10)->nullable();
+            $table->boolean('is_claimed')->default(false);
         });
     }
 

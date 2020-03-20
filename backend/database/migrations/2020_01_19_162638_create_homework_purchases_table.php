@@ -17,7 +17,7 @@ class CreateHomeworkPurchasesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('homework_id')->default(0)->index();
             $table->unsignedInteger('user_id')->default(0)->index();
-            $table->dateTime('created_at')->nullable()->index();
+            $table->dateTime('created_at')->nullable();
         });
     }
 

@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { MobileRouteProps } from '../router';
-import { API, ResData, ReqData } from '../../../config/api';
 import { Page } from '../../components/common/page';
 import { MainMenu } from '../main-menu';
 import { SearchBar } from '../search/search-bar';
+import { DBResponse } from '../../../core/db';
 
 interface State {
-  data:API.Get['/thread'];
+  data:DBResponse<'getThreadList'>;
 }
 
 export class Forum extends React.Component<MobileRouteProps, State> {

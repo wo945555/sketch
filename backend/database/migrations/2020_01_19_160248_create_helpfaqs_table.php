@@ -16,7 +16,7 @@ class CreateHelpfaqsTable extends Migration
         Schema::create('helpfaqs', function (Blueprint $table) {
             $table->increments('id');
             $table->string('key',10)->nullable()->index();
-            $table->string('question')->nullable()->index();
+            $table->string('question')->nullable();
             $table->text('answer')->nullable();
         });
     }

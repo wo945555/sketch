@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Passport\HasApiTokens;
 use App\Notifications\ResetPasswordNotification;
 use DB;
@@ -15,9 +16,9 @@ use App\Sosadfun\Traits\FindThreadTrait;
 
 class User extends Authenticatable
 {
+    use SoftDeletes;
     use Notifiable;
     use HasApiTokens;
-    use Traits\QiandaoTrait;
     use FindThreadTrait;
     use Traits\UserHomeworkTraits;
 
@@ -360,12 +361,12 @@ class User extends Authenticatable
         ]);
     }
 
-    public function sendPasswordResetNotification($token) 
-    { 
+    public function sendPasswordResetNotification($token)
+    {
         Cache::put($token, $this->email, 60);
         Cache::put($this->email,$token, 60);
-        $this->notify(new ResetPasswordNotification($token)); 
-    } 
+        $this->notify(new ResetPasswordNotification($token));
+    }
     public function active_now($ip)
     {
         $this->info->active_now($ip);
@@ -493,10 +494,6 @@ class User extends Authenticatable
         return $level;
     }
 
-    public function complement_qiandao()
-    {
-        $this->info->complement_qiandao();
-    }
 
     public function admin_reset_password()
     {
@@ -549,5 +546,3 @@ class User extends Authenticatable
     }
 
 }
-
-

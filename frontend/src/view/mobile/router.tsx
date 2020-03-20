@@ -19,6 +19,10 @@ import { Suggestion } from './home/suggestion';
 import { Library } from './home/library';
 import { Collection } from './collection';
 import { ForumTags } from '../components/thread/forum-tags';
+import { Votes } from './message/votes';
+import { Book } from './forum/book';
+import { Reply } from '../components/thread/reply';
+import { Review } from '../components/thread/review';
 
 interface Props {
   core:Core;
@@ -43,12 +47,12 @@ export const MobileRoutes = {
   // '/homethread': HomeThread,
   // '/threads': HomeThread,
   // '/books': Books,
-  // '/book/:id': Book,
+  [RoutePath.chapter]: Chapter,
+  [RoutePath.book]: Book,
   // '/thread/:id': Thread,
 
   // forum
   [RoutePath.forum]: Forum,
-  [RoutePath.chapter]: Chapter,
 
   // user
   [RoutePath.user]: User,
@@ -66,6 +70,7 @@ export const MobileRoutes = {
   [RoutePath.publicNotice]: PublicNotice,
   [RoutePath.dialogue]: Dialogue,
   [RoutePath.messages]: Message,
+  [RoutePath.votes]: Votes,
 
   // other
   [RoutePath.tags]: ForumTags,

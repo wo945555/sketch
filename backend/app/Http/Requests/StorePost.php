@@ -33,6 +33,7 @@ class StorePost extends FormRequest
             'body' => 'required|string|min:10|max:20000',
             'reply_to_id' => 'numeric',
             'reply_to_brief' => 'string|nullable|max:30',
+            'reply_to_position' => 'numeric',
             'majia' => 'string|nullable|max:10',
             'title' => 'string|nullable|max:30',
             'brief' => 'string|nullable|max:50',
@@ -79,7 +80,7 @@ class StorePost extends FormRequest
         if($thread->is_locked&&!auth('api')->user()->isAdmin()){abort(403,'内容锁定');} // 锁定状态下，非管理员不能修改
 
         $post_data = $this->generateUpdatePostData($post,$thread);
-        $info_data = $this->generateUpdatePostInfoData($post_data, $thread);
+        $info_data = $this->generateUpdatePostInfoData($post_data, $thread, $post);
         $post_data = $this->validateBianyuan($post_data, $thread);
         $old_post = $post;
         $post = DB::transaction(function()use($post, $info, $post_data, $info_data){

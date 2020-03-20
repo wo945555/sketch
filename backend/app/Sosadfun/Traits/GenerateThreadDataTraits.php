@@ -72,7 +72,7 @@ trait GenerateThreadDataTraits{
 
     public function convert_to_allowed_thread_format($thread_data, $channel)
     {
-        $thread_data['body'] = StringProcess::trimSpaces($thread_data['body']);
+        $thread_data['body'] = StringProcess::check_html_tag($thread_data['body']);
         if($channel->type==="book"){
             while(StringProcess::convert_to_title($thread_data['title'])!=$thread_data['title']){
                $thread_data['title'] = StringProcess::convert_to_title($thread_data['title']);

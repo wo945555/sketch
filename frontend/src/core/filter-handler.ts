@@ -1,5 +1,5 @@
 import { DB } from './db';
-import { loadStorage, saveStorage, Storage, FilterDataType } from '../utils/storage';
+import { loadStorage, saveStorage, FilterDataType } from '../utils/storage';
 import { ResData } from '../config/api';
 
 const EXPIRE_TIME_MS = 1000 * 3600 * 24;

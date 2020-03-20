@@ -16,13 +16,13 @@ class CreateHomeworkInvitationsTable extends Migration
         Schema::create('homework_invitations', function (Blueprint $table) {
             $table->increments('id');
             $table->string('token', 40)->nullable()->index();
-            $table->unsignedInteger('homework_id')->default(0)->index();
+            $table->unsignedInteger('homework_id')->default(0);
             $table->unsignedInteger('user_id')->default(0)->index();
-            $table->unsignedInteger('level')->default(0)->index();
-            $table->string('role', 10)->nullable()->index();
-            $table->dateTime('created_at')->nullable()->index();
-            $table->dateTime('valid_until')->nullable()->index();
-            $table->boolean('is_redeemed')->defalt(false)->index();
+            $table->unsignedInteger('level')->default(0);
+            $table->string('role', 10)->nullable();
+            $table->dateTime('created_at')->nullable();
+            $table->dateTime('valid_until')->nullable();
+            $table->boolean('is_redeemed')->defalt(false);
         });
     }
 

@@ -78,6 +78,7 @@ class NewPostListener
                     'responded_at' => $post->created_at,
                     'last_reply_id' => $post->id,
                 ]);
+                // TODO reply position count increment
             }
 
             // 如果这是一篇批评，更新critique count
@@ -108,7 +109,7 @@ class NewPostListener
             }
 
             // 修改惯用马甲，惯用indentation
-            $post->user->created_new_post($post);
+            // $post->user->created_new_post($post);
         });
 
         //如果书籍章节更新，或者非书籍回复，那么告诉不是自己的，所有收藏本讨论串、愿意接受更新的读者, 这里发生了更新

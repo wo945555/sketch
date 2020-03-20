@@ -37,7 +37,7 @@ class HomeworkResource extends JsonResource
                 'critic_count' => (int)$this->critic_count,
                 'finished_work_count' => (int)$this->finished_work_count,
             ],
-            'homework_registrations' => [],
+            'homework_registrations' => [], //TODO
         ];
     }
 }

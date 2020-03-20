@@ -15,15 +15,15 @@ class CreateQuizzesTable extends Migration
     {
         Schema::create('quizzes', function (Blueprint $table) {
             $table->increments('id');
-            $table->boolean('is_online')->default(true)->index();
-            $table->string('type',10)->nullable()->index();
-            $table->integer('quiz_level')->default(0)->index();
+            $table->boolean('is_online')->default(true);
+            $table->string('type',10)->nullable();
+            $table->integer('quiz_level')->default(0);
             $table->text('body')->nullable();
             $table->text('hint')->nullable();
-            $table->unsignedInteger('quiz_count')->default(0)->index();
-            $table->unsignedInteger('correct_count')->default(0)->index();
-            $table->dateTime('created_at')->nullable()->index();
-            $table->dateTime('edited_at')->nullable()->index();
+            $table->unsignedInteger('quiz_count')->default(0);
+            $table->unsignedInteger('correct_count')->default(0);
+            $table->dateTime('created_at')->nullable();
+            $table->dateTime('edited_at')->nullable();
         });
     }
 

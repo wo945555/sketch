@@ -93,7 +93,7 @@ export class ForumMenu extends React.PureComponent<{
   ];
 
   public render () {
-    return <Card className="forum-menu">
+    return <Card className="components-thread-forum-menu">
       <div className="menu">
         <div className="left">
           {this.renderDropdownTitle('排序', MenuList.sort)}

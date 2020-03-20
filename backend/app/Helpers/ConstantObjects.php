@@ -152,6 +152,7 @@ class ConstantObjects
     public static function refreshBookTags()
     {
         Cache::forget('bookCustomTags');
+        Cache::forget('bookPublicCustomTags');
         Cache::forget('TongrenYuanzhuTags');
         Cache::forget('TongrenCPTags');
     }

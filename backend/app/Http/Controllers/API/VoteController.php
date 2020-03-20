@@ -59,7 +59,7 @@ class VoteController extends Controller
         });
 
         return response()->success([
-            'votes' => VoteResource::collection($votes->load('author')),
+            'votes' => VoteResource::collection($votes),
             'paginate' => new PaginateResource($votes),
             'request_data' => $request->only('votable_type','votable_id'),
         ]);

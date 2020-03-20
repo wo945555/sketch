@@ -7,12 +7,14 @@ use Illuminate\Support\Facades\DB;
 use Carbon;
 use App\Sosadfun\Traits\SwitchableMailerTraits;
 use App\Sosadfun\Traits\QuizObjectTraits;
+use App\Sosadfun\Traits\RegistrationApplicationObjectTraits;
 
 class RegistrationApplication extends Model
 {
 
     use SwitchableMailerTraits;
     use QuizObjectTraits;
+    use RegistrationApplicationObjectTraits;
 
     protected $guarded = [];
     protected $dates = ['last_invited_at', 'submitted_at', 'created_at', 'reviewed_at', 'email_verified_at', 'send_verification_at'];

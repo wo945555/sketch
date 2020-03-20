@@ -15,11 +15,12 @@ class CreateHistoricalPasswordResetsTable extends Migration
     {
         Schema::create('historical_password_resets', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id')->default(0)->index();
+            $table->unsignedInteger('user_id')->default(0);
             $table->string('ip_address', 45)->nullable()->index();
-            $table->dateTime('created_at')->nullable()->index();
-            $table->string('old_password')->nullable()->index();
-            $table->dateTime('admin_reset')->nullable()->index();
+            $table->dateTime('created_at')->nullable();
+            $table->string('old_password')->nullable();
+            $table->dateTime('admin_reset')->nullable();
+            $table->index(['user_id','created_at']);
         });
     }
 

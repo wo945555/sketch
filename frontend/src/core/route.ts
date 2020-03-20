@@ -32,4 +32,8 @@ export class Route {
     public book (threadId:number) {
         this.go(`/book/${threadId}`);
     }
+
+    public chapter (threadId:number, chapterId:number) {
+        this.go(`/book/${threadId}/chapter/${chapterId}`);
+    }
 }

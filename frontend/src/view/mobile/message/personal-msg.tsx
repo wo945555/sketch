@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { API, ResData, ReqData } from '../../../config/api';
+import { ResData, ReqData } from '../../../config/api';
 import { MobileRouteProps } from '../router';
 import { Page } from '../../components/common/page';
 import { NavBar } from '../../components/common/navbar';
@@ -8,10 +8,11 @@ import { List } from '../../components/common/list';
 import { RoutePath } from '../../../config/route-path';
 import { MarkAllAsRead } from './mark-all-as-read';
 import { Menu, MenuItem } from '../../components/common/menu';
+import { DBResponse } from '../../../core/db';
 
 interface State {
-  messageData:API.Get['/user/$0/message'];
-  publicNoticeData:API.Get['/publicnotice'];
+  messageData:DBResponse<'getMessages'>;
+  publicNoticeData:DBResponse<'getPublicNotice'>;
 }
 
 // TODO: 管理通知: waiting for API
@@ -29,15 +30,22 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
     },
     publicNoticeData:{
       public_notices: [],
-    }
+    },
   };
 
   public async componentDidMount() {
+    const { getMessages, getPublicNotice } = this.props.core.db;
     const query = {withStyle: ReqData.Message.style.receiveBox};
-    const fetchMsgData = this.props.core.db.getMessages(query).catch((e) => { console.log(e);
-                                                                              return this.state.messageData; });
-    const fetchPublicNotice = this.props.core.db.getPublicNotice().catch((e) => { console.log(e);
-                                                                                  return this.state.publicNoticeData; });
+    const fetchMsgData = getMessages(query)
+      .catch((e) => {
+        console.log(e);
+        return this.state.messageData;
+      });
+    const fetchPublicNotice = getPublicNotice()
+      .catch((e) => {
+        console.log(e);
+        return this.state.publicNoticeData;
+      });
     const [messageData, publicNoticeData] = await Promise.all([fetchMsgData, fetchPublicNotice]);
     this.setState({messageData, publicNoticeData});
     console.log(messageData, publicNoticeData);
@@ -45,7 +53,10 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
 
   public render () {
     return (<Page className="msg-page"
-        top={<NavBar goBack={this.props.core.route.back} onMenuClick={() => console.log('open setting')}>
+        top={<NavBar goBack={this.props.core.route.back}
+        menu={NavBar.MenuIcon({
+          onClick: () => console.log('open setting'),
+        })}>
           <MessageMenu/>
         </NavBar>}>
 

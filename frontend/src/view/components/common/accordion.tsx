@@ -28,7 +28,7 @@ export class Accordion extends React.Component<Props, State> {
   }
 
   public render () {
-    let contentCln = 'accordion-content';
+    let contentCln = 'comps-common-accordion';
     if (this.toggled) {
       contentCln = classnames(contentCln, `animate${this.state.expanded ? 'In' : 'Out'}`);
       this.toggled = false;

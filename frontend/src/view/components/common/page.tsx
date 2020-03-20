@@ -5,6 +5,7 @@ import { classnames } from '../../../utils/classname';
 export function Page (props:{
   children:React.ReactNode;
   top?:React.ReactNode;
+  noTopBorder?:boolean;
   bottom?:React.ReactNode;
   className?:string;
   style?:React.CSSProperties;
@@ -12,7 +13,9 @@ export function Page (props:{
 }) {
   return <div className="page" style={{zIndex: props.zIndex || undefined}}>
     { props.top &&
-      <div className="top">
+      <div className="top" style={{
+        borderBottom: props.noTopBorder ? 'unset' : undefined,
+      }}>
         {props.top}
       </div>
     }

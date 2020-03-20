@@ -140,37 +140,44 @@ class PassportController extends Controller
             abort(499);
         }
 
-        if($requset->invitation_type==='token'){
+        if($request->invitation_type==='token'){
 
-            $invitation_token = App\Models\InvitationToken::where('token', request('invitation_token'))->first();
+            $invitation_token = \App\Models\InvitationToken::where('token', request('invitation_token'))->first();
 
-            $application = App\Models\RegistrationApplication::where('email', request('email'))->first();
+            $application = \App\Models\RegistrationApplication::where('email', request('email'))->first();
 
-            if(!$invitation_token){abort(404);}
+            if(!$invitation_token){abort(404,'邀请码不存在');}
 
             if(($invitation_token->invitation_times < 1)||($invitation_token->invite_until <  Carbon::now())){abort(444);}
 
-            $this->validator($request->all())->validate();
+            $validator = $this->validator($request->all());
+            if ($validator->fails()) {
+                return response()->error($validator->errors(), 422);
+            }
 
             $user = $this->create_by_invitation_token($request->all(), $invitation_token, $application);
 
         }
-        if($requset->invitation_type==='email'){
+        if($request->invitation_type==='email'){
 
-            $application = RegistrationApplication::where('email',request('email'))->where('token',request('token'))->first();
+            if(!request('email')||!request('token')){abort(422,'缺少必要的信息，不能定位申请记录')}
+            $application = \App\Models\RegistrationApplication::where('email',request('email'))->where('token',request('token'))->first();
 
-            if(!$application){abort(404);}
+            if(!$application){abort(404,'不存在对应的申请记录');}
 
-            if($application->user_id>0){abort(409);}
+            if($application->user_id>0){abort(409,'本申请已经注册，不能重复注册');}
 
-            if(!$application->is_passed){abort(444);}
+            if(!$application->is_passed){abort(444,'申请未通过');}
 
-            $this->validator($request->all())->validate();
+            $validator = $this->validator($request->all());
+            if ($validator->fails()) {
+                return response()->error($validator->errors(), 422);
+            }
 
             $user = $this->create_by_invitation_email($request->all(), $application);
         }
 
-        if(!$user||!$request->invitation_type){abort(422);}
+        if(!$user||!$request->invitation_type){abort(422,'缺少注册类型信息，未能注册成功');}
 
         $success['token'] =  $user->createToken('MyApp')->accessToken;
         $success['name'] =  $user->name;

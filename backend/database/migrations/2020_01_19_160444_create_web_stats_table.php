@@ -29,7 +29,7 @@ class CreateWebStatsTable extends Migration
             $table->unsignedInteger('daily_clicked_users')->default(0);
             $table->unsignedInteger('daily_clicks_median')->default(0);
             $table->unsignedInteger('daily_clicks_average')->default(0);
-            $table->dateTime('created_at')->nullable()->index();
+            $table->dateTime('created_at')->nullable();
         });
     }
 

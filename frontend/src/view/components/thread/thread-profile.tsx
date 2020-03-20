@@ -1,60 +1,89 @@
 import * as React from 'react';
 import './thread-profile.scss';
-import { parseDate } from '../../../utils/date';
+import { parseDate, isNewThread } from '../../../utils/date';
 import { ResData } from '../../../config/api';
-import { Link } from 'react-router-dom';
 import { Card } from '../common/card';
+import { TagList } from '../common/tag-list';
+import { Tag } from '../common/tag';
+import { Button } from '../common/button';
+import { Colors } from '../../theme/theme';
+
+export type ThreadMode = 'reading'|'discussion';
 
 interface Props {
   thread:ResData.Thread;
+  changeMode:(mode:ThreadMode) => void;
+  onCollect:() => void;
+  onReply:() => void;
+  onReview:() => void;
+  onReward:() => void;
 }
 interface State {
+  rewardsExpanded:boolean;
 }
 
 export class ThreadProfile extends React.Component<Props, State> {
   public render () {
-    const { attributes, author, tags } = this.props.thread;
+    const { thread } = this.props;
+    const { attributes, author, tags } = thread;
 
-    return <Card className="book-profile" style={{
-      padding: '3em 3em',
-    }}>
-      <div className="title is-2">{attributes.title}</div>
-      <div className="brief">{attributes.brief}</div>
+    const rewardList:string[] = [];
+    if (thread.recent_rewards[0]) {
+      thread.recent_rewards[0].author.forEach((author) => rewardList.push(author.attributes.name));
+    }
 
-      <div className="brief">
-        <Link className="username" to={`/users/${author.id}`}>{author.attributes.name}</Link>
-        <span className="publish-date">发表于{parseDate(attributes.created_at || '')} 修改于{parseDate(attributes.edited_at || '')}</span>
+    return <Card className="comps-thread-thread-profile">
+      <div className="title-row">
+        <div className="title">{attributes.title}
+          <TagList>
+            {(isNewThread(attributes.created_at)) && thread.last_component && thread.last_component.id &&
+            <Tag size="tiny"><span className="primary-color">新</span></Tag>}
+            {attributes.is_bianyuan && <Tag size="tiny">限</Tag>}
+          </TagList>
+        </div>
+        <div className="author-name">{author.attributes.name}</div>
       </div>
 
-      { tags &&
-        <div className="intro">
-          <div className="tags">
-            {tags.map((tag, i) =>
-              <Link key={i} to={`/book-tag/${tag.id}`}>{tag.attributes.tag_name}</Link>)}
+      <div className="brief">{attributes.brief}</div>
+      <div className="tags-row">{tags.map((tag) => tag.attributes.tag_name).join('-')}</div>
+      <div className="data-row">
+          <span>{parseDate(attributes.created_at)}/{parseDate(thread.last_post ? thread.last_post.attributes.created_at : undefined)}</span>
+          <span>
+            <i className="fa fa-eye"></i>
+            {attributes.view_count || 0}
+          </span>
+          <span>
+            <i className="fa fa-comment-alt"></i>
+            {attributes.reply_count || 0}
+          </span>
+      </div>
+
+      <div className="title">文案</div>
+      <div className="body">{attributes.body}</div>
+
+      <div className="title">最新章节</div>
+      <div className="last-component">{thread.last_component && thread.last_component.attributes.title}</div>
+
+      <div className="events">
+        <Button type="ellipse" onClick={this.props.onCollect}>收藏{attributes.collection_count || ''}</Button>
+        <Button type="ellipse" onClick={this.props.onReply}>回复</Button>
+        <Button type="ellipse" onClick={this.props.onReview}>写评</Button>
+        <Button type="ellipse" onClick={this.props.onReward}>打赏</Button>
+      </div>
+
+      {rewardList.length &&
+        <div className="rewards-container">
+          <div className="rewards">{rewardList.join(', ')}</div>
+          <div className="expand" onClick={() => this.setState((prevState) => ({rewardsExpanded: !prevState.rewardsExpanded}))}>
+            展开 <i className="fa fa-angle-down"></i>
           </div>
         </div>
-      }
+      || ''}
 
-      <div className="counters">
-        <span><i className="fas fa-pencil-alt"></i>{attributes.total_char}</span> /
-        <span><i className="fas fa-eye"></i>{attributes.view_count}</span> /
-        <span><i className="fas fa-comment-alt"></i>{attributes.reply_count}</span> /
-        <span><i className="fas fa-download"></i>{attributes.download_count}</span>
-      </div>
-
-      <div className="change-mode">
-        {this.renderModeText()}
+      <div className="modes">
+          <Button color={Colors.primary} onClick={() => this.props.changeMode('reading')}>阅读模式</Button>
+          <Button color={Colors.primary} onClick={() => this.props.changeMode('discussion')}>讨论模式</Button>
       </div>
     </Card>;
-  }
-
-  public renderModeText () {
-    const mode = window.location.pathname.split('/')[1];
-    if (!mode) { return <></>; }
-    if (mode === 'threads') {
-      return <Link to={`/book/${this.props.thread.id}`}><i className="fas fa-book"></i>文库阅读模式</Link>;
-    } else {
-      return <Link to={`/threads/${this.props.thread.id}`}><i className="fas fa-comment"></i>论坛讨论模式</Link>;
-    }
   }
 }

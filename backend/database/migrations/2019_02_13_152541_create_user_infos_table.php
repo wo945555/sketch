@@ -18,25 +18,25 @@ class CreateUserInfosTable extends Migration
             $table->boolean('has_intro')->default(false);//是否有额外的个人介绍
             $table->string('brief_intro', 50)->nullable();//短个人介绍
 
-            $table->unsignedInteger('salt')->default(0)->index();//盐粒数目
-            $table->unsignedInteger('fish')->default(0)->index();//咸鱼数目
-            $table->unsignedInteger('ham')->default(0)->index();//火腿数目
-            $table->unsignedInteger('exp')->default(0)->index();//经验值=盐度
-            $table->unsignedInteger('upvote_count')->default(0)->index();//被赞次数
-            $table->unsignedInteger('view_count')->default(0)->index();//被赞次数
-            $table->unsignedInteger('follower_count')->default(0)->index();//
-            $table->unsignedInteger('following_count')->default(0)->index();//
+            $table->unsignedInteger('salt')->default(0);//盐粒数目
+            $table->unsignedInteger('fish')->default(0);//咸鱼数目
+            $table->unsignedInteger('ham')->default(0);//火腿数目
+            $table->unsignedInteger('exp')->default(0);//经验值=盐度
+            $table->unsignedInteger('upvote_count')->default(0);//被赞次数
+            $table->unsignedInteger('view_count')->default(0);//被赞次数
+            $table->unsignedInteger('follower_count')->default(0);//
+            $table->unsignedInteger('following_count')->default(0);//
 
-            $table->dateTime('no_posting_until')->nullable()->index();//禁言至
-            $table->dateTime('no_logging_until')->nullable()->index();// 禁止登陆至
-            $table->dateTime('no_homework_until')->nullable()->index();//最后一次登陆时间
+            $table->dateTime('no_posting_until')->nullable();//禁言至
+            $table->dateTime('no_logging_until')->nullable();// 禁止登陆至
+            $table->dateTime('no_homework_until')->nullable();//最后一次登陆时间
 
             $table->string('activation_token', 50)->nullable()->index();//激活token
             $table->string('invitation_token', 50)->nullable()->index();//注册邀请码
             $table->unsignedInteger('invitor_id')->default(0)->index();//邀请人ID
-            $table->unsignedInteger('token_limit')->default(0)->index();//邀请码限额
-            $table->unsignedInteger('invitee_count')->default(0)->index();//邀请人额度
-            $table->unsignedInteger('donation_level')->default(0)->index();//捐赠额度
+            $table->unsignedInteger('token_limit')->default(0);//邀请码限额
+            $table->unsignedInteger('invitee_count')->default(0);//邀请人额度
+            $table->unsignedInteger('donation_level')->default(0);//捐赠额度
             $table->unsignedInteger('no_ads_reward_limit')->default(0);//免广告福利额度
             $table->unsignedInteger('qiandao_reward_limit')->default(0);//补签福利额度
 
@@ -81,7 +81,7 @@ class CreateUserInfosTable extends Migration
             $table->unsignedInteger('collection_bianyuan_count')->default(0);//边缘收藏总数
             $table->unsignedInteger('collection_none_bianyuan_count')->default(0);//非边缘收藏总数
 
-            $table->boolean('is_forbidden')->default(false)->index();//是否恶意注册封禁账户
+            $table->boolean('is_forbidden')->default(false);//是否恶意注册封禁账户
 
             $table->string('lang', 5)->nullable();//语言偏好
             $table->string('majia', 10)->nullable();//最近使用过的马甲

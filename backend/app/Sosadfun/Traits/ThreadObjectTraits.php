@@ -16,7 +16,7 @@ trait ThreadObjectTraits{
 
     public function threadProfile($id)
     {
-        return Cache::remember('threadProfile.'.$id, 10, function () use($id){
+        $thread = Cache::remember('threadProfile.'.$id, 15, function () use($id){
             $thread = $this->findThread($id);
             if(!$thread){return;}
             $thread->load('last_post', 'last_component');
@@ -30,12 +30,22 @@ trait ThreadObjectTraits{
                 $tongren = \App\Models\Tongren::find($thread->id);
                 $thread->setAttribute('tongren', $tongren);
             }
-            if(in_array($thread->channel()->type,['book','list','box'])){
-                $thread->setAttribute('component_index_brief', $thread->component_index());
-            }
             $thread->setAttribute('random_review', $thread->random_editor_recommendation());
             $thread->setAttribute('recent_rewards', $thread->latest_rewards());
             return $thread;
+        });
+
+        if(in_array($thread->channel()->type,['book','list','box'])){
+            $thread->setAttribute('component_index', $this->threadIndex($id));
+        }
+        return $thread;
+    }
+
+    public function threadIndex($id)
+    {
+        return Cache::remember('threadIndex.'.$id, 15, function () use($id){
+            $thread = $this->findThread($id);
+            return $thread->component_index();
         });
     }
 
@@ -56,6 +66,7 @@ trait ThreadObjectTraits{
     {
         Cache::forget('thread.'.$id);
         Cache::forget('threadProfile.'.$id);
+        Cache::forget('threadIndex.'.$id);
     }
 
     public function decide_thread_show_config($request)

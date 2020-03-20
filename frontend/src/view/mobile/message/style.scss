@@ -2,9 +2,30 @@
   text-align: right;
 }
 
+.list {
+  .item-container {
+    .item-first-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--font-size-14);
+    }
+  
+    .item-brief {
+      text-align: left;
+      font-size: var(--font-size-12);
+    }
+  }
+}
 
 .message-list {
-  margin-top: var(--top-margin-1);
+  margin-top: var(--margin-size-8);
+  .item-first-line .right{
+    color: var(--color-font-light);
+    font-size: var(--font-size-10);
+  }
+  .item-brief {
+    color: var(--color-font-light);
+  }
 }
 
 .blank-block {
@@ -27,7 +48,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    margin-top: var(--top-margin-1);
+    margin-top: var(--margin-size-8);
   }
 
   .dialogue-card {
@@ -40,7 +61,7 @@
     // margin-bottom: 0 !important;
 
     .message-item {
-      margin-bottom: var(--top-margin-3);
+      margin-bottom: var(--margin-size-16);
       .poster-name {
         margin-bottom: 1em;
         font-weight: bold;

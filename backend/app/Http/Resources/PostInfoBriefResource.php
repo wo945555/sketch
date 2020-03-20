@@ -25,11 +25,10 @@ class PostInfoBriefResource extends JsonResource
                 'next_id' => (int)$this->next_chapter_id,
                 'reviewee_id' => (int)$this->reviewee_id,
                 'reviewee_type' => (string)$this->reviewee_type,
-                'recommend' => (bool)$this->recommend,
-                'editor_recommend' => (bool)$this->editor_recommend,
                 'rating' => (int)$this->rating,
                 'redirect_count' => (int)$this->redirect_count,
                 'author_attitude' => (int)$this->author_attitude,
+                'summary' => (string)$this->summary,
             ],
             'reviewee' => $reviewee,
         ];
